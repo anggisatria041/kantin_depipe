@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\TenantController;
+use App\Http\Controllers\Api\KategoriController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +26,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('menu',MenuController::class);
 //Tenant
 Route::apiResource('tenant',TenantController::class);
+//Kategori
+Route::apiResource('kategori',KategoriController::class);
