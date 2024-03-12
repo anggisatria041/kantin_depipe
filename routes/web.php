@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SewaController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('layout.main');
 });
+//Sewa//
+Route::Resource('sewa',SewaController::class);
+Route::post('data_list',[SewaController::class,'data_list'])->name('data_list');
+
+
+
