@@ -20,7 +20,13 @@ Route::get('/', function () {
 });
 //Sewa//
 Route::Resource('sewa',SewaController::class);
-Route::post('data_list',[SewaController::class,'data_list'])->name('data_list');
+Route::post('/sewa/data_list',[SewaController::class,'data_list'])->name('data_list');
+Route::post('/sewa/update', [SewaController::class,'update'])->name('sewa.update');
+Route::delete('/sewa/{id}', [SewaController::class, 'destroy']);
+Route::get('/edit/{id}', [SewaController::class, 'edit']);
+
+
+
 
 
 
