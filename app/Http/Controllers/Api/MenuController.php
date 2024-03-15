@@ -19,7 +19,7 @@ class MenuController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Data ditemukan',
-            'Data'=>$data,
+            'data'=>$data,
         ], 200);
     }
 

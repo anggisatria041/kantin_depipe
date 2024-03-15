@@ -4,18 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class TenantController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data=Tenant::all();
+        $data=User::all();
 
         return response()->json([
             'status'=>true,
@@ -37,42 +37,26 @@ class TenantController extends Controller
      */
     public function store(Request $request)
     {
-        $data = new Tenant;
-        
-        $rules=[
-            'nama'=>'required',
-            'email'=>'required|email',
-            'password'=>'required',
-            'logo'=>'required',
-            'alamat'=>'required',
-            'no_hp'=>'required',
-            'ktp'=>'required'
-        ];
-        $validator=Validator::make($request->all(),$rules);
-
-        if($validator->fails()){
-            return response()->json([
-                'status'=>false,
-                'message'=>'Gagal memasukkan data',
-                'data'=>$validator->errors()
-            ]);
-        }
-        $data->menu_id = $request->menu_id;
-        $data->nama = $request->nama;
-        $data->email = $request->email;
-        $data->password = Hash::make($request->input('password'));
-        $data->logo = $request->logo;
-        $data->alamat = $request->alamat;
-        $data->no_hp = $request->no_hp;
-        $data->ktp = $request->ktp;
-        $data->role = 'tenant';
-
-        $post = $data->save();
-
-        return response()->json([
-            'status'=>true,
-            'message'=>'Sukses Memasukkan Data',
+        $user = User::create([
+            'nama' => $request->nama,
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->input('password')),
+            'alamat' => $request->alamat,
+            'no_hp' => $request->no_hp,
+            'nik' => $request->nik,
+            'logo' => $request->logo,
+            'role' => $request->role
         ]);
+
+        $token = $user->createToken('myapptoken')->plainTextToken;
+
+        $response = [
+            'user' => $user,
+            'token' => $token
+        ];
+
+        return response($response, 201);
     }
 
     /**
@@ -80,13 +64,13 @@ class TenantController extends Controller
      */
     public function show(string $id)
     {
-        $data=Tenant::find($id);
+        $data=User::find($id);
         if($data){
 
             return response()->json([
                 'status'=>true,
                 'message'=>'Data ditemukan',
-                'Data'=>$data,
+                'data'=>$data,
             ], 200);
          
         } else{
@@ -109,9 +93,9 @@ class TenantController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $data = Tenant::find($id);
+        $data = User::find($id);
 
         if(empty($data)){
             return response()->json([
@@ -122,12 +106,13 @@ class TenantController extends Controller
         
         $rules=[
             'nama'=>'required',
+            'username'=>'required',
             'email'=>'required|email',
             'password'=>'required',
             'logo'=>'required',
             'alamat'=>'required',
             'no_hp'=>'required',
-            'ktp'=>'required'
+            'nik'=>'required'
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -139,14 +124,14 @@ class TenantController extends Controller
             ]);
         }
         
-        $data->menu_id = $request->menu_id;
         $data->nama = $request->nama;
+        $data->username = $request->username;
         $data->email = $request->email;
         $data->password = Hash::make($request->input('password'));
         $data->logo = $request->logo;
         $data->alamat = $request->alamat;
         $data->no_hp = $request->no_hp;
-        $data->ktp = $request->ktp;
+        $data->nik = $request->nik;
 
         $post = $data->save();
 
@@ -161,7 +146,7 @@ class TenantController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Tenant::find($id);
+        $data = User::find($id);
 
         if(empty($data)){
             return response()->json([
