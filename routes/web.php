@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SewaController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\GajiController;
 
 
 /*
@@ -37,6 +38,16 @@ Route::prefix('karyawan')->group(function () {
     Route::post('/update', [KaryawanController::class, 'update'])->name('karyawan.update');
     Route::delete('/{id}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
     Route::post('/data_list', [KaryawanController::class, 'data_list'])->name('karyawan.data_list');
+});
+
+// Gaji
+Route::prefix('gaji')->group(function () {
+    Route::get('/', [GajiController::class, 'index'])->name('gaji.index');
+    Route::post('/store', [GajiController::class, 'store'])->name('gaji.store');
+    Route::get('/edit/{id}', [GajiController::class, 'edit'])->name('gaji.edit');
+    Route::post('/update', [GajiController::class, 'update'])->name('gaji.update');
+    Route::delete('/{id}', [GajiController::class, 'destroy'])->name('gaji.destroy');
+    Route::post('/data_list', [GajiController::class, 'data_list'])->name('gaji.data_list');
 });
 
 
