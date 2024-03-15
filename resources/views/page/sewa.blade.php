@@ -77,7 +77,7 @@
         <!--end: Search Form -->
 
         <!--begin: Datatable -->
-        <div id="m_datatable"></div>
+        <div class="m_datatable"></div>
         <!--end: Datatable -->
     </div>
 </div>
@@ -168,7 +168,7 @@
     var method;
     window.addEventListener('DOMContentLoaded', (event) => {
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
-        var tableData = $('#m_datatable').mDatatable({
+        var tableData = $('.m_datatable').mDatatable({
             data: {
                 type: 'remote', 
                 source: {
