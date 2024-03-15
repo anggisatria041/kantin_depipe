@@ -3,7 +3,7 @@
 <div class="m-subheader ">
     <div class="d-flex align-items-center">
         <div class="mr-auto">
-            <h3 class="m-subheader__title m-subheader__title--separator">Penyewaaan</h3>
+            <h3 class="m-subheader__title m-subheader__title--separator">Karyawan</h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
                     <a href="#" class="m-nav__link m-nav__link--icon">
@@ -13,7 +13,7 @@
                 <li class="m-nav__separator">-</li>
                 <li class="m-nav__item">
                     <a href="" class="m-nav__link">
-                        <span class="m-nav__link-text">Sewa</span>
+                        <span class="m-nav__link-text">Karyawan</span>
                     </a>
                 </li>
             </ul>
@@ -27,7 +27,7 @@
         <div class="m-portlet__head-caption">
             <div class="m-portlet__head-title">
                 <h3 class="m-portlet__head-text">
-                    Manage Data Sewa<p id="hax"></p>
+                    Manage Data Karyawan<p id="hax"></p>
                 </h3>
             </div>
         </div>
@@ -111,40 +111,40 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" name="sewa_id" value="">
+                    <input type="hidden" name="karyawan_id" value="">
                     <div class="form-group m-form__group row" >
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Tanggal Sewa <font class="m--font-danger">*</font>
+                            Nama <font class="m--font-danger">*</font>
                         </label>
-                            <div class="col-md-4">
-                            <input type="date" id="meeting-time" class="form-control m-input" name="tgl_sewa"/>
+                            <div class="col-md-6">
+                            <input type="text" name="nama" required class="form-control m-input" placeholder="Nama"/>
                         </div>
                     </div>
                     <div class="form-group m-form__group row" >
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Tanggal Berakhir <font class="m--font-danger">*</font>
+                            Alamat <font class="m--font-danger">*</font>
                         </label>
-                            <div class="col-md-4">
-                            <input type="date" id="meeting-time" class="form-control m-input" name="tgl_berakhir"/>
+                            <div class="col-md-6">
+                            <input type="text" name="alamat" required class="form-control m-input" placeholder="Alamat"/>
                         </div>
                     </div>
                     <div class="form-group m-form__group row">
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Harga <font class="m--font-danger">*</font>
+                            No Hp <font class="m--font-danger">*</font>
                         </label>
                         <div class="col-md-6">
-                            <input type="number" name="harga" required class="form-control m-input" placeholder="Rp."/>
+                            <input type="number" name="no_hp" required class="form-control m-input" placeholder="No Hp"/>
                         </div>
                     </div>
                     <div class="form-group m-form__group row spkadd">
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Status <font class="m--font-danger">*</font>
+                            Divisi <font class="m--font-danger">*</font>
                         </label>
                         <div class="col-md-6">
-                            <select name="status" class="form-control m-input m-select2">
-                                <option value="">Pilih Status</option>
-                                <option value="premium">Premium</option>
-                                <option value="standart">standart</option>
+                            <select name="divisi" class="form-control m-input m-select2">
+                                <option value="">Pilih Divisi</option>
+                                <option value="kebersihan">Kebersihan</option>
+                                <option value="sarana">Sarana</option>
                             </select>
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                 type: 'remote', 
                 source: {
                     read: {
-                        url: "{{ route('sewa.data_list') }}", 
+                        url: "{{ route('karyawan.data_list') }}", 
                         method: 'POST', 
                         headers: {
                             'X-CSRF-TOKEN': csrfToken 
@@ -210,19 +210,19 @@
                 sortable: false,
                 textAlign: 'center',
             }, {
-                field: "tgl_sewa",
-                title: "Tanggal Sewa"
+                field: "nama",
+                title: "Nama"
             }, {
-                field: "tgl_berakhir",
-                title: "Tanggal Berakhir"
+                field: "alamat",
+                title: "Alamat"
             }, {
-                field: "harga",
-                title: "Harga",
+                field: "no_hp",
+                title: "No Hp",
                 width: 110,
                 textAlign: 'center'
             }, {
-                field: "status",
-                title: "Status",
+                field: "divisi",
+                title: "Divisi",
                 textAlign: 'center'
             }, {
                 field: "actions",
@@ -251,7 +251,7 @@
     function add_ajax() {
         method = 'add';
         resetForm();
-        $('#exampleModalLongTitle').html("Tambah Sewa");
+        $('#exampleModalLongTitle').html("Tambah Karyawan");
         $('.form-group').removeClass('has-error');
         $('.help-block').empty();
         $('#m_form_1_msg').hide();
@@ -262,9 +262,9 @@
         let url;
 
         if (method === 'add') {
-            url = "{{ route('sewa.store') }}";
+            url = "{{ route('karyawan.store') }}";
         } else {
-            url = "{{ route('sewa.update') }}";
+            url = "{{ route('karyawan.update') }}";
         }
 
         const formData = $('#formAdd').serialize();
@@ -298,20 +298,20 @@
         method = 'edit';
         resetForm(); 
 
-        $('#exampleModalLongTitle').html("Edit Sewa"); 
+        $('#exampleModalLongTitle').html("Edit Karyawan"); 
 
         $.ajax({
-            url: "{{ url('sewa/edit') }}/" + id,
+            url: "{{ url('karyawan/edit') }}/" + id,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
                 if (data.data) {
                     $('#formAdd')[0].reset();
-                    $('[name="sewa_id"]').val(data.data.sewa_id);
-                    $('[name="tgl_sewa"]').val(data.data.tgl_sewa);
-                    $('[name="tgl_berakhir"]').val(data.data.tgl_berakhir);
-                    $('[name="harga"]').val(data.data.harga);
-                    $('[name="status"]').val(data.data.status); 
+                    $('[name="karyawan_id"]').val(data.data.karyawan_id);
+                    $('[name="nama"]').val(data.data.nama);
+                    $('[name="alamat"]').val(data.data.alamat);
+                    $('[name="no_hp"]').val(data.data.no_hp);
+                    $('[name="divisi"]').val(data.data.divisi); 
                     $('.m-select2').select2({width : '100%'});
                     $('#m_modal_6').modal('show'); 
                 } else {
@@ -346,7 +346,7 @@
                 });
 
                 $.ajax({
-                    url: "{{ url('sewa') }}/" + id, 
+                    url: "{{ url('karyawan') }}/" + id, 
                     type: "DELETE", 
                     data: {
                         _token: '{{ csrf_token() }}' 
