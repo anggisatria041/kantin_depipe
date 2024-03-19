@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 class MenuController extends Controller
 {
@@ -40,8 +42,10 @@ class MenuController extends Controller
         
         $rules=[
             'nama'=>'required',
+            'stok'=>'required',
+            'kategori'=>'required',
+            'harga'=>'required',
             'deskripsi'=>'required',
-            'harga'=>'required'
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -52,11 +56,13 @@ class MenuController extends Controller
                 'data'=>$validator->errors()
             ]);
         }
-        $data->kategori_id = $request->kategori_id;
+        $data->tenant_id = Auth::user()->id;
         $data->nama = $request->nama;
-        $data->deskripsi = $request->deskripsi;
+        $data->stok = $request->stok;
+        $data->kategori = $request->kategori;
         $data->gambar = $request->gambar;
         $data->harga = $request->harga;
+        $data->deskripsi = $request->deskripsi;
 
         $post = $data->save();
 
@@ -113,6 +119,7 @@ class MenuController extends Controller
         
         $rules=[
             'nama'=>'required',
+            'stok'=>'required',
             'deskripsi'=>'required',
             'harga'=>'required'
         ];
@@ -126,11 +133,12 @@ class MenuController extends Controller
             ]);
         }
         
-        $data->kategori_id = $request->kategori_id;
         $data->nama = $request->nama;
-        $data->deskripsi = $request->deskripsi;
+        $data->stok = $request->stok;
+        $data->kategori = $request->kategori;
         $data->gambar = $request->gambar;
         $data->harga = $request->harga;
+        $data->deskripsi = $request->deskripsi;
 
         $post = $data->save();
 

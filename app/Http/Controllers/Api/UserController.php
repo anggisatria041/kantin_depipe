@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 
 class UserController extends Controller
 {
@@ -20,7 +22,7 @@ class UserController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Data ditemukan',
-            'Data'=>$data,
+            'data'=>$data,
         ], 200);
     }
 
@@ -35,7 +37,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         $user = User::create([
             'nama' => $request->nama,
@@ -48,15 +50,11 @@ class UserController extends Controller
             'logo' => $request->logo,
             'role' => $request->role
         ]);
+        return response()->json([
+            'status'=>true,
+            'message'=>'Sukses Memasukkan Data',
+        ]);
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
-
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
-
-        return response($response, 201);
     }
 
     /**
@@ -66,7 +64,6 @@ class UserController extends Controller
     {
         $data=User::find($id);
         if($data){
-
             return response()->json([
                 'status'=>true,
                 'message'=>'Data ditemukan',
@@ -161,5 +158,59 @@ class UserController extends Controller
             'status'=>true,
             'message'=>'Sukses Melakukan delete Data',
         ]);
+    }
+    public function logout()
+    {
+        $user = User::find(Auth::user()->id);
+        $user->tokens()->delete();
+
+        // auth()->user()->tokens()->delete();
+
+        return [
+            'message' => 'Logged out'
+        ];
+    }
+    public function login(Request $request)
+    {
+        $rules=[
+            'username' => 'required',
+            'password' => 'required'
+        ];
+        $validator=Validator::make($request->all(),$rules);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'=>false,
+                'message'=>'Silahkan Lengkapi Data Anda',
+                'data'=>$validator->errors()
+            ]);
+        }
+
+      $credentials= request(['username','password']);
+      if (!Auth::attempt($credentials)) {
+        return response()->json([
+                'status'=>false,
+                'message'=>'Data tidak sesuai'
+            ],404);
+      }
+      // cek username
+        $user = User::where('username', $request->username)->first();
+        // cek password
+        if (!Hash::check($request->password, $user->password,[])) {
+            return response([
+                'message' => 'Bad Credentials'
+            ], 401);
+        }
+        
+    
+        $token = $user->createToken('authtoken')->plainTextToken;
+        $response = [
+            'data' => [
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user'=>$user
+            ]
+        ];
+        return response($response, 201);
     }
 }

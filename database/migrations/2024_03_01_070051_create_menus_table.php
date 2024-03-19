@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('menu', function (Blueprint $table) {
             $table->bigIncrements('menu_id');
-            $table->integer('kategori_id');
+            $table->integer('tenant_id');
             $table->string('nama');
-            $table->string('deskripsi');
+            $table->integer('stok');
+            $table->string('kategori');
             $table->string('gambar');
             $table->integer('harga');
+            $table->text('deskripsi');
             $table->timestamps();
         });
     }

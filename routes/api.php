@@ -23,9 +23,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Menu
-Route::apiResource('menu',MenuController::class);
-//Kategori
-Route::apiResource('kategori',KategoriController::class);
-//User
-Route::apiResource('user',UserController::class);
+// Public Routes Menu
+Route::get('menu', [MenuController::class, 'index']);
+Route::get('menu/{id}', [MenuController::class, 'show']);
+
+// Public Routes User
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+
+// Protected routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('logout', [UserController::class, 'logout']);
+
+    // Private Routes Menu
+    Route::post('menu', [MenuController::class, 'store']);
+    Route::put('menu/{id}', [MenuController::class, 'update']);
+    Route::delete('menu/{id}', [MenuController::class, 'destroy']);
+});
+
