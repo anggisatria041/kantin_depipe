@@ -6,6 +6,7 @@ use App\Http\Controllers\HistoriSewaController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\InventoriController;
+use App\Http\Controllers\DashboardController;
 
 
 /*
@@ -20,8 +21,12 @@ use App\Http\Controllers\InventoriController;
 */
 
 Route::get('/', function () {
-    return view('layout.main');
+    return view('page.dashboard');
 });
+
+//Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
 // Sewa
 Route::prefix('sewa')->group(function () {
     Route::get('/', [SewaController::class, 'index'])->name('sewa.index');
@@ -67,6 +72,7 @@ Route::prefix('inventori')->group(function () {
     Route::delete('/{id}', [InventoriController::class, 'destroy'])->name('inventori.destroy');
     Route::post('/data_list', [InventoriController::class, 'data_list'])->name('inventori.data_list');
 });
+
 
 
 
