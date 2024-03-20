@@ -277,28 +277,33 @@
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
         const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: formDataWithToken,
-            dataType: "json",
-            success: function(data) {
-                if (data.status) {
-                    $('#m_modal_6').modal('hide');
-                    swal("Berhasil..", "Data Anda berhasil disimpan", "success");
-                    $('.m_datatable').mDatatable().reload();
-                } else {
-                    swal({
-                        text: data.message,
-                        type: "warning",
-                        closeOnConfirm: true
-                    });
+        if ($('[name="karyawan_id"]').val() == "" || $('[name="jumlah"]').val() == "" || $('[name="tanggal"]').val() == "" || $('[name="status"]').val() == "") {
+            $('#m_form_1_msg').show();
+            mApp.unblock(".modal-content");
+        } else {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: formDataWithToken,
+                dataType: "json",
+                success: function(data) {
+                    if (data.status) {
+                        $('#m_modal_6').modal('hide');
+                        swal("Berhasil..", "Data Anda berhasil disimpan", "success");
+                        $('.m_datatable').mDatatable().reload();
+                    } else {
+                        swal({
+                            text: data.message,
+                            type: "warning",
+                            closeOnConfirm: true
+                        });
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    swal("Oops", "Data gagal disimpan!", "error");
                 }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                swal("Oops", "Data gagal disimpan!", "error");
-            }
-        });
+            });
+        }
     }
     function edit(id) {
         method = 'edit';

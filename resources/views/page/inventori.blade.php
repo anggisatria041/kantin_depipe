@@ -3,7 +3,7 @@
 <div class="m-subheader ">
     <div class="d-flex align-items-center">
         <div class="mr-auto">
-            <h3 class="m-subheader__title m-subheader__title--separator">Penyewaaan</h3>
+            <h3 class="m-subheader__title m-subheader__title--separator">Inventori</h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
                     <a href="#" class="m-nav__link m-nav__link--icon">
@@ -13,7 +13,7 @@
                 <li class="m-nav__separator">-</li>
                 <li class="m-nav__item">
                     <a href="" class="m-nav__link">
-                        <span class="m-nav__link-text">Sewa</span>
+                        <span class="m-nav__link-text">Inventori</span>
                     </a>
                 </li>
             </ul>
@@ -27,7 +27,7 @@
         <div class="m-portlet__head-caption">
             <div class="m-portlet__head-title">
                 <h3 class="m-portlet__head-text">
-                    Manage Data Sewa<p id="hax"></p>
+                    Manage Data Inventori<p id="hax"></p>
                 </h3>
             </div>
         </div>
@@ -111,41 +111,37 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" name="sewa_id" value="">
+                    <input type="hidden" name="inventori_id" value="">
                     <div class="form-group m-form__group row" >
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Tanggal Sewa <font class="m--font-danger">*</font>
+                            Nama Barang <font class="m--font-danger">*</font>
                         </label>
-                            <div class="col-md-4">
-                            <input type="date" id="meeting-time" class="form-control m-input" name="tgl_sewa"/>
+                            <div class="col-md-6">
+                            <input type="text" name="nama_barang" required class="form-control m-input" placeholder="Nama Barang"/>
                         </div>
                     </div>
                     <div class="form-group m-form__group row" >
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Tanggal Berakhir <font class="m--font-danger">*</font>
+                            Jumlah <font class="m--font-danger">*</font>
                         </label>
-                            <div class="col-md-4">
-                            <input type="date" id="meeting-time" class="form-control m-input" name="tgl_berakhir"/>
+                            <div class="col-md-6">
+                            <input type="number" name="jumlah" required class="form-control m-input" placeholder="Jumlah"/>
                         </div>
                     </div>
                     <div class="form-group m-form__group row">
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Harga <font class="m--font-danger">*</font>
+                            Harga Satuan <font class="m--font-danger">*</font>
                         </label>
                         <div class="col-md-6">
-                            <input type="number" name="harga" required class="form-control m-input" placeholder="Rp."/>
+                            <input type="number" name="harga_satuan" required class="form-control m-input" placeholder="No Hp"/>
                         </div>
                     </div>
-                    <div class="form-group m-form__group row spkadd">
+                    <div class="form-group m-form__group row" >
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Level <font class="m--font-danger">*</font>
+                            Tanggal Masuk <font class="m--font-danger">*</font>
                         </label>
-                        <div class="col-md-6">
-                            <select name="level" class="form-control m-input m-select2">
-                                <option value="">Pilih Level</option>
-                                <option value="premium">Premium</option>
-                                <option value="standart">Standar</option>
-                            </select>
+                            <div class="col-md-4">
+                            <input type="date" id="meeting-time" class="form-control m-input" name="tanggal_masuk"/>
                         </div>
                     </div>
                 </div>
@@ -173,7 +169,7 @@
                 type: 'remote', 
                 source: {
                     read: {
-                        url: "{{ route('sewa.data_list') }}", 
+                        url: "{{ route('inventori.data_list') }}", 
                         method: 'POST', 
                         headers: {
                             'X-CSRF-TOKEN': csrfToken 
@@ -210,19 +206,23 @@
                 sortable: false,
                 textAlign: 'center',
             }, {
-                field: "tgl_sewa",
-                title: "Tanggal Sewa"
+                field: "nama_barang",
+                title: "Nama Barang"
             }, {
-                field: "tgl_berakhir",
-                title: "Tanggal Berakhir"
+                field: "jumlah",
+                title: "Jumlah"
             }, {
-                field: "harga",
-                title: "Harga",
+                field: "harga_satuan",
+                title: "Harga Satuan",
                 width: 110,
                 textAlign: 'center'
             }, {
-                field: "level",
-                title: "Level",
+                field: "tanggal_masuk",
+                title: "Tanggal Masuk",
+                textAlign: 'center'
+            }, {
+                field: "total_bayar",
+                title: "Total Bayar",
                 textAlign: 'center'
             }, {
                 field: "actions",
@@ -242,16 +242,12 @@
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
-        $('[name="level"] :selected').removeAttr('selected');
-        $('.m-select2').select2({
-            width: '100%'
-        });
     }
 
     function add_ajax() {
         method = 'add';
         resetForm();
-        $('#exampleModalLongTitle').html("Tambah Sewa");
+        $('#exampleModalLongTitle').html("Tambah Inventori");
         $('.form-group').removeClass('has-error');
         $('.help-block').empty();
         $('#m_form_1_msg').hide();
@@ -262,15 +258,16 @@
         let url;
 
         if (method === 'add') {
-            url = "{{ route('sewa.store') }}";
+            url = "{{ route('inventori.store') }}";
         } else {
-            url = "{{ route('sewa.update') }}";
+            url = "{{ route('inventori.update') }}";
         }
 
         const formData = $('#formAdd').serialize();
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
         const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
-        if ($('[name="tgl_sewa"]').val() == "" || $('[name="tgl_berakhir"]').val() == "" || $('[name="harga"]').val() == "" || $('[name="level"]').val() == "") {
+
+        if ($('[name="nama_barang"]').val() == "" || $('[name="jumlah"]').val() == "" || $('[name="harga_satuan"]').val() == "" || $('[name="tanggal_masuk"]').val() == "") {
             $('#m_form_1_msg').show();
             mApp.unblock(".modal-content");
         } else {
@@ -302,20 +299,20 @@
         method = 'edit';
         resetForm(); 
 
-        $('#exampleModalLongTitle').html("Edit Sewa"); 
+        $('#exampleModalLongTitle').html("Edit Inventori"); 
 
         $.ajax({
-            url: "{{ url('sewa/edit') }}/" + id,
+            url: "{{ url('inventori/edit') }}/" + id,
             type: "GET",
             dataType: "JSON",
             success: function(data) {
                 if (data.data) {
                     $('#formAdd')[0].reset();
-                    $('[name="sewa_id"]').val(data.data.sewa_id);
-                    $('[name="tgl_sewa"]').val(data.data.tgl_sewa);
-                    $('[name="tgl_berakhir"]').val(data.data.tgl_berakhir);
-                    $('[name="harga"]').val(data.data.harga);
-                    $('[name="level"]').val(data.data.level); 
+                    $('[name="inventori_id"]').val(data.data.inventori_id);
+                    $('[name="nama_barang"]').val(data.data.nama_barang);
+                    $('[name="jumlah"]').val(data.data.jumlah);
+                    $('[name="harga_satuan"]').val(data.data.harga_satuan);
+                    $('[name="tanggal_masuk"]').val(data.data.tanggal_masuk); 
                     $('.m-select2').select2({width : '100%'});
                     $('#m_modal_6').modal('show'); 
                 } else {
@@ -350,7 +347,7 @@
                 });
 
                 $.ajax({
-                    url: "{{ url('sewa') }}/" + id, 
+                    url: "{{ url('inventori') }}/" + id, 
                     type: "DELETE", 
                     data: {
                         _token: '{{ csrf_token() }}' 

@@ -5,6 +5,7 @@ use App\Http\Controllers\SewaController;
 use App\Http\Controllers\HistoriSewaController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\GajiController;
+use App\Http\Controllers\InventoriController;
 
 
 /*
@@ -55,6 +56,16 @@ Route::prefix('gaji')->group(function () {
     Route::post('/update', [GajiController::class, 'update'])->name('gaji.update');
     Route::delete('/{id}', [GajiController::class, 'destroy'])->name('gaji.destroy');
     Route::post('/data_list', [GajiController::class, 'data_list'])->name('gaji.data_list');
+});
+
+// Inventori
+Route::prefix('inventori')->group(function () {
+    Route::get('/', [InventoriController::class, 'index'])->name('inventori.index');
+    Route::post('/store', [InventoriController::class, 'store'])->name('inventori.store');
+    Route::get('/edit/{id}', [InventoriController::class, 'edit'])->name('inventori.edit');
+    Route::post('/update', [InventoriController::class, 'update'])->name('inventori.update');
+    Route::delete('/{id}', [InventoriController::class, 'destroy'])->name('inventori.destroy');
+    Route::post('/data_list', [InventoriController::class, 'data_list'])->name('inventori.data_list');
 });
 
 
