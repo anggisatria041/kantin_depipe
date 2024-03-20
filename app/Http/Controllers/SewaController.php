@@ -33,7 +33,7 @@ class SewaController extends Controller
             'tgl_sewa' => 'required|date',
             'tgl_berakhir' => 'required|date',
             'harga' => 'required',
-            'status' => 'required',
+            'level' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -51,7 +51,8 @@ class SewaController extends Controller
         $data->tgl_sewa = $request->tgl_sewa;
         $data->tgl_berakhir = $request->tgl_berakhir;
         $data->harga = $request->harga;
-        $data->status = $request->status;
+        $data->level = $request->level;
+        $data->status = "1";
 
         if ($data->save()) {
             return response()->json([
@@ -96,7 +97,7 @@ class SewaController extends Controller
             'tgl_sewa' => 'required|date',
             'tgl_berakhir' => 'required|date',
             'harga' => 'required',
-            'status' => 'required',
+            'level' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -119,7 +120,7 @@ class SewaController extends Controller
         $data->tgl_sewa = $request->tgl_sewa;
         $data->tgl_berakhir = $request->tgl_berakhir;
         $data->harga = $request->harga;
-        $data->status = $request->status;
+        $data->level = $request->level;
         $updated = $data->save();
 
         if ($updated) {
@@ -149,7 +150,8 @@ class SewaController extends Controller
             ], 404);
         }
 
-        $data->delete();
+        $data->status = 2;
+        $updated = $data->save();
 
         return response()->json([
             'status' => true,
@@ -159,7 +161,7 @@ class SewaController extends Controller
     }
     public function data_list()
     {
-        $dt = Sewa::orderBy('tgl_sewa', 'desc')->get();
+        $dt = Sewa::where("status",1)->orderBy('tgl_sewa', 'desc')->get();
         $data = array();
         $start = 0;
         foreach ($dt as $key => $value) {
@@ -169,7 +171,7 @@ class SewaController extends Controller
             $td['tgl_sewa'] = $value->tgl_sewa ?? '-';
             $td['tgl_berakhir'] = $value->tgl_berakhir ?? '-';
             $td['harga'] = $value->harga ?? '-';
-            $td['status'] = $value->status ?? '-';
+            $td['level'] = $value->level ?? '-';
             $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->sewa_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                                 <i class="la la-edit"></i>
                             </a>

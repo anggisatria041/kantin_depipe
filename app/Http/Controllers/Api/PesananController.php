@@ -4,24 +4,23 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Menu;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Pesanan;
 
 
-class MenuController extends Controller
+class PesananController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data=Menu::all();
+        
+        $data=Pesanan::all();
 
         return response()->json([
             'status'=>true,
             'message'=>'Data ditemukan',
-            'data'=>$data,
+            'Data'=>$data,
         ], 200);
     }
 
@@ -38,14 +37,15 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        $data = new Menu;
+        $data = new Pesanan;
         
         $rules=[
-            'nama'=>'required',
-            'stok'=>'required',
-            'kategori'=>'required',
-            'harga'=>'required',
-            'deskripsi'=>'required',
+            'menu_id'=>'required',
+            'jumlah'=>'required',
+            'total'=>'required',
+            'no_meja'=>'required',
+            'status'=>'required',
+
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -56,15 +56,11 @@ class MenuController extends Controller
                 'data'=>$validator->errors()
             ]);
         }
-        $gambarPath = $request->file('gambar')->store('', 'public');
-
-        $data->tenant_id = Auth::user()->id;
-        $data->nama = $request->nama;
-        $data->stok = $request->stok;
-        $data->kategori = $request->kategori;
-        $data->gambar = $gambarPath;
-        $data->harga = $request->harga;
-        $data->deskripsi = $request->deskripsi;
+        $data->menu_id = $request->menu_id;
+        $data->jumlah = $request->jumlah;
+        $data->total = $request->total;
+        $data->no_meja = $request->no_meja;
+        $data->status = $request->status;
 
         $post = $data->save();
 
@@ -77,9 +73,9 @@ class MenuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $data=Menu::find($id);
+        $data=Pesanan::find($id);
         if($data){
 
             return response()->json([
@@ -102,15 +98,15 @@ class MenuController extends Controller
      */
     public function edit(string $id)
     {
-        
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $data = Menu::find($id);
+        $data = Pesanan::find($id);
 
         if(empty($data)){
             return response()->json([
@@ -119,11 +115,13 @@ class MenuController extends Controller
             ],404);
         }
         
-        $rules=[
-            'nama'=>'required',
-            'stok'=>'required',
-            'deskripsi'=>'required',
-            'harga'=>'required'
+       $rules=[
+            'menu_id'=>'required',
+            'jumlah'=>'required',
+            'total'=>'required',
+            'no_meja'=>'required',
+            'status'=>'required',
+
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -134,14 +132,12 @@ class MenuController extends Controller
                 'data'=>$validator->errors()
             ]);
         }
-        $gambarPath = $request->file('gambar')->store('', 'public');
         
-        $data->nama = $request->nama;
-        $data->stok = $request->stok;
-        $data->kategori = $request->kategori;
-        $data->gambar = isset($gambarPath)?$gambarPath:$request->gambar;
-        $data->harga = $request->harga;
-        $data->deskripsi = $request->deskripsi;
+        $data->menu_id = $request->menu_id;
+        $data->jumlah = $request->jumlah;
+        $data->total = $request->total;
+        $data->no_meja = $request->no_meja;
+        $data->status = $request->status;
 
         $post = $data->save();
 
@@ -154,9 +150,9 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $data = Menu::find($id);
+        $data = Pesanan::find($id);
 
         if(empty($data)){
             return response()->json([

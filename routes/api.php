@@ -24,6 +24,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Public Routes Menu
+Route::apiResource('kategori', KategoriController::class);
+
+// Public Routes Menu
 Route::get('menu', [MenuController::class, 'index']);
 Route::get('menu/{id}', [MenuController::class, 'show']);
 
@@ -37,7 +40,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Private Routes Menu
     Route::post('menu', [MenuController::class, 'store']);
-    Route::put('menu/{id}', [MenuController::class, 'update']);
+    Route::patch('menu/{id}', [MenuController::class, 'update']);
     Route::delete('menu/{id}', [MenuController::class, 'destroy']);
 });
 

@@ -138,13 +138,13 @@
                     </div>
                     <div class="form-group m-form__group row spkadd">
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Status <font class="m--font-danger">*</font>
+                            Level <font class="m--font-danger">*</font>
                         </label>
                         <div class="col-md-6">
-                            <select name="status" class="form-control m-input m-select2">
-                                <option value="">Pilih Status</option>
+                            <select name="level" class="form-control m-input m-select2">
+                                <option value="">Pilih Level</option>
                                 <option value="premium">Premium</option>
-                                <option value="standart">standart</option>
+                                <option value="standart">Standar</option>
                             </select>
                         </div>
                     </div>
@@ -221,8 +221,8 @@
                 width: 110,
                 textAlign: 'center'
             }, {
-                field: "status",
-                title: "Status",
+                field: "level",
+                title: "Level",
                 textAlign: 'center'
             }, {
                 field: "actions",
@@ -242,7 +242,7 @@
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
-        $('[name="status"] :selected').removeAttr('selected');
+        $('[name="level"] :selected').removeAttr('selected');
         $('.m-select2').select2({
             width: '100%'
         });
@@ -311,7 +311,7 @@
                     $('[name="tgl_sewa"]').val(data.data.tgl_sewa);
                     $('[name="tgl_berakhir"]').val(data.data.tgl_berakhir);
                     $('[name="harga"]').val(data.data.harga);
-                    $('[name="status"]').val(data.data.status); 
+                    $('[name="level"]').val(data.data.level); 
                     $('.m-select2').select2({width : '100%'});
                     $('#m_modal_6').modal('show'); 
                 } else {

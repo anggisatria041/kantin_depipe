@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SewaController;
+use App\Http\Controllers\HistoriSewaController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\GajiController;
 
@@ -28,6 +29,12 @@ Route::prefix('sewa')->group(function () {
     Route::post('/update', [SewaController::class, 'update'])->name('sewa.update');
     Route::delete('/{id}', [SewaController::class, 'destroy'])->name('sewa.destroy');
     Route::post('/data_list', [SewaController::class, 'data_list'])->name('sewa.data_list');
+});
+
+// Histori Sewa
+Route::prefix('histori_sewa')->group(function () {
+    Route::get('/', [HistoriSewaController::class, 'index'])->name('histori_sewa.index');
+    Route::post('/data_list', [HistoriSewaController::class, 'data_list'])->name('histori_sewa.data_list');
 });
 
 // Karyawan
