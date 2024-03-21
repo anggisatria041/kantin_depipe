@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -159,6 +160,57 @@ class UserController extends Controller
             'message'=>'Sukses Melakukan delete Data',
         ]);
     }
+    public function login(Request $request)
+    {
+        try {
+            $rules=[
+                'username' => 'required',
+                'password' => 'required'
+            ];
+            $validator=Validator::make($request->all(),$rules);
+
+            if($validator->fails()){
+                return response()->json([
+                    'status'=>false,
+                    'message'=>'Silahkan Lengkapi Data Anda',
+                    'data'=>$validator->errors()
+                ]);
+            }
+
+        $credentials= request(['username','password']);
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                    'status'=>false,
+                    'message'=>'Username atau Password anda Salah'
+                ],404);
+        }
+        // cek username
+            $user = User::where('username', $request->username)->first();
+            // cek password
+            if (!Hash::check($request->password, $user->password,[])) {
+                return response([
+                    'message' => 'Bad Credentials'
+                ], 401);
+            }
+            
+        
+            $token = $user->createToken('authtoken')->plainTextToken;
+            $response = [
+                'data' => [
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'user'=>$user
+                ]
+            ];
+            return response($response, 201);
+        } catch (Exception $error) {
+            return $this->errors([
+                'message' => 'Something went wrong',
+                'error' => $error
+            ], 'Login Failed');
+        }
+
+    } 
     public function logout()
     {
         $user = User::find(Auth::user()->id);
@@ -170,47 +222,10 @@ class UserController extends Controller
             'message' => 'Logged out'
         ];
     }
-    public function login(Request $request)
+    public function auth()
     {
-        $rules=[
-            'username' => 'required',
-            'password' => 'required'
+        return [
+            'message' => 'Anda belum memiliki akses'
         ];
-        $validator=Validator::make($request->all(),$rules);
-
-        if($validator->fails()){
-            return response()->json([
-                'status'=>false,
-                'message'=>'Silahkan Lengkapi Data Anda',
-                'data'=>$validator->errors()
-            ]);
-        }
-
-      $credentials= request(['username','password']);
-      if (!Auth::attempt($credentials)) {
-        return response()->json([
-                'status'=>false,
-                'message'=>'Data tidak sesuai'
-            ],404);
-      }
-      // cek username
-        $user = User::where('username', $request->username)->first();
-        // cek password
-        if (!Hash::check($request->password, $user->password,[])) {
-            return response([
-                'message' => 'Bad Credentials'
-            ], 401);
-        }
-        
-    
-        $token = $user->createToken('authtoken')->plainTextToken;
-        $response = [
-            'data' => [
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user'=>$user
-            ]
-        ];
-        return response($response, 201);
     }
 }

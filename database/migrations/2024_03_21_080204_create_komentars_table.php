@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pesanan', function (Blueprint $table) {
-            $table->bigIncrements('pesanan_id');
+        Schema::create('komentar', function (Blueprint $table) {
+            $table->bigIncrements('komentar_id');
             $table->integer('menu_id');
-            $table->string('jumlah');
-            $table->integer('total');
-            $table->integer('no_meja');
-            $table->string('status');
+            $table->text('komentar');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pesanan');
+        Schema::dropIfExists('komentar');
     }
 };

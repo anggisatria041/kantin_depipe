@@ -4,19 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Pesanan;
+use App\Models\Komentar;
 use Illuminate\Support\Facades\Validator;
 
-
-class PesananController extends Controller
+class KomentarController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
-        $data=Pesanan::all();
+         $data=Komentar::all();
 
         return response()->json([
             'status'=>true,
@@ -38,15 +36,10 @@ class PesananController extends Controller
      */
     public function store(Request $request)
     {
-        $data = new Pesanan;
+        $data = new Komentar;
         
         $rules=[
-            'menu_id'=>'required',
-            'jumlah'=>'required',
-            'total'=>'required',
-            'no_meja'=>'required',
-            'status'=>'required',
-
+            'komentar'=>'required'
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -58,10 +51,7 @@ class PesananController extends Controller
             ]);
         }
         $data->menu_id = $request->menu_id;
-        $data->jumlah = $request->jumlah;
-        $data->total = $request->total;
-        $data->no_meja = $request->no_meja;
-        $data->status = $request->status;
+        $data->komentar = $request->komentar;
 
         $post = $data->save();
 
@@ -76,13 +66,13 @@ class PesananController extends Controller
      */
     public function show(string $id)
     {
-        $data=Pesanan::find($id);
+        $data=Komentar::find($id);
         if($data){
 
             return response()->json([
                 'status'=>true,
                 'message'=>'Data ditemukan',
-                'Data'=>$data,
+                'data'=>$data,
             ], 200);
          
         } else{
@@ -107,7 +97,7 @@ class PesananController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = Pesanan::find($id);
+        $data = Komentar::find($id);
 
         if(empty($data)){
             return response()->json([
@@ -116,13 +106,8 @@ class PesananController extends Controller
             ],404);
         }
         
-       $rules=[
-            'menu_id'=>'required',
-            'jumlah'=>'required',
-            'total'=>'required',
-            'no_meja'=>'required',
-            'status'=>'required',
-
+        $rules=[
+            'komentar'=>'required'
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -135,10 +120,7 @@ class PesananController extends Controller
         }
         
         $data->menu_id = $request->menu_id;
-        $data->jumlah = $request->jumlah;
-        $data->total = $request->total;
-        $data->no_meja = $request->no_meja;
-        $data->status = $request->status;
+        $data->komentar = $request->komentar;
 
         $post = $data->save();
 
@@ -153,7 +135,7 @@ class PesananController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Pesanan::find($id);
+        $data = Komentar::find($id);
 
         if(empty($data)){
             return response()->json([
