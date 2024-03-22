@@ -7,6 +7,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\InventoriController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthController;
 
 
 /*
@@ -21,7 +22,7 @@ use App\Http\Controllers\DashboardController;
 */
 
 Route::get('/', function () {
-    return view('page.dashboard');
+    return view('page.login');
 });
 
 //Dashboard
@@ -73,6 +74,10 @@ Route::prefix('inventori')->group(function () {
     Route::post('/data_list', [InventoriController::class, 'data_list'])->name('inventori.data_list');
 });
 
+//Auth
+Route::post('/postlogin', [AuthController::class, 'postlogin']);
+Route::get('/logout', [AuthController::class, 'logout']);
+Route::get('/portal', [AuthController::class, 'login']);
 
 
 
