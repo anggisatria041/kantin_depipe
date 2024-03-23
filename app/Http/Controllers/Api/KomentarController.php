@@ -18,7 +18,7 @@ class KomentarController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Data ditemukan',
+            'message'=>'Data Berhasil Ditemukan',
             'data'=>$data,
         ], 200);
     }
@@ -46,7 +46,7 @@ class KomentarController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'=>false,
-                'message'=>'Gagal memasukkan data',
+                'message'=>'Gagal Menambahkan Data',
                 'data'=>$validator->errors()
             ]);
         }
@@ -57,7 +57,7 @@ class KomentarController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Memasukkan Data',
+            'message'=>'Berhasil Menambahkan Data',
         ]);
     }
 
@@ -71,7 +71,7 @@ class KomentarController extends Controller
 
             return response()->json([
                 'status'=>true,
-                'message'=>'Data ditemukan',
+                'message'=>'Data Berhasil Ditemukan',
                 'data'=>$data,
             ], 200);
          
@@ -79,7 +79,7 @@ class KomentarController extends Controller
              
             return response()->json([
                 'status'=>false,
-                'message'=>'Data tidak ditemukan',
+                'message'=>'Data Gagal Ditemukan',
             ]);
         }
     }
@@ -102,7 +102,7 @@ class KomentarController extends Controller
         if(empty($data)){
             return response()->json([
                 'status'=>false,
-                'message'=>'Data gagal ditemukan'
+                'message'=>'Data Gagal Ditemukan'
             ],404);
         }
         
@@ -114,7 +114,7 @@ class KomentarController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'=>false,
-                'message'=>'Gagal melakukan update data',
+                'message'=>'Gagal Melakukan Update Data',
                 'data'=>$validator->errors()
             ]);
         }
@@ -126,7 +126,7 @@ class KomentarController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Melakukan update Data',
+            'message'=>'Berhasil Melakukan Update Data',
         ]);
     }
 
@@ -140,7 +140,7 @@ class KomentarController extends Controller
         if(empty($data)){
             return response()->json([
                 'status'=>false,
-                'message'=>'Data gagal ditemukan'
+                'message'=>'Data Gagal Ditemukan'
             ],404);
         }
 
@@ -148,7 +148,7 @@ class KomentarController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Melakukan delete Data',
+            'message'=>'Berhasil Melakukan Delete Data',
         ]);
     }
 }

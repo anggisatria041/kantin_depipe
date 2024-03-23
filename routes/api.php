@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Private Routes Menu
     Route::post('menu', [MenuController::class, 'store']);
-    Route::patch('menu/{id}', [MenuController::class, 'update']);
+    Route::put('menu/{id}', [MenuController::class, 'update']);
     Route::delete('menu/{id}', [MenuController::class, 'destroy']);
 });
 

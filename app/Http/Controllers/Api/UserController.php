@@ -22,7 +22,7 @@ class UserController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Data ditemukan',
+            'message'=>'Data Berhasil Ditemukan',
             'data'=>$data,
         ], 200);
     }
@@ -53,7 +53,7 @@ class UserController extends Controller
         ]);
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Memasukkan Data',
+            'message'=>'Berhasil Menambahkan Data',
         ]);
 
     }
@@ -67,7 +67,7 @@ class UserController extends Controller
         if($data){
             return response()->json([
                 'status'=>true,
-                'message'=>'Data ditemukan',
+                'message'=>'Data Berhasil Ditemukan',
                 'data'=>$data,
             ], 200);
          
@@ -75,7 +75,7 @@ class UserController extends Controller
              
             return response()->json([
                 'status'=>false,
-                'message'=>'Data tidak ditemukan',
+                'message'=>'Data Gagal Ditemukan',
             ]);
         }
     }
@@ -98,7 +98,7 @@ class UserController extends Controller
         if(empty($data)){
             return response()->json([
                 'status'=>false,
-                'message'=>'Data gagal ditemukan'
+                'message'=>'Data Gagal Ditemukan'
             ],404);
         }
         
@@ -117,7 +117,7 @@ class UserController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'=>false,
-                'message'=>'Gagal melakukan update data',
+                'message'=>'Gagal Melakukan Update Data',
                 'data'=>$validator->errors()
             ]);
         }
@@ -135,7 +135,7 @@ class UserController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Melakukan update Data',
+            'message'=>'Berhasil Melakukan Update Data',
         ]);
     }
 
@@ -149,7 +149,7 @@ class UserController extends Controller
         if(empty($data)){
             return response()->json([
                 'status'=>false,
-                'message'=>'Data gagal ditemukan'
+                'message'=>'Data Gagal Ditemukan'
             ],404);
         }
 
@@ -157,7 +157,7 @@ class UserController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Melakukan delete Data',
+            'message'=>'Berhasil Melakukan Delete Data',
         ]);
     }
     public function login(Request $request)
@@ -216,8 +216,6 @@ class UserController extends Controller
         $user = User::find(Auth::user()->id);
         $user->tokens()->delete();
 
-        // auth()->user()->tokens()->delete();
-
         return [
             'message' => 'Logged out'
         ];
@@ -225,6 +223,7 @@ class UserController extends Controller
     public function auth()
     {
         return [
+            'status'=>false,
             'message' => 'Anda belum memiliki akses'
         ];
     }

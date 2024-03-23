@@ -20,7 +20,7 @@ class PesananController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Data ditemukan',
+            'message'=>'Data Berhasil Ditemukan',
             'data'=>$data,
         ], 200);
     }
@@ -53,7 +53,7 @@ class PesananController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'=>false,
-                'message'=>'Gagal memasukkan data',
+                'message'=>'Gagal Menambahkan Data',
                 'data'=>$validator->errors()
             ]);
         }
@@ -67,7 +67,7 @@ class PesananController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Memasukkan Data',
+            'message'=>'Berhasil Menambahkan Data',
         ]);
     }
 
@@ -81,15 +81,15 @@ class PesananController extends Controller
 
             return response()->json([
                 'status'=>true,
-                'message'=>'Data ditemukan',
-                'Data'=>$data,
+                'message'=>'Data Berhasil Ditemukan',
+                'data'=>$data,
             ], 200);
          
         } else{
              
             return response()->json([
                 'status'=>false,
-                'message'=>'Data tidak ditemukan',
+                'message'=>'Data Gagal Ditemukan',
             ]);
         }
     }
@@ -112,7 +112,7 @@ class PesananController extends Controller
         if(empty($data)){
             return response()->json([
                 'status'=>false,
-                'message'=>'Data gagal ditemukan'
+                'message'=>'Data Gagal Ditemukan'
             ],404);
         }
         
@@ -129,7 +129,7 @@ class PesananController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status'=>false,
-                'message'=>'Gagal melakukan update data',
+                'message'=>'Gagal Melakukan Update Data',
                 'data'=>$validator->errors()
             ]);
         }
@@ -144,7 +144,7 @@ class PesananController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Melakukan update Data',
+            'message'=>'Berhasil Melakukan Update Data',
         ]);
     }
 
@@ -158,7 +158,7 @@ class PesananController extends Controller
         if(empty($data)){
             return response()->json([
                 'status'=>false,
-                'message'=>'Data gagal ditemukan'
+                'message'=>'Data Gagal Ditemukan'
             ],404);
         }
 
@@ -166,7 +166,7 @@ class PesananController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Sukses Melakukan delete Data',
+            'message'=>'Berhasil Melakukan Delete Data',
         ]);
     }
 }
