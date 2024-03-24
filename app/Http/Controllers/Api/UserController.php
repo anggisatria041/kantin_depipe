@@ -184,7 +184,7 @@ class UserController extends Controller
                     'message'=>'Username atau Password anda Salah'
                 ],404);
         }
-        // cek username
+            // cek username
             $user = User::where('username', $request->username)->first();
             // cek password
             if (!Hash::check($request->password, $user->password,[])) {

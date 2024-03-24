@@ -45,7 +45,8 @@ class MenuController extends Controller
             'stok'=>'required',
             'kategori'=>'required',
             'harga'=>'required',
-            'deskripsi'=>'required'
+            'deskripsi'=>'required',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ];
         $validator=Validator::make($request->all(),$rules);
 
