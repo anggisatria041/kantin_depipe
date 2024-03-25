@@ -6,6 +6,7 @@ use App\Http\Controllers\HistoriSewaController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\InventoriController;
+use App\Http\Controllers\TenantController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 
@@ -74,7 +75,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/data_list', [InventoriController::class, 'data_list'])->name('inventori.data_list');
     });
 
+    // Tenant
+    Route::prefix('tenant')->group(function () {
+        Route::get('/', [TenantController::class, 'index'])->name('tenant.index');
+        Route::post('/store', [TenantController::class, 'store'])->name('tenant.store');
+        Route::get('/edit/{id}', [TenantController::class, 'edit'])->name('tenant.edit');
+        Route::post('/update', [TenantController::class, 'update'])->name('tenant.update');
+        Route::delete('/{id}', [TenantController::class, 'destroy'])->name('tenant.destroy');
+        Route::post('/data_list', [TenantController::class, 'data_list'])->name('tenant.data_list');
+    });
 
+    //Auth
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 Route::post('/postlogin', [AuthController::class, 'postlogin']);

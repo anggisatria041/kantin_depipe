@@ -51,7 +51,7 @@
             <i class="m-menu__section-icon flaticon-more-v2"></i>
         </li>
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
-            <a href="javascript:;" class="m-menu__link m-menu__toggle">
+            <a href="{{route('tenant.index')}}" class="m-menu__link m-menu__toggle">
                 <i class="m-menu__link-icon flaticon-interface-7"></i>
                 <span class="m-menu__link-text">Tenant</span>
             </a>
