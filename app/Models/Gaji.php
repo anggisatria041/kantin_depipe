@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gaji extends Model
 {
+    protected $connection = 'mysql';
     protected $table='gaji';
     protected $fillable=["karyawan_id","jumlah","tanggal","status"];
     protected $primaryKey = 'gaji_id';

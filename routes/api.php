@@ -36,7 +36,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // End Resource
 
 // Public Routes Menu
-// Route::get('menu', [MenuController::class, 'index']);
 Route::get('menu/{id}', [MenuController::class, 'show']);
 
 // Public Routes User

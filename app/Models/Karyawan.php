@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Karyawan extends Model
 {
+    protected $connection = 'mysql';
     protected $table='karyawan';
     protected $fillable=["nama","no_hp","alamat","divisi"];
     protected $primaryKey = 'karyawan_id';

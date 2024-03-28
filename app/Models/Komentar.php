@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Komentar extends Model
 {
     use HasFactory;
+    protected $connection = 'mysql';
     protected $table='komentar';
     protected $fillable=["menu_id","komentar"];
     protected $primaryKey = 'komentar_id';

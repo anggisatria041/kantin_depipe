@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sewa extends Model
 {
     use HasFactory;
+    protected $connection = 'mysql';
     protected $table='sewa';
     protected $fillable=["tenant_id","tgl_sewa","tgl_berakhir","harga","level","status"];
     protected $primaryKey = 'sewa_id';
