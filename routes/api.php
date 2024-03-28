@@ -36,7 +36,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // End Resource
 
 // Public Routes Menu
-Route::get('menu', [MenuController::class, 'index']);
+// Route::get('menu', [MenuController::class, 'index']);
 Route::get('menu/{id}', [MenuController::class, 'show']);
 
 // Public Routes User
@@ -47,8 +47,10 @@ Route::get('auth', [UserController::class, 'auth'])->name('auth');
 // Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [UserController::class, 'logout']);
+    Route::get('user', [UserController::class, 'show']);
 
     // Private Routes Menu
+    Route::get('menu', [MenuController::class, 'index']);
     Route::post('menu', [MenuController::class, 'store']);
     Route::put('menu/{id}', [MenuController::class, 'update']);
     Route::delete('menu/{id}', [MenuController::class, 'destroy']);

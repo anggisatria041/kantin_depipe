@@ -58,6 +58,7 @@ class KomentarController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
+            'data'=>$data,
         ]);
     }
 
@@ -67,6 +68,7 @@ class KomentarController extends Controller
     public function show(string $id)
     {
         $data=Komentar::find($id);
+
         if($data){
 
             return response()->json([
@@ -127,6 +129,7 @@ class KomentarController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Melakukan Update Data',
+            'data'=>$data,
         ]);
     }
 

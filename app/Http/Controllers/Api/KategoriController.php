@@ -57,6 +57,7 @@ class KategoriController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
+            'data'=>$data,
         ]);
     }
 
@@ -72,7 +73,7 @@ class KategoriController extends Controller
             return response()->json([
                 'status'=>true,
                 'message'=>'Data Berhasil Ditemukan',
-                'Data'=>$data,
+                'data'=>$data,
             ], 200);
          
         } else{
@@ -126,6 +127,7 @@ class KategoriController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Melakukan Update Data',
+            'data'=>$data,
         ]);
     }
 

@@ -61,9 +61,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        $data=User::find($id);
+        $data=Auth::user();
         if($data){
             return response()->json([
                 'status'=>true,
@@ -72,7 +72,6 @@ class UserController extends Controller
             ], 200);
          
         } else{
-             
             return response()->json([
                 'status'=>false,
                 'message'=>'Data Gagal Ditemukan',
@@ -196,6 +195,8 @@ class UserController extends Controller
         
             $token = $user->createToken('authtoken')->plainTextToken;
             $response = [
+                'status' => true,
+                'message' => 'Berhasil Login',
                 'data' => [
                     'access_token' => $token,
                     'token_type' => 'Bearer',
@@ -217,7 +218,8 @@ class UserController extends Controller
         $user->tokens()->delete();
 
         return [
-            'message' => 'Logged out'
+            'status'=>true,
+            'message' => 'Berhasil Logout'
         ];
     }
     public function auth()

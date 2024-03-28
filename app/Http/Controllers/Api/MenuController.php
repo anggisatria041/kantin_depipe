@@ -14,9 +14,17 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data=Menu::all();
+        $id = Auth::user()->id;
+        $kategori = $request->kategori;
+        if($kategori){
+            $data = Menu::where('kategori', $kategori)
+                    ->where('tenant_id', $id)
+                    ->get();
+        } else {
+            $data = Menu::where('tenant_id', $id)->get();
+        }
 
         return response()->json([
             'status'=>true,
@@ -72,6 +80,7 @@ class MenuController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
+            'data'=>$data,
         ]);
     }
 
@@ -86,7 +95,7 @@ class MenuController extends Controller
             return response()->json([
                 'status'=>true,
                 'message'=>'Data Berhasil Ditemukan',
-                'Data'=>$data,
+                'data'=>$data,
             ], 200);
          
         } else{
@@ -149,6 +158,7 @@ class MenuController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Melakukan Update Data',
+            'data'=>$data,
         ]);
     }
 
