@@ -65,13 +65,18 @@ class MenuController extends Controller
                 'data'=>$validator->errors()
             ]);
         }
-        $gambarPath = $request->file('gambar')->store('', 'public');
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')->store('', 'public'); 
+            $gambar = $gambarPath;
+        } else {
+            $gambar = null;
+        }
 
         $data->tenant_id = Auth::user()->id;
         $data->nama = $request->nama;
         $data->stok = $request->stok;
         $data->kategori = $request->kategori;
-        $data->gambar = $gambarPath;
+        $data->gambar = $gambar;
         $data->harga = $request->harga;
         $data->deskripsi = $request->deskripsi;
 
@@ -144,12 +149,16 @@ class MenuController extends Controller
                 'data'=>$validator->errors()
             ]);
         }
-        $gambarPath = $request->file('gambar')->store('', 'public');
-        
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')->store('', 'public'); 
+            $gambar = $gambarPath;
+            $data->update([
+                'gambar' => $gambar
+            ]);
+        }
         $data->nama = $request->nama;
         $data->stok = $request->stok;
         $data->kategori = $request->kategori;
-        $data->gambar = isset($gambarPath)?$gambarPath:$request->gambar;
         $data->harga = $request->harga;
         $data->deskripsi = $request->deskripsi;
 

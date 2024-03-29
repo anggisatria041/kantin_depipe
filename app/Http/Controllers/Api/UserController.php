@@ -40,20 +40,49 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
-        $user = User::create([
-            'nama' => $request->nama,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->input('password')),
-            'alamat' => $request->alamat,
-            'no_hp' => $request->no_hp,
-            'nik' => $request->nik,
-            'logo' => $request->logo,
-            'role' => $request->role
-        ]);
+        $data = new User;
+        
+        $rules=[
+            'nama'=>'required',
+            'username'=>'required',
+            'email'=>'required|email',
+            'password'=>'required',
+            'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'alamat'=>'required',
+            'no_hp'=>'required',
+            'nik'=>'required'
+        ];
+        $validator=Validator::make($request->all(),$rules);
+
+        if($validator->fails()){
+            return response()->json([
+                'status'=>false,
+                'message'=>'Gagal Menambahkan Data',
+                'data'=>$validator->errors()
+            ]);
+        }
+        if ($request->hasFile('logo')) {
+            $gambarPath = $request->file('logo')->store('', 'public'); 
+            $logo = $gambarPath;
+        } else {
+            $logo = null;
+        }
+        $data->nama = $request->nama;
+        $data->username = $request->username;
+        $data->email = $request->email;
+        $data->password = Hash::make($request->input('password'));
+        $data->logo = $logo;
+        $data->alamat = $request->alamat;
+        $data->no_hp = $request->no_hp;
+        $data->nik = $request->nik;
+        $data->role = 'tenant';
+
+        $post = $data->save();
+
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
+            'data'=>$data,
         ]);
 
     }
@@ -120,12 +149,17 @@ class UserController extends Controller
                 'data'=>$validator->errors()
             ]);
         }
-        
+        if ($request->hasFile('logo')) {
+            $gambarPath = $request->file('logo')->store('', 'public'); 
+            $logo = $gambarPath;
+            $data->update([
+                'logo' => $logo
+            ]);
+        }
         $data->nama = $request->nama;
         $data->username = $request->username;
         $data->email = $request->email;
         $data->password = Hash::make($request->input('password'));
-        $data->logo = $request->logo;
         $data->alamat = $request->alamat;
         $data->no_hp = $request->no_hp;
         $data->nik = $request->nik;

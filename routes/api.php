@@ -45,7 +45,7 @@ Route::get('auth', [UserController::class, 'auth'])->name('auth');
 
 // Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('logout', [UserController::class, 'logout']);
+    Route::get('logout', [UserController::class, 'logout']);
     Route::get('user', [UserController::class, 'show']);
 
     // Private Routes Menu
