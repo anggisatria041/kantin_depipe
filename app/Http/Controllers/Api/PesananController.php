@@ -55,7 +55,7 @@ class PesananController extends Controller
                 'status'=>false,
                 'message'=>'Gagal Menambahkan Data',
                 'data'=>$validator->errors()
-            ]);
+            ], 500);
         }
         $data->menu_id = $request->menu_id;
         $data->jumlah = $request->jumlah;
@@ -68,7 +68,7 @@ class PesananController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
-        ]);
+        ],200);
     }
 
     /**
@@ -90,7 +90,7 @@ class PesananController extends Controller
             return response()->json([
                 'status'=>false,
                 'message'=>'Data Gagal Ditemukan',
-            ]);
+            ], 404);
         }
     }
 
@@ -131,7 +131,7 @@ class PesananController extends Controller
                 'status'=>false,
                 'message'=>'Gagal Melakukan Update Data',
                 'data'=>$validator->errors()
-            ]);
+            ],500);
         }
         
         $data->menu_id = $request->menu_id;
@@ -145,7 +145,8 @@ class PesananController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Melakukan Update Data',
-        ]);
+            'data'=>$data,
+        ],200);
     }
 
     /**
@@ -167,6 +168,6 @@ class PesananController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Melakukan Delete Data',
-        ]);
+        ], 200);
     }
 }

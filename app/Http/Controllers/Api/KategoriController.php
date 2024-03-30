@@ -48,7 +48,7 @@ class KategoriController extends Controller
                 'status'=>false,
                 'message'=>'Gagal Menambahkan Data',
                 'data'=>$validator->errors()
-            ]);
+            ],500);
         }
         $data->nama_kategori = $request->nama_kategori;
 
@@ -58,7 +58,7 @@ class KategoriController extends Controller
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
             'data'=>$data,
-        ]);
+        ],200);
     }
 
     /**
@@ -81,7 +81,7 @@ class KategoriController extends Controller
             return response()->json([
                 'status'=>false,
                 'message'=>'Data Gagal Ditemukan',
-            ]);
+            ],404);
         }
     }
 
@@ -117,7 +117,7 @@ class KategoriController extends Controller
                 'status'=>false,
                 'message'=>'Gagal Melakukan Update Data',
                 'data'=>$validator->errors()
-            ]);
+            ],400);
         }
         
         $data->nama_kategori = $request->nama_kategori;
@@ -128,7 +128,7 @@ class KategoriController extends Controller
             'status'=>true,
             'message'=>'Berhasil Melakukan Update Data',
             'data'=>$data,
-        ]);
+        ],200);
     }
 
     /**
@@ -150,6 +150,6 @@ class KategoriController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Sukses Melakukan Delete Data',
-        ]);
+        ],200);
     }
 }

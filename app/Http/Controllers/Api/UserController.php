@@ -59,7 +59,7 @@ class UserController extends Controller
                 'status'=>false,
                 'message'=>'Gagal Menambahkan Data',
                 'data'=>$validator->errors()
-            ]);
+            ], 500);
         }
         if ($request->hasFile('logo')) {
             $gambarPath = $request->file('logo')->store('', 'public'); 
@@ -83,7 +83,7 @@ class UserController extends Controller
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
             'data'=>$data,
-        ]);
+        ], 200);
 
     }
 
@@ -104,7 +104,7 @@ class UserController extends Controller
             return response()->json([
                 'status'=>false,
                 'message'=>'Data Gagal Ditemukan',
-            ]);
+            ], 404);
         }
     }
 
@@ -147,7 +147,7 @@ class UserController extends Controller
                 'status'=>false,
                 'message'=>'Gagal Melakukan Update Data',
                 'data'=>$validator->errors()
-            ]);
+            ], 500);
         }
         if ($request->hasFile('logo')) {
             $gambarPath = $request->file('logo')->store('', 'public'); 
@@ -169,7 +169,7 @@ class UserController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Melakukan Update Data',
-        ]);
+        ], 200);
     }
 
     /**
@@ -191,7 +191,7 @@ class UserController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Melakukan Delete Data',
-        ]);
+        ], 200);
     }
     public function login(Request $request)
     {
@@ -207,7 +207,7 @@ class UserController extends Controller
                     'status'=>false,
                     'message'=>'Silahkan Lengkapi Data Anda',
                     'data'=>$validator->errors()
-                ]);
+                ], 500);
             }
 
         $credentials= request(['username','password']);
@@ -251,16 +251,16 @@ class UserController extends Controller
         $user = User::find(Auth::user()->id);
         $user->tokens()->delete();
 
-        return [
+        return response([
             'status'=>true,
-            'message' => 'Berhasil Logout'
-        ];
+            'message' => 'Anda Berhasil Logout'
+        ], 200);
     }
     public function auth()
     {
-        return [
+        return response([
             'status'=>false,
             'message' => 'Anda belum memiliki akses'
-        ];
+        ], 401);
     }
 }
