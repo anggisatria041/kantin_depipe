@@ -7,6 +7,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\GajiController;
 use App\Http\Controllers\InventoriController;
 use App\Http\Controllers\TenantController;
+use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 
@@ -83,6 +84,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/update', [TenantController::class, 'update'])->name('tenant.update');
         Route::delete('/{id}', [TenantController::class, 'destroy'])->name('tenant.destroy');
         Route::post('/data_list', [TenantController::class, 'data_list'])->name('tenant.data_list');
+    });
+
+    // Barcode
+    Route::prefix('barcode')->group(function () {
+        Route::get('/', [BarcodeController::class, 'index'])->name('barcode.index');
+        Route::post('/store', [BarcodeController::class, 'store'])->name('barcode.store');
+        Route::get('/edit/{id}', [BarcodeController::class, 'edit'])->name('barcode.edit');
+        Route::post('/update', [BarcodeController::class, 'update'])->name('barcode.update');
+        Route::delete('/{id}', [BarcodeController::class, 'destroy'])->name('barcode.destroy');
+        Route::post('/data_list', [BarcodeController::class, 'data_list'])->name('barcode.data_list');
     });
 
     //Auth
