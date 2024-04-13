@@ -38,46 +38,39 @@
         </div>
     </div>
     <div class="m-portlet__body">
-        <!--begin: Search Form -->
-        <div class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
-            <div class="row align-items-center">
-                <div class="col-xl-8 order-2 order-xl-1">
-                    <div class="form-group m-form__group row align-items-center">
-                        <div class="col-md-4">
-                            <div class="m-form__group m-form__group--inline">
-                                <div class="m-form__label">
-                                    <label>Status:</label>
-                                </div>
-                                <div class="m-form__control">
-                                    <select class="form-control m-bootstrap-select" id="m_form_status">
-                                        <option value="">All</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="Request">Request</option>
-                                        <option value="Canceled">Canceled</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="d-md-none m--margin-bottom-10"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="m-input-icon m-input-icon--left">
-                                <input type="text" class="form-control m-input" placeholder="Search..." id="generalSearch">
-                                <span class="m-input-icon__icon m-input-icon__icon--left">
-                                    <span>
-                                        <i class="la la-search"></i>
-                                    </span>
-                                </span>
+        <table class="table table-striped- table-bordered table-hover table-checkable" id="m_table_1">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Meja</th>
+                    <th>Barcode</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $no = 1;
+                @endphp
+                @foreach($data as $row)
+                <tr>
+                    <td>{{ $no++ }}</td>
+                    <td>{{ $row->no_meja }}</td>
+                    <td>{!! QrCode::size(50)->generate($row->barcode) !!}</td>
+                    <td><div class="dropdown">
+                            <a href="#" class="btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" data-toggle="dropdown">
+                                <i class="la la-gear"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="edit({{ $row->barcode_id }})"><i class="la la-edit"></i> Edit</a>
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="hapus({{ $row->barcode_id }})"><i class="la la-trash-o"></i> Hapus</a>
+                                <a class="dropdown-item" href="#"><i class="la la-download"></i> Download</a>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        <!--end: Search Form -->
-
-        <!--begin: Datatable -->
-        <div class="m_datatable"></div>
+                    </td>
+                </tr>
+                @endforeach
+            <tbody>
+        </table>
         <!--end: Datatable -->
     </div>
 </div>
@@ -138,77 +131,6 @@
 <!-- end form -->
 <script type="text/javascript">
     var method;
-    window.addEventListener('DOMContentLoaded', (event) => {
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-        var tableData = $('.m_datatable').mDatatable({
-            data: {
-                type: 'remote', 
-                source: {
-                    read: {
-                        url: "{{ route('barcode.data_list') }}", 
-                        method: 'POST', 
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken 
-                        },
-                        dataType: 'json' 
-                    }
-                },
-                pageSize: 10, 
-                serverPaging: true 
-            },
-
-            layout: {
-                theme: 'default', 
-                class: '', 
-                scroll: false, 
-                footer: false 
-            },
-
-            sortable: false,
-
-            pagination: true,
-
-            search: {
-                input: $('#generalSearch')
-            },
-            order: [
-                [0, 'desc'] 
-            ],
-
-            columns: [{
-                field: "no",
-                title: "No",
-                width: 50,
-                sortable: false,
-                textAlign: 'center',
-            }, {
-                field: "no_meja",
-                title: "No Meja"
-            }, {
-                field: "barcode",
-                title: "Barcode",
-                width: 150,
-                sortable: false,
-                textAlign: 'center',
-                template: function(row) {
-                    return row.barcode;
-                }
-                
-            }, {
-                field: "actions",
-                width: 110,
-                title: "Actions",
-                sortable: false,
-                overflow: 'visible'
-            }]
-            });
-
-            $('#m_form_status').on('change', function () {
-                tableData.search($(this).val(), 'status');
-            });
-
-            $('#m_form_status').selectpicker();
-    });
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
@@ -248,8 +170,9 @@
                 success: function(data) {
                     if (data.status) {
                         $('#m_modal_6').modal('hide');
-                        swal("Berhasil..", "Data Anda berhasil disimpan", "success");
-                        $('.m_datatable').mDatatable().reload();
+                        swal("Berhasil..", "Data Anda berhasil disimpan", "success").then(function() {
+                            location.reload();
+                        });
                     } else {
                         swal({
                             text: data.message,
@@ -321,7 +244,9 @@
                     success: function(data) {
                         if (data.status == true) {
                             swal("Berhasil..", "Data Anda berhasil dihapus", "success");
-                            $('.m_datatable').mDatatable().reload();
+                            swal("Berhasil..", "Data Anda berhasil disimpan", "success").then(function() {
+                                location.reload();
+                            });
                         } else {
                             swal("Oops", "Data gagal dihapus!", "error");
                         }

@@ -15,7 +15,8 @@ class BarcodeController extends Controller
      */
     public function index()
     {
-        return view('page.barcode');
+        $data = Barcode::orderBy('barcode_id', 'desc')->get();
+        return view('page.barcode',compact('data'));
     }
 
     /**
