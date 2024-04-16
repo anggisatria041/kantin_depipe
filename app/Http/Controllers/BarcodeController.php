@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Barcode;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Validator;
+use PDF;
 
 
 class BarcodeController extends Controller
@@ -146,25 +147,10 @@ class BarcodeController extends Controller
             'message' => 'Sukses Melakukan delete Data',
         ]);
     }
-    public function data_list()
+    public function cetak(Request $request)
     {
-        $dt = Barcode::orderBy('barcode_id', 'desc')->get();
-        $data = array();
-        $start = 0;
-        foreach ($dt as $key => $value) {
-            $td = array();
-            $td['no'] = ++$start;
-            $td['barcode_id'] = $value->barcode_id ?? '-';
-            $td['no_meja'] = $value->no_meja ?? '-';
-            $td['barcode'] = $value->barcode ?? '-';
-            $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->barcode_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
-                                <i class="la la-edit"></i>
-                            </a>
-                            <a href="javascript:void(0)" onclick="hapus(\''.$value->barcode_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
-                                <i class="la la-trash-o"></i>
-                            </a>';
-            $data[] = $td;
-        }
-        return response()->json(['data' => $data]);
+        $data = Barcode::all();
+        $pdf = PDF::loadview('page.cetak_barcode', compact('data'));
+        return $pdf->stream();
     }
 }

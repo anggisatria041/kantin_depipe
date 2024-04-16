@@ -94,6 +94,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/update', [BarcodeController::class, 'update'])->name('barcode.update');
         Route::delete('/{id}', [BarcodeController::class, 'destroy'])->name('barcode.destroy');
         Route::post('/data_list', [BarcodeController::class, 'data_list'])->name('barcode.data_list');
+        Route::get('/cetak', [BarcodeController::class, 'cetak'])->name('barcode.cetak');
     });
 
     //Auth
