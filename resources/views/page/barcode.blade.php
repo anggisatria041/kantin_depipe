@@ -63,7 +63,7 @@
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="javascript:void(0)" onclick="edit({{ $row->barcode_id }})"><i class="la la-edit"></i> Edit</a>
                                 <a class="dropdown-item" href="javascript:void(0)" onclick="hapus({{ $row->barcode_id }})"><i class="la la-trash-o"></i> Hapus</a>
-                                <a class="dropdown-item" href="{{ route('barcode.cetak') }}" target="_blank"><i class="la la-download"></i> Download</a>
+                                <a class="dropdown-item" href="{{ url('barcode/cetak') . '/' . $row->barcode_id }}" target="_blank"><i class="la la-download"></i> Download</a>
                             </div>
                         </div>
                     </td>

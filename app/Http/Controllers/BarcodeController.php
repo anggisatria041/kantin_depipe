@@ -147,9 +147,9 @@ class BarcodeController extends Controller
             'message' => 'Sukses Melakukan delete Data',
         ]);
     }
-    public function cetak(Request $request)
+    public function cetak(string $id)
     {
-        $data = Barcode::all();
+        $data = Barcode::findOrFail($id);
         $pdf = PDF::loadview('page.cetak_barcode', compact('data'));
         return $pdf->stream();
     }
