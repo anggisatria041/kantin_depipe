@@ -210,7 +210,7 @@ class UserController extends Controller
                 ], 500);
             }
 
-        $credentials= request(['username','password']);
+        $credentials=request(['username','password']);
         if (!Auth::attempt($credentials)) {
             return response()->json([
                     'status'=>false,

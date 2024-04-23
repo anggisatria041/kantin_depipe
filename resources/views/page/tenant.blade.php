@@ -195,6 +195,56 @@
     </div>
 </div>
 <!-- end form -->
+
+<!-- form -->
+<div class="modal fade" id="m_modal_7" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header m--bg-brand">
+                <h5 class="modal-title m--font-light">
+                    Change Password
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                        &times;
+                    </span>
+                </button>
+            </div>
+            <form class="m-form m-form--fit m-form--label-align-right" action="" method="POST" id="formAdd2" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="">
+                    <!-- <div class="form-group m-form__group row">
+                        <label class="col-form-label col-md-3" style="text-align:left">
+                            Password <font class="m--font-danger">*</font>
+                        </label>
+                            <div class="col-md-6">
+                            <input type="text" name="old_password" class="form-control m-input" disabled/>
+                        </div>
+                    </div> -->
+                    <div class="form-group m-form__group row">
+                        <label class="col-form-label col-md-3" style="text-align:left">
+                           Password Baru
+                        </label>
+                            <div class="col-md-6">
+                            <input type="password" name="new_password"  class="form-control m-input" placeholder="Password"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-warning" data-dismiss="modal">
+                        Batal
+                    </a>
+                    <a href="#" onclick="update_password()" id="btnSaveAjax" class="btn btn-accent">
+                        Simpan
+                    </a>
+
+                </div>
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
+</div>
+<!-- end form -->
 <script type="text/javascript">
     var method;
     window.addEventListener('DOMContentLoaded', (event) => {
@@ -272,7 +322,7 @@
 						  	<div class="dropdown-menu dropdown-menu-right">\
 						    	<a class="dropdown-item" href="javascript:void(0)" onclick="edit(' + row.id + ')"><i class="la la-edit"></i> Edit Tenant</a>\
 						    	<a class="dropdown-item" href="javascript:void(0)" onclick="hapus(' + row.id + ')"><i class="la la-trash-o"></i> Hapus Tenant</a>\
-						    	<a class="dropdown-item" href="#"><i class="la la-key"></i> Change Password</a>\
+						    	<a class="dropdown-item" href="javascript:void(0)" onclick="changePassword(' + row.id + ')"><i class="la la-key"></i> Change Password</a>\
 						  	</div>\
 						</div>\
 					';
@@ -431,5 +481,61 @@
             }
         });
     }
+    function changePassword(id) {
+        method = 'password';
+        resetForm(); 
+
+        $.ajax({
+            url: "{{ url('tenant/password') }}/" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(data) {
+                if (data.data) {
+                    $('#formAdd2')[0].reset();
+                    $('[name="id"]').val(data.data.id);
+                    // $('[name="old_password"]').val(data.data.password); 
+                    $('#m_modal_7').modal('show'); 
+                } else {
+                    swal("Oops", "Gagal mengambil data!", "error");
+                }
+                mApp.unblockPage();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                mApp.unblockPage();
+                alert('Error get data from ajax');
+            }
+        });
+    }
+    function update_password() {
+        let url;
+            url = "{{ route('tenant.update_password') }}";
+        const formData = $('#formAdd2').serialize();
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: formDataWithToken,
+                dataType: "json",
+                success: function(data) {
+                    if (data.status) {
+                        $('#m_modal_7').modal('hide');
+                        swal("Berhasil..", "Data Anda berhasil disimpan", "success");
+                        $('.m_datatable').mDatatable().reload();
+                    } else {
+                        swal({
+                            text: data.message,
+                            type: "warning",
+                            closeOnConfirm: true
+                        });
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    swal("Oops", "Data gagal disimpan!", "error");
+                }
+            });
+        }
+
+    
 </script>
 @stop

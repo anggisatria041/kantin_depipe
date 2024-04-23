@@ -83,6 +83,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/edit/{id}', [TenantController::class, 'edit'])->name('tenant.edit');
         Route::post('/update', [TenantController::class, 'update'])->name('tenant.update');
         Route::delete('/{id}', [TenantController::class, 'destroy'])->name('tenant.destroy');
+        Route::get('/password/{id}', [TenantController::class, 'password'])->name('tenant.password');
+        Route::post('/update_password', [TenantController::class, 'updatePassword'])->name('tenant.update_password');
         Route::post('/data_list', [TenantController::class, 'data_list'])->name('tenant.data_list');
     });
 

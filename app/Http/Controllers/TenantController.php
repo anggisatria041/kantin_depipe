@@ -99,6 +99,12 @@ class TenantController extends Controller
         return response()->json(['data' => $data], 200);
     }
 
+    public function password(string $id)
+    {
+        $data = User::findOrFail($id);
+        return response()->json(['data' => $data], 200);
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -200,5 +206,25 @@ class TenantController extends Controller
             $data[] = $td;
         }
         return response()->json(['data' => $data]);
+    }
+    public function updatePassword(Request $request)
+    {
+        $id = $request->id;
+        $data = User::find($id);
+        $data->update([
+            'password' => Hash::make($request->input('new_password')),
+        ]);
+
+        if ($data) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Sukses Mengubah Data',
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal Mengubah data',
+            ]);
+        }
     }
 }
