@@ -7,7 +7,7 @@
                 <div class="m-stack m-stack--ver m-stack--general">
                     <div class="m-stack__item m-stack__item--middle m-brand__logo">
                         <a href="index.html" class="m-brand__logo-wrapper">
-                            <img alt="" src="assets/demo/default/media/img/logo/logo_default_dark.png" />
+                            <img alt="" src="assets/demo/default/media/img/logo/logo_kantin.png" />
                         </a>
                     </div>
                     <div class="m-stack__item m-stack__item--middle m-brand__tools">
@@ -197,26 +197,14 @@
                                                     <img src="assets/app/media/img/users/user.png" class="m--img-rounded m--marginless" alt="" />
                                                 </div>
                                                 <div class="m-card-user__details">
-                                                    <span class="m-card-user__name m--font-weight-500">Mark Andre</span>
-                                                    <a href="" class="m-card-user__email m--font-weight-300 m-link">mark.andre@gmail.com</a>
+                                                    <span class="m-card-user__name m--font-weight-500">{{auth()->user()->nama}}</span>
+                                                    <a href="" class="m-card-user__email m--font-weight-300 m-link">{{auth()->user()->email}}</a>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="m-dropdown__body">
                                             <div class="m-dropdown__content">
                                                 <ul class="m-nav m-nav--skin-light">
-                                                    <li class="m-nav__item">
-                                                        <a href="header/profile.html" class="m-nav__link">
-                                                            <i class="m-nav__link-icon flaticon-profile-1"></i>
-                                                            <span class="m-nav__link-title">
-                                                                <span class="m-nav__link-wrap">
-                                                                    <span class="m-nav__link-text">My Profile</span>
-                                                                    <span class="m-nav__link-badge">
-                                                                    </span>
-                                                                </span>
-                                                            </span>
-                                                        </a>
-                                                    </li>
                                                     <li class="m-nav__separator m-nav__separator--fit">
                                                     </li>
                                                     <li class="m-nav__item">

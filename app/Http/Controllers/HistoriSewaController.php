@@ -64,7 +64,7 @@ class HistoriSewaController extends Controller
     }
     public function data_list()
     {
-        $dt = Sewa::where("status",2)->orderBy('tgl_sewa', 'desc')->get();
+        $dt = Sewa::where('status',2)->orderBy('tgl_sewa', 'desc')->get();
         $data = array();
         $start = 0;
         foreach ($dt as $key => $value) {

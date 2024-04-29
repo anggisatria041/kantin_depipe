@@ -69,7 +69,7 @@
                 type: 'remote', 
                 source: {
                     read: {
-                        url: "{{ route('sewa.data_list') }}", 
+                        url: "{{ route('histori_sewa.data_list') }}", 
                         method: 'POST', 
                         headers: {
                             'X-CSRF-TOKEN': csrfToken 

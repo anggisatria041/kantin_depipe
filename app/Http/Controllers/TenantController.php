@@ -190,7 +190,7 @@ class TenantController extends Controller
     }
     public function data_list()
     {
-        $dt = User::orderBy('id', 'desc')->get();
+        $dt = User::where('role','tenant')->orderBy('id', 'desc')->get();
         $data = array();
         $start = 0;
         foreach ($dt as $key => $value) {

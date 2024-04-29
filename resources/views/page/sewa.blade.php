@@ -112,6 +112,19 @@
                         </div>
                     </div>
                     <input type="hidden" name="sewa_id" value="">
+                    <div class="form-group m-form__group row spkadd">
+                        <label class="col-form-label col-md-3" style="text-align:left">
+                            Nama Tenant <font class="m--font-danger">*</font>
+                        </label>
+                        <div class="col-md-6">
+                            <select name="karyawan_id" class="form-control m-input m-select2">
+                                <option value="">Pilih Tenant</option>
+                                @foreach ($tenant as $value)
+                                    <option value="{{$value->id}}">{{$value->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group m-form__group row" >
                         <label class="col-form-label col-md-3" style="text-align:left">
                             Tanggal Sewa <font class="m--font-danger">*</font>
@@ -312,6 +325,8 @@
                 if (data.data) {
                     $('#formAdd')[0].reset();
                     $('[name="sewa_id"]').val(data.data.sewa_id);
+                    $('[name="karyawan_id"] option[value="' + data.data.tenant_id + '"]').attr('selected', 'selected');
+                    $('.m-select2').select2({width : '100%'});
                     $('[name="tgl_sewa"]').val(data.data.tgl_sewa);
                     $('[name="tgl_berakhir"]').val(data.data.tgl_berakhir);
                     $('[name="harga"]').val(data.data.harga);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sewa;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SewaController extends Controller
@@ -13,7 +15,8 @@ class SewaController extends Controller
      */
     public function index()
     {
-        return view("page.sewa");
+        $tenant=DB::connection('pgsql')->table('users')->select()->where('role','tenant')->get();
+        return view("page.sewa",compact('tenant'));
     }
 
     /**
@@ -47,7 +50,7 @@ class SewaController extends Controller
         }
 
         $data = new Sewa;
-        $data->tenant_id = "2";
+        $data->tenant_id = $request->karyawan_id;
         $data->tgl_sewa = $request->tgl_sewa;
         $data->tgl_berakhir = $request->tgl_berakhir;
         $data->harga = $request->harga;
@@ -117,6 +120,7 @@ class SewaController extends Controller
             ]);
         }
 
+        $data->tenant_id = $request->karyawan_id;
         $data->tgl_sewa = $request->tgl_sewa;
         $data->tgl_berakhir = $request->tgl_berakhir;
         $data->harga = $request->harga;
