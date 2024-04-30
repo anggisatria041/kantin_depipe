@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pesanan', function (Blueprint $table) {
             $table->bigIncrements('pesanan_id');
-            $table->integer('order_id');
+            $table->string('order_id');
             $table->string('keterangan');
             $table->string('pesanan');
             $table->string('jenis_pemesanan');

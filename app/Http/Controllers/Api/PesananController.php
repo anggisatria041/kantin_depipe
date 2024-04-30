@@ -16,13 +16,41 @@ class PesananController extends Controller
     public function index()
     {
         
-        $data=Pesanan::all();
+        $data = Pesanan::all();
 
-        return response()->json([
-            'status'=>true,
-            'message'=>'Data Berhasil Ditemukan',
-            'data'=>$data,
-        ], 200);
+        $formattedData = $data->map(function($item) {
+            $pesanan = json_decode($item->pesanan);
+            $formattedPesanan = [];
+            foreach ($pesanan as $pesananItem) {
+                $formattedPesanan[] = [
+                    'menu_id' => $pesananItem->menu_id,
+                    'tenant_id' => $pesananItem->tenant_id,
+                    'qty' => $pesananItem->qty,
+                    'harga' => $pesananItem->harga,
+                    'total' => $pesananItem->total
+                ];
+            }
+
+        return [
+            'pesanan_id' => $item->pesanan_id,
+            'order_id' => $item->order_id,
+            'keterangan' => $item->keterangan,
+            'pesanan' => $formattedPesanan,
+            'jenis_pemesanan' => $item->jenis_pemesanan,
+            'metode_pembayaran' => $item->metode_pembayaran,
+            'status_pemesanan' => $item->status_pemesanan,
+            'status_pembayaran' => $item->status_pembayaran,
+            'no_meja' => $item->no_meja,
+            'created_at' => $item->created_at,
+            'updated_at' => $item->updated_at
+        ];
+    });
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Data Berhasil Ditemukan',
+        'data' => $formattedData,
+    ], 200);
     }
 
     /**
@@ -57,7 +85,7 @@ class PesananController extends Controller
                 'data'=>$validator->errors()
             ], 500);
         }
-        dd($request->pesanan);
+
         $data->order_id = $request->order_id;
         $data->keterangan = $request->keterangan;
         $data->pesanan = $request->pesanan;
