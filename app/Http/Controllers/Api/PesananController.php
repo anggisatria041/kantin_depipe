@@ -42,13 +42,11 @@ class PesananController extends Controller
         
         $rules=[
             'order_id'=>'required',
-            'keterangan'=>'required',
             'pesanan'=>'required',
             'jenis_pemesanan'=>'required',
             'metode_pembayaran'=>'required',
             'status_pemesanan'=>'required',
             'status_pembayaran'=>'required',
-            'no_meja'=>'required',
         ];
         $validator=Validator::make($request->all(),$rules);
 
