@@ -41,12 +41,14 @@ class PesananController extends Controller
         $data = new Pesanan;
         
         $rules=[
-            'menu_id'=>'required',
-            'jumlah'=>'required',
-            'total'=>'required',
+            'order_id'=>'required',
+            'keterangan'=>'required',
+            'pesanan'=>'required',
+            'jenis_pemesanan'=>'required',
+            'metode_pembayaran'=>'required',
+            'status_pemesanan'=>'required',
+            'status_pembayaran'=>'required',
             'no_meja'=>'required',
-            'status'=>'required',
-
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -57,11 +59,15 @@ class PesananController extends Controller
                 'data'=>$validator->errors()
             ], 500);
         }
-        $data->menu_id = $request->menu_id;
-        $data->jumlah = $request->jumlah;
-        $data->total = $request->total;
+        dd($request->pesanan);
+        $data->order_id = $request->order_id;
+        $data->keterangan = $request->keterangan;
+        $data->pesanan = $request->pesanan;
+        $data->jenis_pemesanan = $request->jenis_pemesanan;
+        $data->metode_pembayaran = $request->metode_pembayaran;
+        $data->status_pemesanan = $request->status_pemesanan;
+        $data->status_pembayaran = $request->status_pembayaran;
         $data->no_meja = $request->no_meja;
-        $data->status = $request->status;
 
         $post = $data->save();
 
@@ -116,13 +122,15 @@ class PesananController extends Controller
             ],404);
         }
         
-       $rules=[
-            'menu_id'=>'required',
-            'jumlah'=>'required',
-            'total'=>'required',
+        $rules=[
+            'order_id'=>'required',
+            'keterangan'=>'required',
+            'pesanan'=>'required',
+            'jenis_pemesanan'=>'required',
+            'metode_pembayaran'=>'required',
+            'status_pemesanan'=>'required',
+            'status_pembayaran'=>'required',
             'no_meja'=>'required',
-            'status'=>'required',
-
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -134,11 +142,14 @@ class PesananController extends Controller
             ],500);
         }
         
-        $data->menu_id = $request->menu_id;
-        $data->jumlah = $request->jumlah;
-        $data->total = $request->total;
+        $data->order_id = $request->order_id;
+        $data->keterangan = $request->keterangan;
+        $data->pesanan = $request->pesanan;
+        $data->jenis_pemesanan = $request->jenis_pemesanan;
+        $data->metode_pembayaran = $request->metode_pembayaran;
+        $data->status_pemesanan = $request->status_pemesanan;
+        $data->status_pembayaran = $request->status_pembayaran;
         $data->no_meja = $request->no_meja;
-        $data->status = $request->status;
 
         $post = $data->save();
 

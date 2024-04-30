@@ -10,6 +10,6 @@ class Pesanan extends Model
     use HasFactory;
     protected $connection = 'mysql';
     protected $table='pesanan';
-    protected $fillable=["menu_id","jumlah","total","no_meja","status"];
+    protected $fillable=["order_id","keterangan","pesanan","jenis_pemesanan","metode_pembayaran","status_pemesanan","status_pembayaran","no_meja"];
     protected $primaryKey = 'pesanan_id';
 }
