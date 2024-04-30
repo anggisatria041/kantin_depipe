@@ -223,6 +223,9 @@
                 sortable: false,
                 textAlign: 'center',
             }, {
+                field: "nama",
+                title: "Nama"
+            }, {
                 field: "tgl_sewa",
                 title: "Tanggal Sewa"
             }, {
