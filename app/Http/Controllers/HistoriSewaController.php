@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sewa;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class HistoriSewaController extends Controller
 {
@@ -64,13 +66,27 @@ class HistoriSewaController extends Controller
     }
     public function data_list()
     {
-        $dt = Sewa::where('status',2)->orderBy('tgl_sewa', 'desc')->get();
+        $users = DB::connection('pgsql')->table('users')->where('role', 'tenant')->get();
+
+        $sewa = DB::connection('mysql')->table('sewa')->where('status', 2)->orderBy('tgl_sewa', 'desc')->get();
+
+        $joinResult = [];
+        foreach ($sewa as $item) {
+            foreach ($users as $user) {
+                if ($item->tenant_id == $user->id) {
+                    $resultItem = (object) array_merge((array) $item, (array) $user);
+                    $joinResult[] = $resultItem;
+                }
+            }
+        }
+
         $data = array();
         $start = 0;
-        foreach ($dt as $key => $value) {
+        foreach ($joinResult as $key => $value) {
             $td = array();
             $td['no'] = ++$start;
             $td['sewa_id'] = $value->sewa_id ?? '-';
+            $td['nama'] = $value->nama ?? '-';
             $td['tgl_sewa'] = $value->tgl_sewa ?? '-';
             $td['tgl_berakhir'] = $value->tgl_berakhir ?? '-';
             $td['harga'] = $value->harga ?? '-';
