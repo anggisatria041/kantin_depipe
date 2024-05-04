@@ -39,7 +39,8 @@ class KomentarController extends Controller
         $data = new Komentar;
         
         $rules=[
-            'komentar'=>'required'
+            'komentar'=>'required',
+            'rating'=>'required',
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -50,8 +51,9 @@ class KomentarController extends Controller
                 'data'=>$validator->errors()
             ],500);
         }
-        $data->menu_id = $request->menu_id;
+        $data->tenant_id = $request->tenant_id;
         $data->komentar = $request->komentar;
+        $data->rating = $request->rating;
 
         $post = $data->save();
 
@@ -109,7 +111,8 @@ class KomentarController extends Controller
         }
         
         $rules=[
-            'komentar'=>'required'
+            'komentar'=>'required',
+            'rating'=>'required'
         ];
         $validator=Validator::make($request->all(),$rules);
 
@@ -121,8 +124,9 @@ class KomentarController extends Controller
             ],500);
         }
         
-        $data->menu_id = $request->menu_id;
+        $data->tenant_id = $request->tenant_id;
         $data->komentar = $request->komentar;
+        $data->rating = $request->rating;
 
         $post = $data->save();
 

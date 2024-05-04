@@ -10,6 +10,6 @@ class Komentar extends Model
     use HasFactory;
     protected $connection = 'mysql';
     protected $table='komentar';
-    protected $fillable=["menu_id","komentar"];
+    protected $fillable=["tenant_id","komentar","rating"];
     protected $primaryKey = 'komentar_id';
 }

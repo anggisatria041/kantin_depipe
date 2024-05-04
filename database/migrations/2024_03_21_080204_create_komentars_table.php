@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('komentar_id');
             $table->integer('menu_id');
             $table->text('komentar');
+            $table->integer('rating');
             $table->timestamps();
         });
     }
