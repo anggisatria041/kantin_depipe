@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pesanan;
+use App\Models\Menu;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -84,6 +85,15 @@ class PesananController extends Controller
                 'message'=>'Gagal Menambahkan Data',
                 'data'=>$validator->errors()
             ], 500);
+        }
+        $pesanan = json_decode($request->pesanan, true); 
+        $data = new Pesanan;
+        foreach ($pesanan as $item) {
+            $menu = Menu::find($item['menu_id']); 
+            if ($menu) {
+                $menu->stok -= $item['qty'];
+                $menu->save(); 
+            }
         }
 
         $data->order_id = $request->order_id;
