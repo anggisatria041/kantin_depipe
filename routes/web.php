@@ -9,6 +9,7 @@ use App\Http\Controllers\InventoriController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StokBarangController;
 use App\Http\Controllers\AuthController;
 
 
@@ -97,6 +98,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{id}', [BarcodeController::class, 'destroy'])->name('barcode.destroy');
         Route::post('/data_list', [BarcodeController::class, 'data_list'])->name('barcode.data_list');
         Route::get('/cetak/{id}', [BarcodeController::class, 'cetak']);
+    });
+
+    // Stok Barang
+    Route::prefix('stok_barang')->group(function () {
+        Route::get('/', [StokBarangController::class, 'index'])->name('stok_barang.index');
+        Route::post('/store', [StokBarangController::class, 'store'])->name('stok_barang.store');
+        Route::get('/edit/{id}', [StokBarangController::class, 'edit'])->name('stok_barang.edit');
+        Route::post('/update', [StokBarangController::class, 'update'])->name('stok_barang.update');
+        Route::delete('/{id}', [StokBarangController::class, 'destroy'])->name('stok_barang.destroy');
+        Route::post('/data_list', [StokBarangController::class, 'data_list'])->name('stok_barang.data_list');
     });
 
     //Auth
