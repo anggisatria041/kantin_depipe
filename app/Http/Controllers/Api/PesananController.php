@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Pesanan;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 
 class PesananController extends Controller
@@ -16,8 +17,8 @@ class PesananController extends Controller
      */
     public function index()
     {
-        
-        $data = Pesanan::all();
+        $id = Auth::user()->id;
+        $data = Pesanan::whereJsonContains('pesanan', [['tenant_id' => $id]])->get();
 
         $formattedData = $data->map(function($item) {
             $pesanan = json_decode($item->pesanan);
