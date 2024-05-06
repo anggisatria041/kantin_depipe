@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Komentar;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class KomentarController extends Controller
 {
@@ -14,7 +15,8 @@ class KomentarController extends Controller
      */
     public function index()
     {
-         $data=Komentar::all();
+        $id = Auth::user()->id;
+        $data=Komentar::where('tenant_id', $id)->get();
 
         return response()->json([
             'status'=>true,
@@ -67,9 +69,9 @@ class KomentarController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $data=Komentar::find($id);
+        $data=Komentar::where('tenant_id', $id)->get();
 
         if($data){
 

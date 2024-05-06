@@ -27,16 +27,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 // Public Routes Resource
-    // Kategori
     Route::apiResource('kategori', KategoriController::class);
-     // Komentar
-    Route::apiResource('komentar', KomentarController::class);
 // End Resource
 
-// Public Routes
+// Public Routes Menu
 Route::get('menu/{id}', [MenuController::class, 'show']);
-Route::get('pesanan/{id}', [PesananController::class, 'show']);
 
+// Public Routes Pesanan
+Route::get('pesanan/{id}', [PesananController::class, 'show']);
+Route::post('pesanan', [PesananController::class, 'store']);
+Route::put('pesanan/{id}', [PesananController::class, 'update']);
+Route::delete('pesanan/{id}', [PesananController::class, 'destroy']);
+
+// Public Routes Komentar
+Route::get('komentar/{id}', [KomentarController::class, 'show']);
+Route::post('komentar', [KomentarController::class, 'store']);
+Route::put('komentar/{id}', [KomentarController::class, 'update']);
+Route::delete('komentar/{id}', [KomentarController::class, 'destroy']);
 
 // Public Routes User
 Route::post('register', [UserController::class, 'register']);
@@ -56,8 +63,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Private Routes Pesanan
     Route::get('pesanan', [PesananController::class, 'index']);
-    Route::post('pesanan', [PesananController::class, 'store']);
-    Route::put('pesanan/{id}', [PesananController::class, 'update']);
-    Route::delete('pesanan/{id}', [PesananController::class, 'destroy']);
+
+    // Private Routes Komentar
+    Route::get('komentar', [KomentarController::class, 'index']);
 });
 
