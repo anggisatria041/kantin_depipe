@@ -10,6 +10,7 @@ use App\Http\Controllers\TenantController;
 use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StokBarangController;
+use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\AuthController;
 
 
@@ -108,6 +109,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/update', [StokBarangController::class, 'update'])->name('stok_barang.update');
         Route::delete('/{id}', [StokBarangController::class, 'destroy'])->name('stok_barang.destroy');
         Route::post('/data_list', [StokBarangController::class, 'data_list'])->name('stok_barang.data_list');
+    });
+
+    // Penjualan
+    Route::prefix('penjualan')->group(function () {
+        Route::get('/', [PenjualanController::class, 'index'])->name('penjualan.index');
+        Route::post('/data_list', [PenjualanController::class, 'data_list'])->name('penjualan.data_list');
     });
 
     //Auth
