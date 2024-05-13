@@ -32,9 +32,8 @@ class StokBarangController extends Controller
     {
         $rules = [
             'nama' => 'required',
-            'jumlah' => 'required',
-            'satuan' => 'required',
-            'harga' => 'required'
+            'harga_beli' => 'required',
+            'harga_jual' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -50,9 +49,9 @@ class StokBarangController extends Controller
          $data = Stok_barang::create([
             'nama' => $request->nama,
             'barcode' => $request->barcode,
-            'jumlah' => $request->jumlah,
-            'satuan' => $request->satuan,
-            'harga' => $request->harga
+            'stok' => 0,
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual
         ]);
 
         if ($data) {
@@ -95,9 +94,8 @@ class StokBarangController extends Controller
 
         $rules = [
             'nama' => 'required',
-            'jumlah' => 'required',
-            'satuan' => 'required',
-            'harga' => 'required'
+            'harga_beli' => 'required',
+            'harga_jual' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -118,9 +116,8 @@ class StokBarangController extends Controller
          $data->update([
             'nama' => $request->nama,
             'barcode' => $request->barcode,
-            'jumlah' => $request->jumlah,
-            'satuan' => $request->satuan,
-            'harga' => $request->harga
+            'harga_beli' => $request->harga_beli,
+            'harga_jual' => $request->harga_jual
         ]);
 
         if ($data) {
@@ -168,9 +165,9 @@ class StokBarangController extends Controller
             $td['stok_barang_id'] = $value->stok_barang_id ?? '-';
             $td['nama'] = $value->nama ?? '-';
             $td['barcode'] = $value->barcode ?? '-';
-            $td['jumlah'] = $value->jumlah ?? '-';
-            $td['satuan'] = $value->satuan ?? '-';
-            $td['harga'] = $value->harga ?? '-';
+            $td['stok'] = $value->stok ?? '-';
+            $td['harga_beli'] = $value->harga_beli ?? '-';
+            $td['harga_jual'] = $value->harga_jual ?? '-';
             $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->stok_barang_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                                 <i class="la la-edit"></i>
                             </a>

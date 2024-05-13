@@ -156,8 +156,8 @@
                         <div class="col-md-6">
                             <select name="level" class="form-control m-input m-select2">
                                 <option value="">Pilih Level</option>
-                                <option value="premium">Premium</option>
-                                <option value="standart">Standar</option>
+                                <option value="dapur">Dapur</option>
+                                <option value="tanpa dapur">Tanpa Dapur</option>
                             </select>
                         </div>
                     </div>

@@ -3,7 +3,7 @@
 <div class="m-subheader ">
     <div class="d-flex align-items-center">
         <div class="mr-auto">
-            <h3 class="m-subheader__title m-subheader__title--separator">Inventori</h3>
+            <h3 class="m-subheader__title m-subheader__title--separator">Pembelian</h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
                     <a href="#" class="m-nav__link m-nav__link--icon">
@@ -13,7 +13,7 @@
                 <li class="m-nav__separator">-</li>
                 <li class="m-nav__item">
                     <a href="" class="m-nav__link">
-                        <span class="m-nav__link-text">Inventori</span>
+                        <span class="m-nav__link-text">Pembelian</span>
                     </a>
                 </li>
             </ul>
@@ -27,7 +27,7 @@
         <div class="m-portlet__head-caption">
             <div class="m-portlet__head-title">
                 <h3 class="m-portlet__head-text">
-                    Manage Data Inventori<p id="hax"></p>
+                    Manage Data Pembelian<p id="hax"></p>
                 </h3>
             </div>
         </div>
@@ -112,36 +112,33 @@
                         </div>
                     </div>
                     <input type="hidden" name="inventori_id" value="">
-                    <div class="form-group m-form__group row" >
+                    <div class="form-group m-form__group row spkadd">
                         <label class="col-form-label col-md-3" style="text-align:left">
                             Nama Barang <font class="m--font-danger">*</font>
                         </label>
-                            <div class="col-md-6">
-                            <input type="text" name="nama_barang" required class="form-control m-input" placeholder="Nama Barang"/>
-                        </div>
-                    </div>
-                    <div class="form-group m-form__group row" >
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Jumlah <font class="m--font-danger">*</font>
-                        </label>
-                            <div class="col-md-6">
-                            <input type="number" name="jumlah" required class="form-control m-input" placeholder="Jumlah"/>
-                        </div>
-                    </div>
-                    <div class="form-group m-form__group row">
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Harga Satuan <font class="m--font-danger">*</font>
-                        </label>
                         <div class="col-md-6">
-                            <input type="number" name="harga_satuan" required class="form-control m-input" placeholder="No Hp"/>
+                            <select name="stok_barang_id" class="form-control m-input m-select2">
+                                <option value="">Pilih Barang</option>
+                                @foreach ($barang as $value)
+                                    <option value="{{$value->stok_barang_id}}">{{$value->nama}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-group m-form__group row" >
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Tanggal Masuk <font class="m--font-danger">*</font>
+                            Tanggal Pembelian <font class="m--font-danger">*</font>
                         </label>
                             <div class="col-md-4">
-                            <input type="date" id="meeting-time" class="form-control m-input" name="tanggal_masuk"/>
+                            <input type="date" id="meeting-time" class="form-control m-input" name="tanggal_pembelian"/>
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row" >
+                        <label class="col-form-label col-md-3" style="text-align:left">
+                            Jumlah Pembelian<font class="m--font-danger">*</font>
+                        </label>
+                            <div class="col-md-6">
+                            <input type="number" name="jumlah_pembelian" required class="form-control m-input" placeholder="Jumlah"/>
                         </div>
                     </div>
                 </div>
@@ -206,19 +203,15 @@
                 sortable: false,
                 textAlign: 'center',
             }, {
-                field: "nama_barang",
+                field: "nama",
                 title: "Nama Barang"
             }, {
-                field: "jumlah",
-                title: "Jumlah"
-            }, {
-                field: "harga_satuan",
-                title: "Harga Satuan",
-                width: 110,
+                field: "tanggal_pembelian",
+                title: "Tanggal Pembelian",
                 textAlign: 'center'
-            }, {
-                field: "tanggal_masuk",
-                title: "Tanggal Masuk",
+            },{
+                field: "jumlah_pembelian",
+                title: "Jumlah Pembelian",
                 textAlign: 'center'
             }, {
                 field: "total_bayar",
@@ -242,12 +235,16 @@
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
+        $('[name="stok_barang_id"] :selected').removeAttr('selected');
+        $('.m-select2').select2({
+            width: '100%'
+        });
     }
 
     function add_ajax() {
         method = 'add';
         resetForm();
-        $('#exampleModalLongTitle').html("Tambah Inventori");
+        $('#exampleModalLongTitle').html("Tambah Pembelian");
         $('.form-group').removeClass('has-error');
         $('.help-block').empty();
         $('#m_form_1_msg').hide();
@@ -267,7 +264,7 @@
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
         const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
 
-        if ($('[name="nama_barang"]').val() == "" || $('[name="jumlah"]').val() == "" || $('[name="harga_satuan"]').val() == "" || $('[name="tanggal_masuk"]').val() == "") {
+        if ($('[name="stok_barang_id"]').val() == ""  || $('[name="tanggal_pembelian"]').val() == "" || $('[name="jumlah_pembelian"]').val() == "" ) {
             $('#m_form_1_msg').show();
             mApp.unblock(".modal-content");
         } else {
@@ -309,10 +306,10 @@
                 if (data.data) {
                     $('#formAdd')[0].reset();
                     $('[name="inventori_id"]').val(data.data.inventori_id);
-                    $('[name="nama_barang"]').val(data.data.nama_barang);
-                    $('[name="jumlah"]').val(data.data.jumlah);
-                    $('[name="harga_satuan"]').val(data.data.harga_satuan);
-                    $('[name="tanggal_masuk"]').val(data.data.tanggal_masuk); 
+                    $('[name="stok_barang_id"] option[value="' + data.data.stok_barang_id + '"]').attr('selected', 'selected');
+                    $('.m-select2').select2({width : '100%'});
+                    $('[name="tanggal_pembelian"]').val(data.data.tanggal_pembelian); 
+                    $('[name="jumlah_pembelian"]').val(data.data.jumlah_pembelian); 
                     $('.m-select2').select2({width : '100%'});
                     $('#m_modal_6').modal('show'); 
                 } else {

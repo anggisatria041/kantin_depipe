@@ -3,7 +3,7 @@
 <div class="m-subheader ">
     <div class="d-flex align-items-center">
         <div class="mr-auto">
-            <h3 class="m-subheader__title m-subheader__title--separator">Stok Barang</h3>
+            <h3 class="m-subheader__title m-subheader__title--separator">Barang</h3>
             <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
                 <li class="m-nav__item m-nav__item--home">
                     <a href="#" class="m-nav__link m-nav__link--icon">
@@ -13,7 +13,7 @@
                 <li class="m-nav__separator">-</li>
                 <li class="m-nav__item">
                     <a href="" class="m-nav__link">
-                        <span class="m-nav__link-text">Stok Barang</span>
+                        <span class="m-nav__link-text">Barang</span>
                     </a>
                 </li>
             </ul>
@@ -27,7 +27,7 @@
         <div class="m-portlet__head-caption">
             <div class="m-portlet__head-title">
                 <h3 class="m-portlet__head-text">
-                    Manage Data Stok Barang<p id="hax"></p>
+                    Manage Data Barang<p id="hax"></p>
                 </h3>
             </div>
         </div>
@@ -128,28 +128,20 @@
                             <input type="number" name="barcode" required class="form-control m-input" placeholder="Barcode"/>
                         </div>
                     </div>
-                    <div class="form-group m-form__group row" >
+                    <div class="form-group m-form__group row">
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Jumlah <font class="m--font-danger">*</font>
+                            Harga Beli <font class="m--font-danger">*</font>
                         </label>
-                            <div class="col-md-6">
-                            <input type="number" name="jumlah" required class="form-control m-input" placeholder="Jumlah"/>
-                        </div>
-                    </div>
-                    <div class="form-group m-form__group row" >
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Satuan <font class="m--font-danger">*</font>
-                        </label>
-                            <div class="col-md-6">
-                            <input type="text" name="satuan" required class="form-control m-input" placeholder="satuan"/>
+                        <div class="col-md-6">
+                            <input type="number" name="harga_beli" required class="form-control m-input" placeholder="Harga Beli"/>
                         </div>
                     </div>
                     <div class="form-group m-form__group row">
                         <label class="col-form-label col-md-3" style="text-align:left">
-                            Harga<font class="m--font-danger">*</font>
+                            Harga Jual <font class="m--font-danger">*</font>
                         </label>
                         <div class="col-md-6">
-                            <input type="number" name="harga" required class="form-control m-input" placeholder="Harga"/>
+                            <input type="number" name="harga_jual" required class="form-control m-input" placeholder="Harga Jual"/>
                         </div>
                     </div>
                 </div>
@@ -220,16 +212,16 @@
                 field: "barcode",
                 title: "Barcode"
             }, {
-                field: "jumlah",
-                title: "Jumlah"
+                field: "stok",
+                title: "Stok"
             }, {
-                field: "satuan",
-                title: "Satuan",
+                field: "harga_beli",
+                title: "Harga Beli",
                 width: 110,
                 textAlign: 'center'
             }, {
-                field: "harga",
-                title: "Harga",
+                field: "harga_jual",
+                title: "Harga Jual",
                 textAlign: 'center'
             }, {
                 field: "actions",
@@ -254,7 +246,7 @@
     function add_ajax() {
         method = 'add';
         resetForm();
-        $('#exampleModalLongTitle').html("Tambah Inventori");
+        $('#exampleModalLongTitle').html("Tambah Barang");
         $('.form-group').removeClass('has-error');
         $('.help-block').empty();
         $('#m_form_1_msg').hide();
@@ -274,7 +266,7 @@
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
         const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
 
-        if ($('[name="nama"]').val() == "" || $('[name="jumlah"]').val() == "" || $('[name="satuan"]').val() == "" || $('[name="harga"]').val() == "") {
+        if ($('[name="nama"]').val() == "" || $('[name="stok"]').val() == "" || $('[name="harga_beli"]').val() == "" || $('[name="harga_jual"]').val() == "") {
             $('#m_form_1_msg').show();
             mApp.unblock(".modal-content");
         } else {
@@ -318,9 +310,9 @@
                     $('[name="stok_barang_id"]').val(data.data.stok_barang_id);
                     $('[name="nama"]').val(data.data.nama);
                     $('[name="barcode"]').val(data.data.barcode);
-                    $('[name="jumlah"]').val(data.data.jumlah);
-                    $('[name="satuan"]').val(data.data.satuan);
-                    $('[name="harga"]').val(data.data.harga); 
+                    $('[name="stok"]').val(data.data.stok);
+                    $('[name="harga_beli"]').val(data.data.harga_beli);
+                    $('[name="harga_jual"]').val(data.data.harga_jual); 
                     $('#m_modal_6').modal('show'); 
                 } else {
                     swal("Oops", "Gagal mengambil data!", "error");

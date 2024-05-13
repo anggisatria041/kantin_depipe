@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Inventori;
+use App\Models\Stok_barang;
 use Illuminate\Support\Facades\Validator;
 
 class InventoriController extends Controller
@@ -13,7 +14,8 @@ class InventoriController extends Controller
      */
     public function index()
     {
-        return view("page.inventori");
+        $barang=Stok_barang::all();
+        return view("page.inventori",compact('barang'));
     }
 
     /**
@@ -30,10 +32,9 @@ class InventoriController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'nama_barang' => 'required',
-            'jumlah' => 'required',
-            'harga_satuan' => 'required',
-            'tanggal_masuk' => 'required'
+            'stok_barang_id' => 'required',
+            'tanggal_pembelian' => 'required',
+            'jumlah_pembelian' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -47,12 +48,14 @@ class InventoriController extends Controller
         }
 
          $data = Inventori::create([
-            'nama_barang' => $request->nama_barang,
-            'jumlah' => $request->jumlah,
-            'harga_satuan' => $request->harga_satuan,
-            'tanggal_masuk' => $request->tanggal_masuk,
-            'total_bayar' => ($request->jumlah * $request->harga_satuan)
+            'stok_barang_id' => $request->stok_barang_id,
+            'tanggal_pembelian' => $request->tanggal_pembelian,
+            'jumlah_pembelian' => $request->jumlah_pembelian,
+            'total_bayar' => 0
         ]);
+        $barang = Stok_barang::find($request->stok_barang_id);
+        $barang->stok += $request->jumlah_pembelian; 
+        $barang->save();
 
         if ($data) {
             return response()->json([
@@ -93,10 +96,9 @@ class InventoriController extends Controller
         $data = Inventori::find($id);
 
         $rules = [
-            'nama_barang' => 'required',
-            'jumlah' => 'required',
-            'harga_satuan' => 'required',
-            'tanggal_masuk' => 'required'
+            'stok_barang_id' => 'required',
+            'tanggal_pembelian' => 'required',
+            'jumlah_pembelian' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -114,12 +116,10 @@ class InventoriController extends Controller
                 'message' => 'Data Inventori tidak ditemukan',
             ]);
         }
-         $data->update([
-            'nama_barang' => $request->nama_barang,
-            'jumlah' => $request->jumlah,
-            'harga_satuan' => $request->harga_satuan,
-            'tanggal_masuk' => $request->tanggal_masuk,
-            'total_bayar' => ($request->jumlah * $request->harga_satuan)
+        $data->update([
+            'stok_barang_id' => $request->stok_barang_id,
+            'tanggal_pembelian' => $request->tanggal_pembelian,
+            'jumlah_pembelian' => $request->jumlah_pembelian,
         ]);
 
         if ($data) {
@@ -158,17 +158,20 @@ class InventoriController extends Controller
     }
     public function data_list()
     {
-        $dt = Inventori::orderBy('inventori_id', 'desc')->get();
+        $dt = Inventori::leftJoin('stok_barang as sb', 'sb.stok_barang_id', '=', 'inventori.stok_barang_id')
+        ->select('inventori.*', 'sb.nama')
+        ->orderBy('inventori.inventori_id', 'desc')
+        ->get();
         $data = array();
         $start = 0;
         foreach ($dt as $key => $value) {
             $td = array();
             $td['no'] = ++$start;
             $td['inventori_id'] = $value->inventori_id ?? '-';
-            $td['nama_barang'] = $value->nama_barang ?? '-';
-            $td['jumlah'] = $value->jumlah ?? '-';
-            $td['harga_satuan'] = $value->harga_satuan ?? '-';
-            $td['tanggal_masuk'] = $value->tanggal_masuk ?? '-';
+            $td['stok_barang_id'] = $value->stok_barang_id ?? '-';
+            $td['nama'] = $value->nama ?? '-';
+            $td['tanggal_pembelian'] = $value->tanggal_pembelian ?? '-';
+            $td['jumlah_pembelian'] = $value->jumlah_pembelian ?? '-';
             $td['total_bayar'] = $value->total_bayar ?? '-';
             $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->inventori_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                                 <i class="la la-edit"></i>

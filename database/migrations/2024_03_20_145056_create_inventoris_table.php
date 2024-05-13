@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('inventori', function (Blueprint $table) {
             $table->bigIncrements('inventori_id');
-            $table->string('nama_barang');
-            $table->integer('jumlah');
-            $table->integer('harga_satuan');
-            $table->date('tanggal_masuk');
+            $table->integer('stok_barang_id');
+            $table->date('tanggal_pembelian');
+            $table->integer('jumlah_pembelian');
             $table->integer('total_bayar');
             $table->timestamps();
         });

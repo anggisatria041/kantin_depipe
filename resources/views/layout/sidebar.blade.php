@@ -34,22 +34,22 @@
                 <span class="m-menu__link-text">Karyawan</span>
             </a>
         </li>
-        <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
+        <!-- <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
             <a href="{{route('gaji.index')}}" class="m-menu__link m-menu__toggle">
                 <i class="m-menu__link-icon flaticon-interface-1"></i>
                 <span class="m-menu__link-text">Gaji Karyawan</span>
+            </a>
+        </li> -->
+        <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
+            <a href="{{route('stok_barang.index')}}" class="m-menu__link m-menu__toggle">
+                <i class="m-menu__link-icon flaticon-interface-6"></i>
+                <span class="m-menu__link-text">Barang</span>
             </a>
         </li>
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
             <a href="{{route('inventori.index')}}" class="m-menu__link m-menu__toggle">
                 <i class="m-menu__link-icon flaticon-interface-6"></i>
-                <span class="m-menu__link-text">Inventori</span>
-            </a>
-        </li>
-        <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
-            <a href="{{route('stok_barang.index')}}" class="m-menu__link m-menu__toggle">
-                <i class="m-menu__link-icon flaticon-interface-6"></i>
-                <span class="m-menu__link-text">Stok Barang</span>
+                <span class="m-menu__link-text">Pembelian</span>
             </a>
         </li>
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">

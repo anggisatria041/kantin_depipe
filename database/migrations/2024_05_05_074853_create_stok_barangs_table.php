@@ -15,9 +15,9 @@ return new class extends Migration
             $table->bigIncrements('stok_barang_id');
             $table->string('nama');
             $table->string('barcode');
-            $table->string('jumlah');
-            $table->string('satuan');
-            $table->integer('harga');
+            $table->string('stok');
+            $table->string('harga_beli');
+            $table->integer('harga_jual');
             $table->timestamps();
         });
     }

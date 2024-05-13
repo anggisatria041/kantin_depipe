@@ -9,6 +9,6 @@ class Stok_barang extends Model
 {
     protected $connection = 'mysql';
     protected $table='stok_barang';
-    protected $fillable=["nama","barcode","jumlah","satuan","harga"];
+    protected $fillable=["nama","barcode","stok","harga_beli","harga_jual"];
     protected $primaryKey = 'stok_barang_id';
 }
