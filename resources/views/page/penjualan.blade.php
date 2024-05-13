@@ -89,6 +89,18 @@
                     <div class="m-widget1__item">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
+                                <h3 class="m-widget1__title">Cash</h3><br>
+                                <h3 class="m-widget1__title">Kembali</h3>
+                            </div>
+                            <div class="col m--align-right">
+                                <input type="number" name="bayar" required class="form-control m-input"/><br>
+                                <span class="m-widget1__number m--font-success">0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-widget1__item">
+                        <div class="row m-row--no-padding align-items-center">
+                            <div class="col">
                             </div>
                             <div class="col m--align-right">
                                 <button type="button" class="btn btn-primary btn-sm">Simpan</button>

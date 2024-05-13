@@ -18,7 +18,23 @@ class PesananController extends Controller
     public function index()
     {
         $id = Auth::user()->id;
-        $data = Pesanan::whereJsonContains('pesanan', [['tenant_id' => $id]])->get();
+        $data = Pesanan::whereJsonContains('pesanan', [['tenant_id' => $id]]);
+
+        if ($request->has('status_pemesanan')) {
+            $status = $request->input('status_pemesanan');
+            if ($status != 'Semua') {
+                $datas->where('status_pemesanan', $status);
+            }
+        }
+
+        // Filter berdasarkan jenis pemesanan
+        if ($request->has('jenis_pemesanan')) {
+            $jenis = $request->input('jenis_pemesanan');
+            if ($jenis != 'Semua') {
+                $datas->where('jenis_pemesanan', $jenis);
+            }
+        }
+        $data = $datas->get();
 
         $formattedData = $data->map(function($item) {
             $pesanan = json_decode($item->pesanan);
