@@ -97,8 +97,8 @@
                                 <h3 class="m-widget1__title">Kembali</h3>
                             </div>
                             <div class="col m--align-right">
-                                <input type="number" name="bayar" required class="form-control m-input"/><br>
-                                <span class="m-widget1__number m--font-success">0,00</span>
+                                <input type="number" name="bayar" required class="form-control m-input" onkeyup="hitungKembalian()" id="bayar"/><br>
+                                <span class="m-widget1__number m--font-success" id="kembalian">0,00</span>
                             </div>
                         </div>
                     </div>
@@ -330,5 +330,12 @@
             }
         });
     });
+    function hitungKembalian() {
+        var total = parseFloat(document.getElementById('total_bayar').innerText.replace(',', '.'));
+        var bayar = parseFloat(document.getElementById('bayar').value);
+        var kembalian = bayar - total;
+        document.getElementById('kembalian').innerHTML = kembalian.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+    }
+
 </script>
 @stop
