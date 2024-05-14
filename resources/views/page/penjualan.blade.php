@@ -42,6 +42,8 @@
                 </div>
             </div>
             <div class="col-xl-4">
+                <form class="m-form m-form--fit m-form--label-align-right" action="" method="POST" id="formAdd" enctype="multipart/form-data">
+                <input type="hidden" name="penjualan_id"  value="">
                 <div class="m-widget1">
                     <div class="m-widget1__item">
                         <div class="row m-row--no-padding align-items-center">
@@ -49,7 +51,9 @@
                                 <h3 class="m-widget1__title">Barcode</h3>
                             </div>
                             <div class="col m--align-right">
-                                <input type="text" name="barang" required class="form-control m-input"/>
+                                <select class="form-control" name="stok_barang_id" id="kode">
+                                    <option value=""></option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -66,7 +70,7 @@
                     <div class="m-widget1__item">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col m--align-right">
-                                <a href="javascript:void(0)" onclick="" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="checkout">
+                                <a href="#" onclick="save()" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="checkout">
                                     <i class="fa fa-cart-arrow-down custom-icon" style="color: green;"></i>
                                 </a>
                             </div><br>
@@ -82,7 +86,7 @@
                                 <h3 class="m-widget1__title">Total Bayar</h3>
                             </div>
                             <div class="col m--align-right">
-                                <span class="m-widget1__number m--font-brand">0,00</span>
+                                <span class="m-widget1__number m--font-brand" id="total_bayar">{{$total_bayar}}</span>
                             </div>
                         </div>
                     </div>
@@ -120,92 +124,7 @@
     </div>
 </div>
 
-<!-- form -->
-<div class="modal fade" id="m_modal_6" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header m--bg-brand">
-                <h5 class="modal-title m--font-light" id="exampleModalLongTitle">
-                    Tambah
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                        &times;
-                    </span>
-                </button>
-            </div>
-            <form class="m-form m-form--fit m-form--label-align-right" action="" method="POST" id="formAdd" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="m-form__content">
-                        <div class="m-alert m-alert--icon alert alert-danger" role="alert" id="m_form_1_msg">
-                            <div class="m-alert__icon">
-                                <i class="la la-warning"></i>
-                            </div>
-                            <div class="m-alert__text">
-                                Upss .. ! Periksa kembali data yang anda inputkan, pastikan seluruh kolom required terisi.
-                            </div>
-                            <div class="m-alert__close">
-                                <button type="button" class="close" data-close="alert" aria-label="Close"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" name="stok_barang_id" value="">
-                    <div class="form-group m-form__group row" >
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Nama Barang <font class="m--font-danger">*</font>
-                        </label>
-                            <div class="col-md-6">
-                            <input type="text" name="nama" required class="form-control m-input" placeholder="Nama Barang"/>
-                        </div>
-                    </div>
-                    <div class="form-group m-form__group row" >
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Barcode <font class="m--font-danger">*</font>
-                        </label>
-                            <div class="col-md-6">
-                            <input type="number" name="barcode" required class="form-control m-input" placeholder="Barcode"/>
-                        </div>
-                    </div>
-                    <div class="form-group m-form__group row" >
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Jumlah <font class="m--font-danger">*</font>
-                        </label>
-                            <div class="col-md-6">
-                            <input type="number" name="jumlah" required class="form-control m-input" placeholder="Jumlah"/>
-                        </div>
-                    </div>
-                    <div class="form-group m-form__group row" >
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Satuan <font class="m--font-danger">*</font>
-                        </label>
-                            <div class="col-md-6">
-                            <input type="text" name="satuan" required class="form-control m-input" placeholder="satuan"/>
-                        </div>
-                    </div>
-                    <div class="form-group m-form__group row">
-                        <label class="col-form-label col-md-3" style="text-align:left">
-                            Harga<font class="m--font-danger">*</font>
-                        </label>
-                        <div class="col-md-6">
-                            <input type="number" name="harga" required class="form-control m-input" placeholder="Harga"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-warning" data-dismiss="modal">
-                        Batal
-                    </a>
-                    <a href="#" onclick="save()" id="btnSaveAjax" class="btn btn-accent">
-                        Simpan
-                    </a>
-
-                </div>
-            </form>
-            <!--end::Form-->
-        </div>
-    </div>
-</div>
-<!-- end form -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
     var method;
     window.addEventListener('DOMContentLoaded', (event) => {
@@ -215,7 +134,7 @@
                 type: 'remote', 
                 source: {
                     read: {
-                        url: "{{ route('stok_barang.data_list') }}", 
+                        url: "{{ route('penjualan.data_list') }}", 
                         method: 'POST', 
                         headers: {
                             'X-CSRF-TOKEN': csrfToken 
@@ -255,19 +174,16 @@
                 field: "nama",
                 title: "Nama Barang"
             }, {
-                field: "barcode",
-                title: "Barcode"
-            }, {
                 field: "jumlah",
                 title: "Jumlah"
             }, {
-                field: "satuan",
-                title: "Satuan",
+                field: "harga_jual",
+                title: "Harga",
                 width: 110,
                 textAlign: 'center'
             }, {
-                field: "harga",
-                title: "Harga",
+                field: "total_bayar",
+                title: "Total",
                 textAlign: 'center'
             }, {
                 field: "actions",
@@ -283,6 +199,136 @@
             });
 
             $('#m_form_status').selectpicker();
+    });
+    function resetForm() {
+        $('#m_form_1_msg').hide();
+        $('#formAdd')[0].reset();
+        $('#kode').val('').trigger('change');
+        $('.m-select2').select2({
+            width: '100%'
+        });
+    }
+    function save() {
+        const formData = $('#formAdd').serialize();
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
+        $.ajax({
+            url: "{{ route('penjualan.store') }}",
+            type: "POST",
+            data: formDataWithToken,
+            dataType: "json",
+            success: function(data) {
+                if (data.status) {
+                    resetForm();
+                    $("#total_bayar").html(data.bayar);
+                    $('.m_datatable').mDatatable().reload();
+                } else {
+                    swal({
+                        text: data.message,
+                        type: "warning",
+                        closeOnConfirm: true
+                    });
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                swal("Oops", "Data gagal disimpan!", "error");
+            }
+        });
+        
+    }
+    function hapus(id) {
+        swal({
+            title: "Apakah anda yakin?",
+            text: "Anda yakin ingin hapus data ini?",
+            type: "warning",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "<span><i class='flaticon-interface-1'></i><span>Ya, Hapus!</span></span>",
+            confirmButtonClass: "btn btn-danger m-btn m-btn--pill m-btn--icon",
+            cancelButtonText: "<span><i class='flaticon-close'></i><span>Batal Hapus</span></span>",
+            cancelButtonClass: "btn btn-metal m-btn m-btn--pill m-btn--icon"
+        }).then(function(e) {
+            if (e.value) {
+                mApp.blockPage({ //block page
+                    overlayColor: "#000000",
+                    type: "loader",
+                    state: "primary",
+                    message: "Please wait..."
+                });
+
+                $.ajax({
+                    url: "{{ url('penjualan') }}/" + id, 
+                    type: "DELETE", 
+                    data: {
+                        _token: '{{ csrf_token() }}' 
+                    },
+                    dataType: "JSON",
+                    success: function(data) {
+                        if (data.status == true) {
+                            $('.m_datatable').mDatatable().reload();
+                        } else {
+                            swal("Oops", "Data gagal dihapus!", "error");
+                        }
+                        mApp.unblockPage();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        mApp.unblockPage();
+                        swal("Oops", "Data gagal dicancel!", "error");
+                    }
+                })
+            }
+        });
+    }
+    $(document).ready(function () {
+        $("#kode").select2({
+            width: "100%",
+            closeOnSelect: true,
+            placeholder: "Cari kode atau nama barang",
+            ajax: {
+                url: "{{ route('penjualan.getBarcode') }}",
+                dataType: "json",
+                type: "GET",
+                delay: 250,
+                data: function(e) {
+                    return {
+                        searchtext: e.term,
+                        page: e.page
+                    }
+                },
+                processResults: function(e, t) {
+                    $(e.items).each(function() {
+                        this.id = this.stok_barang_id;
+                        this.text = `${this.nama}`;
+                    });
+
+                    return t.page = t.page || 1, {
+                        results: e.items,
+                    }
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 1,
+            templateResult: function (data) {
+                if (data.loading) return data.text;
+
+                var markup =
+                    `<div class='select2-result-repository clearfix'>
+                        <div class='select2-result-repository_meta'>
+                            <div class='select2-result-repository_title'>
+                                ${data.barcode} - ${data.nama}
+                            </div>
+                        </div>
+                    </div>`;
+
+                return markup;
+            },
+            templateSelection: function (data) {
+                return data.text;
+            }
+        });
     });
 </script>
 @stop

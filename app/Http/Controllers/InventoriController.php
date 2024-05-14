@@ -110,6 +110,11 @@ class InventoriController extends Controller
                 'data' => $validator->errors()
             ]);
         }
+        $perbedaan = $request->jumlah_pembelian - $data->jumlah_pembelian;
+        $barang = Stok_barang::find($request->stok_barang_id);
+        $barang->stok += $perbedaan; 
+        $barang->save();
+
         if (!$data) {
             return response()->json([
                 'status' => false,

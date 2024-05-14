@@ -114,6 +114,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Penjualan
     Route::prefix('penjualan')->group(function () {
         Route::get('/', [PenjualanController::class, 'index'])->name('penjualan.index');
+        Route::delete('/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
+        Route::post('/store', [PenjualanController::class, 'store'])->name('penjualan.store');
+        Route::get('/getBarcode', [PenjualanController::class,'getBarcode'])->name('penjualan.getBarcode');
         Route::post('/data_list', [PenjualanController::class, 'data_list'])->name('penjualan.data_list');
     });
 
