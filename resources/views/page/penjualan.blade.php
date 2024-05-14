@@ -2,6 +2,7 @@
 @section('content')
 <div class="m-portlet">
     <div class="m-portlet__body  m-portlet__body--no-padding">
+    <form class="m-form m-form--fit m-form--label-align-right" action="" method="POST" id="formAdd" enctype="multipart/form-data">
         <div class="row m-row--no-padding m-row--col-separator-xl">
             <div class="col-xl-4">
                 <div class="m-widget1">
@@ -11,7 +12,7 @@
                                 <h3 class="m-widget1__title">No Transaksi</h3>
                             </div>
                             <div class="col m--align-right">
-                                <input type="text" name="no_transaksi" required class="form-control m-input" value="0021/KSR/23" disabled/>
+                                <input type="text" name="no_transaksi" required class="form-control m-input" value="{{ $no_transaksi }}" readonly/>
                             </div>
                         </div>
                     </div>
@@ -21,7 +22,7 @@
                                 <h3 class="m-widget1__title">Tanggal</h3>
                             </div>
                             <div class="col m--align-right">
-                                <input type="text" name="tanggal" required class="form-control m-input" value="<?= date('Y-m-d'); ?>" disabled/>
+                                <input type="date" name="tanggal" required class="form-control m-input" value="<?= date('Y-m-d'); ?>" readonly/>
                             </div>
                         </div>
                     </div>
@@ -31,9 +32,9 @@
                                 <h3 class="m-widget1__title">Pelanggan</h3>
                             </div>
                             <div class="col m--align-right">
-                                <select name="level" class="form-control m-input">
-                                    <option value="Umum">Umum</option>
-                                    <option value="anggota">Anggota Koperasi</option>
+                                <select name="pelanggan" class="form-control m-input">
+                                    <option value="umum">Umum</option>
+                                    <option value="anggota koperasi">Anggota Koperasi</option>
                                     <option value="hutang">Hutang</option>
                                 </select>
                             </div>
@@ -42,8 +43,6 @@
                 </div>
             </div>
             <div class="col-xl-4">
-                <form class="m-form m-form--fit m-form--label-align-right" action="" method="POST" id="formAdd" enctype="multipart/form-data">
-                <input type="hidden" name="penjualan_id"  value="">
                 <div class="m-widget1">
                     <div class="m-widget1__item">
                         <div class="row m-row--no-padding align-items-center">
@@ -107,13 +106,16 @@
                             <div class="col">
                             </div>
                             <div class="col m--align-right">
-                                <button type="button" class="btn btn-primary btn-sm">Simpan</button>
+                                <a href="#" onclick="simpan()"  class="btn btn-primary btn-sm">
+                                    Simpan
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </div>
 <div class="m-portlet m-portlet--mobile">
@@ -336,6 +338,34 @@
         var kembalian = bayar - total;
         document.getElementById('kembalian').innerHTML = kembalian.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
     }
-
+    function simpan() {
+        const formData = $('#formAdd').serialize();
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
+       
+        $.ajax({
+            url: "{{ route('penjualan.update') }}",
+            type: "POST",
+            data: formDataWithToken,
+            dataType: "json",
+            success: function(data) {
+                if (data.status) {
+                    $('#m_modal_6').modal('hide');
+                    swal("Berhasil..", "Transaksi berhasil", "success").then(function() {
+                        location.reload();
+                    });
+                } else {
+                    swal({
+                        text: data.message,
+                        type: "warning",
+                        closeOnConfirm: true
+                    });
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                swal("Oops", "Data gagal disimpan!", "error");
+            }
+        });
+    }
 </script>
 @stop

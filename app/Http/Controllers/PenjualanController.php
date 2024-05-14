@@ -15,7 +15,22 @@ class PenjualanController extends Controller
     public function index()
     {
         $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
-        return view("page.penjualan",compact('total_bayar'));
+        $no = Penjualan::select('no_transaksi')
+        ->orderBy('penjualan_id', 'desc')
+        ->limit(1)
+        ->first();
+        $month                 = date('m');
+        $tahun                 = date('Y');
+        if ($no) {
+            $order= $no->no_transaksi;
+            $pecah = explode("/",  $order);
+            $seq = $pecah[0];
+            $no_order = $seq + 1;
+        } else {
+            $no_order = 1;
+        }
+        $no_transaksi = sprintf("%04s", $no_order) . '/KSR/' . $tahun; 
+        return view("page.penjualan",compact('total_bayar','no_transaksi'));
     }
 
     /**
@@ -88,9 +103,28 @@ class PenjualanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $data = Penjualan::where('status',1);
+
+        $data->update([
+            'no_transaksi' => $request->no_transaksi,
+            'tanggal' => $request->tanggal,
+            'pelanggan' => $request->pelanggan,
+            'status' => 2
+        ]);
+
+        if ($data) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Sukses Mengubah Data',
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal Mengubah data',
+            ]);
+        }
     }
 
     /**
