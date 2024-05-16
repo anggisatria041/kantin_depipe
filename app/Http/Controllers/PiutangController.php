@@ -108,7 +108,7 @@ class PiutangController extends Controller
             $td = array();
             $td['no'] = ++$start;
             $td['nama'] = $value->nama ?? '-';
-            $td['piutang'] = $value->piutang ?? '-';
+            $td['piutang'] = isset($value->piutang) ? 'Rp ' . number_format($value->piutang, 0, ',', '.') : '-';
             $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->piutang_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                                 <i class="la la-edit"></i>
                             </a>

@@ -110,7 +110,7 @@
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
                                 <h3 class="m-widget1__title">Cash</h3><br>
-                                <h3 class="m-widget1__title">Kembali</h3>
+                                <h3 class="m-widget1__title" id="kembali_title">Kembali</h3>
                             </div>
                             <div class="col m--align-right">
                                 <input type="number" name="bayar" required class="form-control m-input" onkeyup="hitungKembalian()" id="bayar"/><br>
@@ -348,10 +348,20 @@
         });
     });
     function hitungKembalian() {
-        var total = parseFloat(document.getElementById('total_bayar').innerText.replace(',', '.'));
-        var bayar = parseFloat(document.getElementById('bayar').value);
-        var kembalian = bayar - total;
-        document.getElementById('kembalian').innerHTML = kembalian.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        var jenis = document.getElementById('jenis').value;
+        
+        if(jenis == 'umum'){
+            var total = parseFloat(document.getElementById('total_bayar').innerText.replace(',', '.'));
+            var bayar = parseFloat(document.getElementById('bayar').value);
+            var kembalian = bayar - total;
+            document.getElementById('kembalian').innerHTML = kembalian.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        }else{
+            var total = parseFloat(document.getElementById('total_bayar').innerText.replace(',', '.'));
+            var bayar = parseFloat(document.getElementById('bayar').value);
+            var saldo = parseFloat(document.getElementById('saldo_number').innerText.replace(',', '.'));
+            var kembalian = (bayar + saldo) - total;
+            document.getElementById('kembalian').innerHTML = kembalian.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        }
     }
     function simpan() {
         const formData = $('#formAdd').serialize();
@@ -421,7 +431,7 @@
             success: function(response) {
                 if (response.success) {
                     var saldo = response.data.saldo;
-                    $("#saldo_number").html(formatNumber(saldo));
+                    $("#saldo_number").html(saldo); //format number belum di pakai
                 }
             },
             error: function(xhr, textStatus, errorThrown) {

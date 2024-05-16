@@ -47,11 +47,14 @@ class InventoriController extends Controller
             ]);
         }
 
-         $data = Inventori::create([
+        $id=$request->stok_barang_id;
+        $barang = Stok_barang::findOrFail($id);
+
+        $data = Inventori::create([
             'stok_barang_id' => $request->stok_barang_id,
             'tanggal_pembelian' => $request->tanggal_pembelian,
             'jumlah_pembelian' => $request->jumlah_pembelian,
-            'total_bayar' => 0
+            'total_bayar' => ($request->jumlah_pembelian * $barang->harga_beli)
         ]);
         $barang = Stok_barang::find($request->stok_barang_id);
         $barang->stok += $request->jumlah_pembelian; 
@@ -121,10 +124,16 @@ class InventoriController extends Controller
                 'message' => 'Data Inventori tidak ditemukan',
             ]);
         }
+
+        $id=$request->stok_barang_id;
+        $barang = Stok_barang::findOrFail($id);
+
         $data->update([
             'stok_barang_id' => $request->stok_barang_id,
             'tanggal_pembelian' => $request->tanggal_pembelian,
             'jumlah_pembelian' => $request->jumlah_pembelian,
+            'total_bayar' => ($request->jumlah_pembelian * $barang->harga_beli)
+
         ]);
 
         if ($data) {
@@ -177,7 +186,7 @@ class InventoriController extends Controller
             $td['nama'] = $value->nama ?? '-';
             $td['tanggal_pembelian'] = $value->tanggal_pembelian ?? '-';
             $td['jumlah_pembelian'] = $value->jumlah_pembelian ?? '-';
-            $td['total_bayar'] = $value->total_bayar ?? '-';
+            $td['total_bayar'] = isset($value->total_bayar) ? 'Rp ' . number_format($value->total_bayar, 0, ',', '.') : '-';
             $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->inventori_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                                 <i class="la la-edit"></i>
                             </a>

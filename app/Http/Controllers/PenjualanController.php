@@ -127,19 +127,65 @@ class PenjualanController extends Controller
         $data = Penjualan::where('status',1);
 
         $karyawan=$request->karyawan_id;
-        if($karyawan){
-
-            $piutang = Piutang::where('karyawan_id', $karyawan)->first();
-            $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
-            if($piutang){
-                $piutang->piutang += $total_bayar; 
-                $piutang->save();
-            }else{
-                $piutang = Piutang::create([
-                    'karyawan_id' => $karyawan,
-                    'piutang' => $total_bayar
+        $pelanggan=$request->pelanggan;
+        
+        if($pelanggan == 'hutang'){
+            if($karyawan){
+                $piutang = Piutang::where('karyawan_id', $karyawan)->first();
+                $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
+                if($piutang){
+                    $piutang->piutang += $total_bayar; 
+                    $piutang->save();
+                }else{
+                    $piutang = Piutang::create([
+                        'karyawan_id' => $karyawan,
+                        'piutang' => $total_bayar
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Anda belum memilih karyawan',
                 ]);
             }
+            
+        } else if($pelanggan == 'anggota koperasi'){
+
+            if($karyawan){
+                $saldo = Saldo::where('karyawan_id', $karyawan)->first();
+                $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
+                $hasil=$total_bayar - ($saldo->saldo);
+
+                if($saldo->saldo >= $total_bayar){
+                    $saldo->saldo -= $total_bayar; 
+                    $saldo->save();
+                } else{
+                    $bayar=$request->bayar;
+                    $saldo->saldo = 0; 
+                    $saldo->save();
+                    
+                    if($bayar < $hasil){
+                        $hutang = $hasil - $bayar;
+                        $piutang = Piutang::where('karyawan_id', $karyawan)->first();
+                        if($piutang){
+                            $piutang->piutang += $hutang; 
+                            $piutang->save();
+                        }else{
+                            $piutang = Piutang::create([
+                                'karyawan_id' => $karyawan,
+                                'piutang' => $hutang
+                            ]);
+                        }
+                    }
+                }
+            }else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Anda belum memilih karyawan',
+                ]);
+            }
+            
+
         }
 
         $data->update([
@@ -205,7 +251,7 @@ class PenjualanController extends Controller
             $td['nama'] = $value->nama ?? '-';
             $td['harga_jual'] = $value->harga_jual ?? '-';
             $td['jumlah'] = $value->jumlah ?? '-';
-            $td['total_bayar'] = $value->total_bayar ?? '-';
+            $td['total_bayar'] = isset($value->total_bayar) ? 'Rp ' . number_format($value->total_bayar, 0, ',', '.') : '-';
             $td['actions'] ='<a href="javascript:void(0)" onclick="hapus(\''.$value->penjualan_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
                                 <i class="la la-trash-o"></i>
                             </a>';
