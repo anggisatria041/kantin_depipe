@@ -11,6 +11,7 @@ use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StokBarangController;
 use App\Http\Controllers\PenjualanController;
+use App\Http\Controllers\PiutangController;
 use App\Http\Controllers\AuthController;
 
 
@@ -120,6 +121,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/getBarcode', [PenjualanController::class,'getBarcode'])->name('penjualan.getBarcode');
         Route::get('/getSaldo', [PenjualanController::class,'getSaldo'])->name('penjualan.getSaldo');
         Route::post('/data_list', [PenjualanController::class, 'data_list'])->name('penjualan.data_list');
+    });
+
+    // Piutang
+    Route::prefix('piutang')->group(function () {
+        Route::get('/', [PiutangController::class, 'index'])->name('piutang.index');
+        Route::delete('/{id}', [PiutangController::class, 'destroy'])->name('piutang.destroy');
+        Route::get('/edit/{id}', [PiutangController::class, 'edit'])->name('piutang.edit');
+        Route::post('/update', [PiutangController::class, 'update'])->name('piutang.update');
+        Route::post('/data_list', [PiutangController::class, 'data_list'])->name('piutang.data_list');
     });
 
     //Auth

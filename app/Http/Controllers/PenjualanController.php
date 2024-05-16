@@ -132,9 +132,8 @@ class PenjualanController extends Controller
             $piutang = Piutang::where('karyawan_id', $karyawan)->first();
             $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
             if($piutang){
-                $piutang->update([
-                    'piutang' => $total_bayar,
-                ]);
+                $piutang->piutang += $total_bayar; 
+                $piutang->save();
             }else{
                 $piutang = Piutang::create([
                     'karyawan_id' => $karyawan,

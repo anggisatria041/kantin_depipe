@@ -58,6 +58,12 @@
                 <span class="m-menu__link-text">Penjualan</span>
             </a>
         </li>
+        <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
+            <a href="{{route('piutang.index')}}" class="m-menu__link m-menu__toggle">
+                <i class="m-menu__link-icon flaticon-interface-1"></i>
+                <span class="m-menu__link-text">Piutang</span>
+            </a>
+        </li>
         <li class="m-menu__section ">
             <h4 class="m-menu__section-text">Kantin</h4>
             <i class="m-menu__section-icon flaticon-more-v2"></i>
