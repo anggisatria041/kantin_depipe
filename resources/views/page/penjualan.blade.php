@@ -32,7 +32,7 @@
                                 <h3 class="m-widget1__title">Pelanggan</h3>
                             </div>
                             <div class="col m--align-right">
-                                <select name="pelanggan" class="form-control m-input">
+                                <select name="pelanggan" class="form-control m-input" onchange="transaksi()" id="jenis">
                                     <option value="umum">Umum</option>
                                     <option value="anggota koperasi">Anggota Koperasi</option>
                                     <option value="hutang">Hutang</option>
@@ -49,7 +49,7 @@
                             <div class="col">
                                 <h3 class="m-widget1__title">Barcode</h3>
                             </div>
-                            <div class="col m--align-right">
+                            <div class="col">
                                 <select class="form-control" name="stok_barang_id" id="kode">
                                     <option value=""></option>
                                 </select>
@@ -89,7 +89,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="m-widget1__item">
+                    <div class="m-widget1__item" id="transaksi_anggota">
+                        <div class="row m-row--no-padding align-items-center">
+                            <div class="col">
+                                <h3 class="m-widget1__title">Karyawan</h3><br>
+                                <h3 class="m-widget1__title" id="saldo_title">Saldo</h3>
+                            </div>
+                            <div class="col">
+                                <select name="karyawan_id" class="form-control m-input m-select2" onchange="getSaldo()"  id="karyawan_select">
+                                    <option value="">Pilih Karyawan</option>
+                                    @foreach ($karyawan as $value)
+                                        <option value="{{$value->karyawan_id}}">{{$value->nama}}</option>
+                                    @endforeach
+                                </select><br>
+                                <span class="m-widget1__number m--font-success" id="saldo_number">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-widget1__item" id="transaksi_umum">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
                                 <h3 class="m-widget1__title">Cash</h3><br>
@@ -129,6 +146,7 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
     var method;
+    $('#transaksi_anggota').hide();
     window.addEventListener('DOMContentLoaded', (event) => {
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
         var tableData = $('.m_datatable').mDatatable({
@@ -206,9 +224,6 @@
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
         $('#kode').val('').trigger('change');
-        $('.m-select2').select2({
-            width: '100%'
-        });
     }
     function save() {
         const formData = $('#formAdd').serialize();
@@ -364,6 +379,52 @@
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 swal("Oops", "Data gagal disimpan!", "error");
+            }
+        });
+    }
+    function transaksi() {
+        $('[name="karyawan_id"] :selected').removeAttr('selected');
+        $('.m-select2').select2({
+            width: '100%'
+        });
+
+        var jenis = document.getElementById('jenis').value;
+
+        if (jenis == 'umum') {
+            $('#transaksi_anggota').hide();
+            $('#transaksi_umum').show();
+        } else if(jenis == 'anggota koperasi') {
+            $('#transaksi_anggota').show();
+            $('#transaksi_umum').show();
+            $('#saldo_title').show();
+            $('#saldo_number').show();
+        } else {
+            $('#transaksi_anggota').show();
+            $('#transaksi_umum').hide();
+            $('#saldo_title').hide();
+            $('#saldo_number').hide();
+        }
+    }
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    function getSaldo() {
+        var selectedKaryawanId = $('#karyawan_select').val();
+
+        $.ajax({
+            url: "{{ route('penjualan.getSaldo') }}",
+            dataType: "json",
+            type: "GET",
+            data: {
+                karyawan_id: selectedKaryawanId
+            },
+            success: function(response) {
+                if (response.success) {
+                    var saldo = response.data.saldo;
+                    $("#saldo_number").html(formatNumber(saldo));
+                }
+            },
+            error: function(xhr, textStatus, errorThrown) {
             }
         });
     }

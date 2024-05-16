@@ -30,7 +30,7 @@
         </li>
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
             <a href="{{route('karyawan.index')}}" class="m-menu__link m-menu__toggle">
-                <i class="m-menu__link-icon flaticon-multimedia-1"></i>
+                <i class="m-menu__link-icon flaticon-user-settings"></i>
                 <span class="m-menu__link-text">Karyawan</span>
             </a>
         </li>
@@ -48,13 +48,13 @@
         </li>
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
             <a href="{{route('inventori.index')}}" class="m-menu__link m-menu__toggle">
-                <i class="m-menu__link-icon flaticon-interface-6"></i>
+                <i class="m-menu__link-icon flaticon-truck"></i>
                 <span class="m-menu__link-text">Pembelian</span>
             </a>
         </li>
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
             <a href="{{route('penjualan.index')}}" class="m-menu__link m-menu__toggle">
-                <i class="m-menu__link-icon flaticon-interface-6"></i>
+                <i class="m-menu__link-icon flaticon-paper-plane"></i>
                 <span class="m-menu__link-text">Penjualan</span>
             </a>
         </li>

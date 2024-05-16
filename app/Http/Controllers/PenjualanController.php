@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Penjualan;
 use App\Models\Stok_barang;
+use App\Models\Karyawan;
+use App\Models\Piutang;
+use App\Models\Saldo;
+
+
 use Illuminate\Support\Facades\Validator;
 
 class PenjualanController extends Controller
@@ -14,6 +19,8 @@ class PenjualanController extends Controller
      */
     public function index()
     {
+        $karyawan=Karyawan::all();
+
         $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
         $no = Penjualan::select('no_transaksi')
         ->orderBy('penjualan_id', 'desc')
@@ -21,7 +28,8 @@ class PenjualanController extends Controller
         ->first();
         $month                 = date('m');
         $tahun                 = date('Y');
-        if ($no) {
+
+        if (isset($no->no_transaksi)) {
             $order= $no->no_transaksi;
             $pecah = explode("/",  $order);
             $seq = $pecah[0];
@@ -30,7 +38,7 @@ class PenjualanController extends Controller
             $no_order = 1;
         }
         $no_transaksi = sprintf("%04s", $no_order) . '/KSR/' . $tahun; 
-        return view("page.penjualan",compact('total_bayar','no_transaksi'));
+        return view("page.penjualan",compact('total_bayar','no_transaksi','karyawan'));
     }
 
     /**
@@ -63,7 +71,18 @@ class PenjualanController extends Controller
         $id=$request->stok_barang_id;
         $data = Stok_barang::find($id);
 
-         $data = Penjualan::create([
+        $barang = Stok_barang::find($id);
+        $barang->stok -= $request->jumlah; 
+        $barang->save();
+
+        if ($data->stok < $request->jumlah) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Stok tidak mencukupi'
+            ]);
+        }
+
+        $data = Penjualan::create([
             'stok_barang_id' => $id,
             'jumlah' => $request->jumlah,
             'total_bayar' => ($request->jumlah * $data->harga_jual),
@@ -107,6 +126,23 @@ class PenjualanController extends Controller
     {
         $data = Penjualan::where('status',1);
 
+        $karyawan=$request->karyawan_id;
+        if($karyawan){
+
+            $piutang = Piutang::where('karyawan_id', $karyawan)->first();
+            $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
+            if($piutang){
+                $piutang->update([
+                    'piutang' => $total_bayar,
+                ]);
+            }else{
+                $piutang = Piutang::create([
+                    'karyawan_id' => $karyawan,
+                    'piutang' => $total_bayar
+                ]);
+            }
+        }
+
         $data->update([
             'no_transaksi' => $request->no_transaksi,
             'tanggal' => $request->tanggal,
@@ -140,6 +176,10 @@ class PenjualanController extends Controller
                 'message' => 'Data gagal ditemukan'
             ], 404);
         }
+        $perbedaan = $data->jumlah;
+        $barang = Stok_barang::find($data->stok_barang_id);
+        $barang->stok += $perbedaan; 
+        $barang->save();
 
         $data->status = 2;
         $updated = $data->save();
@@ -195,5 +235,29 @@ class PenjualanController extends Controller
         }
 
         return response()->json($output);
+    }
+    public function getSaldo(Request $request)
+    {
+        $karyawan_id = $request->karyawan_id;
+
+        if ($karyawan_id) {
+            $dt = Saldo::where('karyawan_id', $karyawan_id)->first();
+
+            if ($dt) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'saldo' => $dt->saldo
+                    ]
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => false,
+            'data' => [
+                'saldo' => 0
+            ]
+        ]);
     }
 }
