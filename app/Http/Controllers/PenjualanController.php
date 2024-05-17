@@ -21,7 +21,6 @@ class PenjualanController extends Controller
     {
         $karyawan=Karyawan::all();
 
-        $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
         $no = Penjualan::select('no_transaksi')
         ->orderBy('penjualan_id', 'desc')
         ->limit(1)
@@ -38,7 +37,7 @@ class PenjualanController extends Controller
             $no_order = 1;
         }
         $no_transaksi = sprintf("%04s", $no_order) . '/KSR/' . $tahun; 
-        return view("page.penjualan",compact('total_bayar','no_transaksi','karyawan'));
+        return view("page.penjualan",compact('no_transaksi','karyawan'));
     }
 
     /**
@@ -55,8 +54,7 @@ class PenjualanController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'stok_barang_id' => 'required',
-            'jumlah' => 'required',
+            'stok_barang_id' => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -83,10 +81,7 @@ class PenjualanController extends Controller
         }
 
         $data = Penjualan::create([
-            'stok_barang_id' => $id,
-            'jumlah' => $request->jumlah,
-            'total_bayar' => ($request->jumlah * $data->harga_jual),
-            'status' => 1
+            'stok_barang_id' => $id
         ]);
         $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
         if ($data) {
@@ -234,30 +229,30 @@ class PenjualanController extends Controller
             'message' => 'Sukses Melakukan delete Data',
         ]);
     }
-    public function data_list()
+    public function data_list(Request $request)
     {
-        $dt = Penjualan::leftJoin('stok_barang as sb', 'sb.stok_barang_id', '=', 'penjualan.stok_barang_id')
-        ->select('penjualan.*', 'sb.nama','sb.harga_jual')->where('penjualan.status',1)
-        ->orderBy('penjualan.penjualan_id', 'desc')
-        ->get();
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['data' => []]);
+        }
+
+        $dt = Stok_barang::whereIn("stok_barang_id", $ids)->get();
 
         $data = array();
+        $total_bayar = 0;
         $start = 0;
         foreach ($dt as $key => $value) {
             $td = array();
             $td['no'] = ++$start;
-            $td['penjualan_id'] = $value->penjualan_id ?? '-';
             $td['stok_barang_id'] = $value->stok_barang_id ?? '-';
             $td['nama'] = $value->nama ?? '-';
             $td['harga_jual'] = $value->harga_jual ?? '-';
-            $td['jumlah'] = $value->jumlah ?? '-';
-            $td['total_bayar'] = isset($value->total_bayar) ? 'Rp ' . number_format($value->total_bayar, 0, ',', '.') : '-';
-            $td['actions'] ='<a href="javascript:void(0)" onclick="hapus(\''.$value->penjualan_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
-                                <i class="la la-trash-o"></i>
-                            </a>';
+            $td['jumlah'] = 1;
+            $td['total_bayar'] = $value->harga_jual;
+            $total_bayar += $value->harga_jual;
             $data[] = $td;
         }
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data, 'total_bayar' => $total_bayar]);
     }
     public function getBarcode(Request $request)
     {

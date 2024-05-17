@@ -19,23 +19,13 @@
                     <div class="m-widget1__item">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
-                                <h3 class="m-widget1__title">Tanggal</h3>
-                            </div>
-                            <div class="col m--align-right">
-                                <input type="date" name="tanggal" required class="form-control m-input" value="<?= date('Y-m-d'); ?>" readonly/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="m-widget1__item">
-                        <div class="row m-row--no-padding align-items-center">
-                            <div class="col">
                                 <h3 class="m-widget1__title">Pelanggan</h3>
                             </div>
                             <div class="col m--align-right">
                                 <select name="pelanggan" class="form-control m-input" onchange="transaksi()" id="jenis">
                                     <option value="umum">Umum</option>
-                                    <option value="anggota koperasi">Anggota Koperasi</option>
                                     <option value="hutang">Hutang</option>
+                                    <option value="anggota koperasi">Anggota Koperasi</option>
                                 </select>
                             </div>
                         </div>
@@ -52,43 +42,24 @@
                             <div class="col">
                                 <select class="form-control" name="stok_barang_id" id="kode">
                                     <option value=""></option>
-                                </select>
+                                </select><br>
                             </div>
                         </div>
                     </div>
-                    <div class="m-widget1__item">
-                        <div class="row m-row--no-padding align-items-center">
-                            <div class="col">
-                                <h3 class="m-widget1__title">Qty</h3>
-                            </div>
-                            <div class="col m--align-right">
-                                <input type="number" name="jumlah" required class="form-control m-input"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="m-widget1__item">
-                        <div class="row m-row--no-padding align-items-center">
-                            <div class="col m--align-right">
-                                <a href="#" onclick="save()" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="checkout">
-                                    <i class="fa fa-cart-arrow-down custom-icon" style="color: green;"></i>
-                                </a>
-                            </div><br>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4">
-                <div class="m-widget1">
                     <div class="m-widget1__item">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
                                 <h3 class="m-widget1__title">Total Bayar</h3>
                             </div>
                             <div class="col m--align-right">
-                                <span class="m-widget1__number m--font-brand" id="total_bayar">{{$total_bayar}}</span>
+                                <span class="m-widget1__number m--font-brand" id="total_bayar"></span><br>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="col-xl-4">
+                <div class="m-widget1">
                     <div class="m-widget1__item" id="transaksi_anggota">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
@@ -147,79 +118,120 @@
 <script type="text/javascript">
     var method;
     $('#transaksi_anggota').hide();
-    window.addEventListener('DOMContentLoaded', (event) => {
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-        var tableData = $('.m_datatable').mDatatable({
-            data: {
-                type: 'remote', 
-                source: {
-                    read: {
-                        url: "{{ route('penjualan.data_list') }}", 
-                        method: 'POST', 
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken 
-                        },
-                        dataType: 'json' 
-                    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const kode = document.querySelector("#kode"); 
+
+        if (localStorage.getItem('data') === null) {
+            localStorage.setItem('data', '[]');
+        }
+
+        let stok_barang_id = JSON.parse(localStorage.getItem('data'));
+
+        kode.onchange = () => {
+            if(kode.value=='')return kode.focus();
+            stok_barang_id.push(kode.value);
+            localStorage.setItem('data', JSON.stringify(stok_barang_id));
+            $('#kode').val('').trigger('change');
+            $('#kode').select2('open');
+            $('.m_datatable').mDatatable().destroy();
+            initializeDatatable();
+        }
+
+        function initializeDatatable() {
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            $('.m_datatable').mDatatable({
+                data: {
+                    type: 'remote', 
+                    source: {
+                        read: {
+                            url: "{{ route('penjualan.data_list') }}",
+                            method: 'POST', 
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken 
+                            },
+                            dataType: 'json',
+                            params: {
+                                ids: stok_barang_id 
+                            },
+                            map: function(raw) {
+                                $('#total_bayar').text(raw.total_bayar);
+                                return raw.data;
+                            }
+                        }
+                    },
+                    pageSize: 10, 
+                    serverPaging: true 
                 },
-                pageSize: 10, 
-                serverPaging: true 
-            },
-
-            layout: {
-                theme: 'default', 
-                class: '', 
-                scroll: false, 
-                footer: false 
-            },
-
-            sortable: false,
-
-            pagination: true,
-
-            search: {
-                input: $('#generalSearch')
-            },
-            order: [
-                [0, 'desc'] 
-            ],
-
-            columns: [{
-                field: "no",
-                title: "No",
-                width: 50,
+                layout: {
+                    theme: 'default', 
+                    class: '', 
+                    scroll: false, 
+                    footer: false 
+                },
                 sortable: false,
-                textAlign: 'center',
-            }, {
-                field: "nama",
-                title: "Nama Barang"
-            }, {
-                field: "jumlah",
-                title: "Jumlah"
-            }, {
-                field: "harga_jual",
-                title: "Harga",
-                width: 110,
-                textAlign: 'center'
-            }, {
-                field: "total_bayar",
-                title: "Total",
-                textAlign: 'center'
-            }, {
-                field: "actions",
-                width: 110,
-                title: "Actions",
-                sortable: false,
-                overflow: 'visible'
-            }]
+                pagination: true,
+                search: {
+                    input: $('#generalSearch')
+                },
+                order: [
+                    [0, 'desc'] 
+                ],
+                columns: [{
+                    field: "no",
+                    title: "No",
+                    width: 50,
+                    sortable: false,
+                    textAlign: 'center',
+                }, {
+                    field: "nama",
+                    title: "Nama Barang"
+                }, {
+                    field: "harga_jual",
+                    title: "Harga"
+                }, {
+                    field: "jumlah",
+                    title: "Jumlah",
+                    width: 100,
+                    template: function(row) {
+                        return '<input type="number" class="form-control quantity-input" data-id="' + row.id + '" value="' + row.jumlah + '" min="1">';
+                    }
+                }, {
+                    field: "total_bayar",
+                    title: "Total Bayar",
+                    template: function(row) {
+                        return '<span class="total-bayar" data-id="' + row.id + '">' + row.total_bayar + '</span>';
+                    }
+                }]
+            });
+
+            $(document).on('input', '.quantity-input', function() {
+                var rowId = $(this).data('id');
+                var newQuantity = $(this).val();
+                var hargaJual = $(this).closest('tr').find('td[data-field="harga_jual"]').text();
+                var newTotal = newQuantity * hargaJual;
+
+                $(this).closest('tr').find('.total-bayar[data-id="' + rowId + '"]').text(newTotal);
+                var totalBayarSemua = 0;
+                $('.total-bayar').each(function() {
+                    totalBayarSemua += parseFloat($(this).text());
+                });
+
+                $('#total_bayar').text(totalBayarSemua);
             });
 
             $('#m_form_status').on('change', function () {
-                tableData.search($(this).val(), 'status');
+                $('.m_datatable').mDatatable().search($(this).val(), 'status');
             });
 
             $('#m_form_status').selectpicker();
+        }
+
+        initializeDatatable();
     });
+
+
+
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();

@@ -19,8 +19,6 @@ return new class extends Migration
             $table->integer('jumlah');
             $table->integer('total_bayar');
             $table->string('pelanggan');
-            $table->integer('cash');
-            $table->integer('status');
             $table->timestamps();
         });
     }
