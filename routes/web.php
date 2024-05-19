@@ -115,11 +115,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Penjualan
     Route::prefix('penjualan')->group(function () {
         Route::get('/', [PenjualanController::class, 'index'])->name('penjualan.index');
+        Route::get('/detail', [PenjualanController::class, 'detail'])->name('penjualan.detail');
         Route::delete('/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
         Route::post('/store', [PenjualanController::class, 'store'])->name('penjualan.store');
         Route::get('/getBarcode', [PenjualanController::class,'getBarcode'])->name('penjualan.getBarcode');
         Route::get('/getSaldo', [PenjualanController::class,'getSaldo'])->name('penjualan.getSaldo');
         Route::post('/data_list', [PenjualanController::class, 'data_list'])->name('penjualan.data_list');
+        Route::post('/detail_list', [PenjualanController::class, 'detail_list'])->name('penjualan.detail_list');
     });
 
     // Piutang
@@ -129,6 +131,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/edit/{id}', [PiutangController::class, 'edit'])->name('piutang.edit');
         Route::post('/update', [PiutangController::class, 'update'])->name('piutang.update');
         Route::post('/data_list', [PiutangController::class, 'data_list'])->name('piutang.data_list');
+        Route::post('/detail_list', [PiutangController::class, 'detail_list'])->name('piutang.detail_list');
     });
 
     //Auth

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Piutang;
 use App\Models\Penjualan;
+use App\Models\Stok_barang;
 
 
 class PiutangController extends Controller
@@ -123,4 +124,38 @@ class PiutangController extends Controller
         }
         return response()->json(['data' => $data]);
     }
+    public function detail_list()
+    {
+    $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+        ->select('penjualan.*', 'k.nama', 'k.karyawan_id')
+        ->where('pelanggan','hutang')
+        ->orderBy('penjualan.penjualan_id', 'desc')
+        ->get();
+
+    $data = array();
+    $start = 0;
+    foreach ($dt as $penjualan) {
+        $produks = json_decode($penjualan->produk, true); 
+        
+        foreach ($produks as $produk) {
+            $barang = Stok_barang::where('stok_barang_id', $produk['barang_id'])->first();
+            if ($barang) {
+                $td = array();
+                $td['no'] = ++$start;
+                $td['nama'] = $penjualan->nama ?? '-';
+                $td['no_transaksi'] = '<span class="m-badge m-badge--rounded text-white bg-info">' . $penjualan->no_transaksi . '</span>';
+                $td['nama_barang'] = $barang->nama ?? '-';
+                $td['jumlah'] = $produk['jumlah'] ?? '-';
+                $td['tanggal'] = $penjualan->tanggal ?? '-';
+                $total_bayar = $produk['jumlah'] * $barang->harga_jual;
+                $td['total_bayar'] = isset($total_bayar) ? 'Rp ' . number_format($total_bayar, 0, ',', '.') : '-';
+                
+                $data[] = $td;
+            }
+        }
+    }
+    
+    return response()->json(['data' => $data]);
+}
+
 }

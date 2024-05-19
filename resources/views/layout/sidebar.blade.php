@@ -55,13 +55,19 @@
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
             <a href="{{route('penjualan.index')}}" class="m-menu__link m-menu__toggle">
                 <i class="m-menu__link-icon flaticon-paper-plane"></i>
-                <span class="m-menu__link-text">Penjualan</span>
+                <span class="m-menu__link-text">Transaksi</span>
             </a>
         </li>
         <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
             <a href="{{route('piutang.index')}}" class="m-menu__link m-menu__toggle">
                 <i class="m-menu__link-icon flaticon-interface-1"></i>
                 <span class="m-menu__link-text">Piutang</span>
+            </a>
+        </li>
+        <li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true">
+            <a href="{{route('penjualan.detail')}}" class="m-menu__link m-menu__toggle">
+                <i class="m-menu__link-icon flaticon-list-3"></i>
+                <span class="m-menu__link-text">Penjualan</span>
             </a>
         </li>
         <li class="m-menu__section ">

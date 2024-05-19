@@ -40,6 +40,10 @@ class PenjualanController extends Controller
         $no_transaksi = sprintf("%04s", $no_order) . '/KSR/' . $tahun; 
         return view("page.penjualan",compact('no_transaksi','karyawan'));
     }
+    public function detail()
+    {
+        return view("page.penjualan_detail");
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -281,5 +285,35 @@ class PenjualanController extends Controller
                 'saldo' => 0
             ]
         ]);
+    }
+    public function detail_list()
+    {
+        $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+            ->select('penjualan.*', 'k.nama', 'k.karyawan_id')
+            ->orderBy('penjualan.penjualan_id', 'desc')
+            ->get();
+
+        $data = array();
+        $start = 0;
+            foreach ($dt as $penjualan) {
+                $produks = json_decode($penjualan->produk, true); 
+                
+                foreach ($produks as $produk) {
+                    $barang = Stok_barang::where('stok_barang_id', $produk['barang_id'])->first();
+                    if ($barang) {
+                        $td = array();
+                        $td['no'] = ++$start;
+                        $td['no_transaksi'] = '<span class="m-badge m-badge--rounded text-white bg-info">' . $penjualan->no_transaksi . '</span>';
+                        $td['nama_barang'] = $barang->nama ?? '-';
+                        $td['jumlah'] = $produk['jumlah'] ?? '-';
+                        $td['tanggal'] = $penjualan->tanggal ?? '-';
+                        $total_bayar = $produk['jumlah'] * $barang->harga_jual;
+                        $td['total_bayar'] = isset($total_bayar) ? 'Rp ' . number_format($total_bayar, 0, ',', '.') : '-';
+                        
+                        $data[] = $td;
+                    }
+                }
+            }
+            return response()->json(['data' => $data]);
     }
 }

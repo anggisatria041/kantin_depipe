@@ -55,7 +55,22 @@
         <!--end: Search Form -->
 
         <!--begin: Datatable -->
-        <div class="m_datatable"></div>
+        <ul class="nav nav-pills nav-fill" role="tablist">
+            <li class="nav-item col-6">
+                <a class="nav-link active" data-toggle="tab" onclick="renew('#m_datatable')" href="#m_tabs_5_1"><b>PIUTANG</b></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable2')" href="#m_tabs_5_2"><b>DETAIL</b></a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="m_tabs_5_1" role="tabpanel">
+                <div class="m_datatable" id="m_datatable"></div>
+            </div>
+            <div class="tab-pane" id="m_tabs_5_2" role="tabpanel">
+                <div class="m_datatable2" id="m_datatable2"></div>
+            </div>
+        </div>
         <!--end: Datatable -->
     </div>
 </div>
@@ -171,14 +186,79 @@
                 sortable: false,
                 overflow: 'visible'
             }]
-            });
+        });
 
-            $('#m_form_status').on('change', function () {
-                tableData.search($(this).val(), 'status');
-            });
+        var tableData = $('.m_datatable2').mDatatable({
+            data: {
+                type: 'remote', 
+                source: {
+                    read: {
+                        url: "{{ route('piutang.detail_list') }}", 
+                        method: 'POST', 
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken 
+                        },
+                        dataType: 'json' 
+                    }
+                },
+                pageSize: 10, 
+                serverPaging: true 
+            },
 
-            $('#m_form_status').selectpicker();
+            layout: {
+                theme: 'default', 
+                class: '', 
+                scroll: false, 
+                footer: false 
+            },
+
+            sortable: false,
+
+            pagination: true,
+
+            search: {
+                input: $('#generalSearch')
+            },
+            order: [
+                [0, 'desc'] 
+            ],
+
+            columns: [{
+                field: "no",
+                title: "No",
+                width: 50,
+                sortable: false,
+                textAlign: 'center',
+            }, {
+                field: "no_transaksi",
+                title: "No Transaksi"
+            }, {
+                field: "nama",
+                title: "Nama"
+            }, {
+                field: "nama_barang",
+                title: "Nama Barang"
+            }, {
+                field: "jumlah",
+                title: "Jumlah"
+            }, {
+                field: "total_bayar",
+                title: "Total Bayar"
+            }, {
+                field: "tanggal",
+                title: "Tanggal"
+            }]
+        });
+
+        $('#m_form_status').on('change', function () {
+            tableData.search($(this).val(), 'status');
+        });
+
+        $('#m_form_status').selectpicker();
     });
+    function renew(selector) {
+        $(selector).mDatatable().reload();
+    }
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
@@ -226,6 +306,8 @@
                     $('#m_modal_6').modal('hide');
                     swal("Berhasil..", "Data Anda berhasil disimpan", "success");
                     $('.m_datatable').mDatatable().reload();
+                    $('.m_datatable2').mDatatable().reload();
+
                 } else {
                     swal({
                         text: data.message,
@@ -270,6 +352,7 @@
                         if (data.status == true) {
                             swal("Berhasil..", "Data Anda berhasil dihapus", "success");
                             $('.m_datatable').mDatatable().reload();
+                            $('.m_datatable2').mDatatable().reload();
                         } else {
                             swal("Oops", "Data gagal dihapus!", "error");
                         }
