@@ -93,6 +93,61 @@ class PenjualanController extends Controller
             'tanggal' => Carbon::now()->format('Y-m-d')
 
         ]);
+        
+        $karyawan=$request->karyawan_id;
+        if($request->pelanggan == 'hutang'){
+            if(empty($karyawan)){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Anda belum memilih karyawan',
+                ]);
+            }
+            $piutang = Piutang::where('karyawan_id', $karyawan)->first();
+            if($piutang){
+                $piutang->piutang += $request->total_bayar; 
+                $piutang->save();
+            }else{
+                $piutang = Piutang::create([
+                    'karyawan_id' => $karyawan,
+                    'piutang' => $request->total_bayar
+                ]);
+            }
+        }
+
+        if($request->pelanggan == 'anggota koperasi'){
+            if(empty($karyawan)){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Anda belum memilih karyawan',
+                ]);
+            }
+            $saldo = Saldo::where('karyawan_id', $karyawan)->first();
+            $hasil=$request->total_bayar - ($saldo->saldo);
+
+            if($saldo->saldo >= $request->total_bayar){
+                $saldo->saldo -= $request->total_bayar; 
+                $saldo->save();
+            } else{
+                $bayar=$request->cash;
+                $saldo->saldo = 0; 
+                $saldo->save();
+                
+                if($request->cash < $hasil){
+                    $hutang = $hasil - $request->cash;
+                    $piutang = Piutang::where('karyawan_id', $karyawan)->first();
+                    if($piutang){
+                        $piutang->piutang += $hutang; 
+                        $piutang->save();
+                    }else{
+                        $piutang = Piutang::create([
+                            'karyawan_id' => $karyawan,
+                            'piutang' => $hutang
+                        ]);
+                    }
+                }
+            }
+        }
+
         if ($data) {
             return response()->json([
                 'status' => true,

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Piutang;
 use App\Models\Penjualan;
-use Illuminate\Support\Facades\DB;
 
 
 class PiutangController extends Controller
@@ -81,7 +80,8 @@ class PiutangController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Penjualan::where('karyawan_id',$id);
+        $data = Piutang::where('karyawan_id',$id)->first();
+        $dt = Penjualan::where('karyawan_id',$id)->where('pelanggan','hutang');
 
         if (empty($data)) {
             return response()->json([
@@ -91,6 +91,8 @@ class PiutangController extends Controller
         }
 
         $data->delete();
+        $dt->delete();
+
 
         return response()->json([
             'status' => true,
@@ -99,12 +101,10 @@ class PiutangController extends Controller
     }
     public function data_list()
     {
-        $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
-            ->select('k.karyawan_id', 'k.nama', DB::raw('SUM(penjualan.total_bayar) as total_bayar'))
-            ->whereNotNull('penjualan.karyawan_id')
-            ->groupBy('k.karyawan_id', 'k.nama')
-            ->get();
-
+        $dt = Piutang::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'piutang.karyawan_id')
+        ->select('piutang.*', 'k.nama','k.karyawan_id')
+        ->orderBy('piutang.piutang_id', 'desc')
+        ->get();
 
         $data = array();
         $start = 0;
@@ -112,8 +112,11 @@ class PiutangController extends Controller
             $td = array();
             $td['no'] = ++$start;
             $td['nama'] = $value->nama ?? '-';
-            $td['total_bayar'] = isset($value->total_bayar) ? 'Rp ' . number_format($value->total_bayar, 0, ',', '.') : '-';
-            $td['actions'] ='<a href="javascript:void(0)" onclick="hapus(\''.$value->karyawan_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
+            $td['piutang'] = isset($value->piutang) ? 'Rp ' . number_format($value->piutang, 0, ',', '.') : '-';
+            $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->piutang_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                                <i class="la la-edit"></i>
+                            </a>
+                            <a href="javascript:void(0)" onclick="hapus(\''.$value->karyawan_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
                                 <i class="la la-trash-o"></i>
                             </a>';
             $data[] = $td;
