@@ -10,12 +10,13 @@ class Penjualan extends Model
     protected $connection = 'mysql';
     protected $table='penjualan';
     protected $fillable=[
-        "stok_barang_id",
         "no_transaksi",
+        "karyawan_id",
         "tanggal",
-        "jumlah",
+        "produk",
         "total_bayar",
-        "pelanggan"
+        "pelanggan",
+        "cash"
     ];
     protected $primaryKey = 'penjualan_id';
 }

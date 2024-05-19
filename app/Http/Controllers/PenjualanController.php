@@ -8,6 +8,7 @@ use App\Models\Stok_barang;
 use App\Models\Karyawan;
 use App\Models\Piutang;
 use App\Models\Saldo;
+use Carbon\Carbon;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -54,7 +55,9 @@ class PenjualanController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'stok_barang_id' => 'required'
+            'no_transaksi' => 'required',
+            'pelanggan' => 'required'
+
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -66,29 +69,34 @@ class PenjualanController extends Controller
                 'data' => $validator->errors()
             ]);
         }
-        $id=$request->stok_barang_id;
-        $data = Stok_barang::find($id);
+        $pesan = json_decode($request->produk, true);
+        foreach ($pesan as $produk) {
+            $barang = Stok_barang::find($produk['barang_id']); 
+            $barang->stok -= $produk['jumlah'];
+            $barang->save();
 
-        $barang = Stok_barang::find($id);
-        $barang->stok -= $request->jumlah; 
-        $barang->save();
-
-        if ($data->stok < $request->jumlah) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Stok tidak mencukupi'
-            ]);
+            if ($barang->stok < $produk['jumlah']) { 
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Stok tidak mencukupi'
+                ]);
+            }
         }
 
         $data = Penjualan::create([
-            'stok_barang_id' => $id
+            'no_transaksi' => $request->no_transaksi,
+            'pelanggan' => $request->pelanggan,
+            'produk' => $request->produk,
+            'total_bayar' => $request->total_bayar,
+            'cash' => $request->cash,
+            'karyawan_id' => isset($request->karyawan_id)? $request->karyawan_id:null,
+            'tanggal' => Carbon::now()->format('Y-m-d')
+
         ]);
-        $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
         if ($data) {
             return response()->json([
                 'status' => true,
-                'message' => 'Sukses Memasukkan Data',
-                'bayar'=> $total_bayar
+                'message' => 'Sukses Memasukkan Data'
             ]);
         } else {
             return response()->json([
@@ -119,88 +127,7 @@ class PenjualanController extends Controller
      */
     public function update(Request $request)
     {
-        $data = Penjualan::where('status',1);
-
-        $karyawan=$request->karyawan_id;
-        $pelanggan=$request->pelanggan;
         
-        if($pelanggan == 'hutang'){
-            if($karyawan){
-                $piutang = Piutang::where('karyawan_id', $karyawan)->first();
-                $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
-                if($piutang){
-                    $piutang->piutang += $total_bayar; 
-                    $piutang->save();
-                }else{
-                    $piutang = Piutang::create([
-                        'karyawan_id' => $karyawan,
-                        'piutang' => $total_bayar
-                    ]);
-                }
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Anda belum memilih karyawan',
-                ]);
-            }
-            
-        } else if($pelanggan == 'anggota koperasi'){
-
-            if($karyawan){
-                $saldo = Saldo::where('karyawan_id', $karyawan)->first();
-                $total_bayar = Penjualan::where('status', 1)->sum('total_bayar');
-                $hasil=$total_bayar - ($saldo->saldo);
-
-                if($saldo->saldo >= $total_bayar){
-                    $saldo->saldo -= $total_bayar; 
-                    $saldo->save();
-                } else{
-                    $bayar=$request->bayar;
-                    $saldo->saldo = 0; 
-                    $saldo->save();
-                    
-                    if($bayar < $hasil){
-                        $hutang = $hasil - $bayar;
-                        $piutang = Piutang::where('karyawan_id', $karyawan)->first();
-                        if($piutang){
-                            $piutang->piutang += $hutang; 
-                            $piutang->save();
-                        }else{
-                            $piutang = Piutang::create([
-                                'karyawan_id' => $karyawan,
-                                'piutang' => $hutang
-                            ]);
-                        }
-                    }
-                }
-            }else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Anda belum memilih karyawan',
-                ]);
-            }
-            
-
-        }
-
-        $data->update([
-            'no_transaksi' => $request->no_transaksi,
-            'tanggal' => $request->tanggal,
-            'pelanggan' => $request->pelanggan,
-            'status' => 2
-        ]);
-
-        if ($data) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Sukses Mengubah Data',
-            ]);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Gagal Mengubah data',
-            ]);
-        }
     }
 
     /**

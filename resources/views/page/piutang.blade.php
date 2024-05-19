@@ -162,7 +162,7 @@
                 field: "nama",
                 title: "Nama"
             }, {
-                field: "piutang",
+                field: "total_bayar",
                 title: "Jumlah Hutang"
             }, {
                 field: "actions",

@@ -3,6 +3,8 @@
 <div class="m-portlet">
     <div class="m-portlet__body  m-portlet__body--no-padding">
     <form class="m-form m-form--fit m-form--label-align-right" action="" method="POST" id="formAdd" enctype="multipart/form-data">
+        <input type="hidden" name="total_bayar" id="hidden_total_bayar">
+        <input type="hidden" name="produk" id="stok_barang_data">
         <div class="row m-row--no-padding m-row--col-separator-xl">
             <div class="col-xl-4">
                 <div class="m-widget1">
@@ -84,7 +86,7 @@
                                 <h3 class="m-widget1__title" id="kembali_title">Kembali</h3>
                             </div>
                             <div class="col m--align-right">
-                                <input type="number" name="bayar" required class="form-control m-input" onkeyup="hitungKembalian()" id="bayar"/><br>
+                                <input type="number" name="cash" required class="form-control m-input" onkeyup="hitungKembalian()" id="bayar"/><br>
                                 <span class="m-widget1__number m--font-success" id="kembalian">0,00</span>
                             </div>
                         </div>
@@ -94,7 +96,7 @@
                             <div class="col">
                             </div>
                             <div class="col m--align-right">
-                                <a href="#" onclick="simpan()"  class="btn btn-primary btn-sm">
+                                <a href="#" onclick="save()"  class="btn btn-primary btn-sm">
                                     Simpan
                                 </a>
                             </div>
@@ -103,7 +105,7 @@
                 </div>
             </div>
         </div>
-        </form>
+    </form>
     </div>
 </div>
 <div class="m-portlet m-portlet--mobile">
@@ -118,7 +120,7 @@
 <script type="text/javascript">
     var method;
     $('#transaksi_anggota').hide();
-
+    let stok_barang_id = [];
     document.addEventListener("DOMContentLoaded", () => {
         const kode = document.querySelector("#kode"); 
 
@@ -126,11 +128,16 @@
             localStorage.setItem('data', '[]');
         }
 
-        let stok_barang_id = JSON.parse(localStorage.getItem('data'));
+        stok_barang_id = JSON.parse(localStorage.getItem('data'));
+        stok_barang_id = stok_barang_id.map(item => 
+            typeof item === 'object' ? item : {barang_id: item, jumlah: 1}
+        );
+        localStorage.setItem('data', JSON.stringify(stok_barang_id));
 
         kode.onchange = () => {
             if(kode.value=='')return kode.focus();
-            stok_barang_id.push(kode.value);
+            var barangId = parseInt(kode.value); 
+            stok_barang_id.push({barang_id: barangId, jumlah: 1});
             localStorage.setItem('data', JSON.stringify(stok_barang_id));
             $('#kode').val('').trigger('change');
             $('#kode').select2('open');
@@ -152,7 +159,7 @@
                             },
                             dataType: 'json',
                             params: {
-                                ids: stok_barang_id 
+                                ids: stok_barang_id.map(item => item.barang_id) 
                             },
                             map: function(raw) {
                                 $('#total_bayar').text(raw.total_bayar);
@@ -194,13 +201,13 @@
                     title: "Jumlah",
                     width: 100,
                     template: function(row) {
-                        return '<input type="number" class="form-control quantity-input" data-id="' + row.id + '" value="' + row.jumlah + '" min="1">';
+                        return '<input type="number" class="form-control quantity-input" data-id="' + row.stok_barang_id + '" value="' + row.jumlah + '" min="1">';
                     }
                 }, {
                     field: "total_bayar",
                     title: "Total Bayar",
                     template: function(row) {
-                        return '<span class="total-bayar" data-id="' + row.id + '">' + row.total_bayar + '</span>';
+                        return '<span class="total-bayar" data-id="' + row.stok_barang_id + '">' + row.total_bayar + '</span>';
                     }
                 }]
             });
@@ -211,6 +218,14 @@
                 var hargaJual = $(this).closest('tr').find('td[data-field="harga_jual"]').text();
                 var newTotal = newQuantity * hargaJual;
 
+                stok_barang_id.forEach(item => {
+
+                    if (item.barang_id == rowId) {
+                        item.jumlah = newQuantity;
+                    }
+                });
+                localStorage.setItem('data', JSON.stringify(stok_barang_id));
+
                 $(this).closest('tr').find('.total-bayar[data-id="' + rowId + '"]').text(newTotal);
                 var totalBayarSemua = 0;
                 $('.total-bayar').each(function() {
@@ -218,6 +233,7 @@
                 });
 
                 $('#total_bayar').text(totalBayarSemua);
+                $('#hidden_total_bayar').val(totalBayarSemua);
             });
 
             $('#m_form_status').on('change', function () {
@@ -230,14 +246,16 @@
         initializeDatatable();
     });
 
-
-
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
-        $('#kode').val('').trigger('change');
     }
     function save() {
+        var totalBayar = $('#total_bayar').text();
+        $('#hidden_total_bayar').val(totalBayar);
+        var stokBarangData = JSON.stringify(stok_barang_id);
+        $('#stok_barang_data').val(stokBarangData);
+
         const formData = $('#formAdd').serialize();
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
         const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
@@ -248,9 +266,9 @@
             dataType: "json",
             success: function(data) {
                 if (data.status) {
-                    resetForm();
-                    $("#total_bayar").html(data.bayar);
-                    $('.m_datatable').mDatatable().reload();
+                    localStorage.clear('data');
+                    swal("Berhasil..", "Transaksi Berhasil", "success");
+                    location.reload();
                 } else {
                     swal({
                         text: data.message,
@@ -374,35 +392,6 @@
             var kembalian = (bayar + saldo) - total;
             document.getElementById('kembalian').innerHTML = kembalian.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
         }
-    }
-    function simpan() {
-        const formData = $('#formAdd').serialize();
-        const csrfToken = $('meta[name="csrf-token"]').attr('content');
-        const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
-       
-        $.ajax({
-            url: "{{ route('penjualan.update') }}",
-            type: "POST",
-            data: formDataWithToken,
-            dataType: "json",
-            success: function(data) {
-                if (data.status) {
-                    $('#m_modal_6').modal('hide');
-                    swal("Berhasil..", "Transaksi berhasil", "success").then(function() {
-                        location.reload();
-                    });
-                } else {
-                    swal({
-                        text: data.message,
-                        type: "warning",
-                        closeOnConfirm: true
-                    });
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                swal("Oops", "Data gagal disimpan!", "error");
-            }
-        });
     }
     function transaksi() {
         $('[name="karyawan_id"] :selected').removeAttr('selected');

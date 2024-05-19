@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('penjualan', function (Blueprint $table) {
             $table->bigIncrements('penjualan_id');
-            $table->integer('stok_barang_id');
             $table->string('no_transaksi');
             $table->date('tanggal');
-            $table->integer('jumlah');
+            $table->string('detail');
             $table->integer('total_bayar');
             $table->string('pelanggan');
             $table->timestamps();
