@@ -34,6 +34,7 @@ class KaryawanController extends Controller
             'no_hp' => 'required',
             'alamat' => 'required',
             'divisi' => 'required',
+            'anggota_koperasi' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -50,7 +51,8 @@ class KaryawanController extends Controller
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
-            'divisi' => $request->divisi
+            'divisi' => $request->divisi,
+            'is_anggota_koperasi' => $request->anggota_koperasi
         ]);
 
         if ($data) {
@@ -96,6 +98,7 @@ class KaryawanController extends Controller
             'no_hp' => 'required',
             'alamat' => 'required',
             'divisi' => 'required',
+            'anggota_koperasi' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -117,7 +120,8 @@ class KaryawanController extends Controller
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
-            'divisi' => $request->divisi
+            'divisi' => $request->divisi,
+            'is_anggota_koperasi' => $request->anggota_koperasi
         ]);
 
         if ($data) {
@@ -154,9 +158,10 @@ class KaryawanController extends Controller
             'message' => 'Sukses Melakukan delete Data',
         ]);
     }
-    public function data_list()
+    public function data_list(Request $request)
     {
-        $dt = Karyawan::orderBy('karyawan_id', 'desc')->get();
+        $param = $request->input('anggota_koperasi');
+        $dt = Karyawan::where('is_anggota_koperasi',$param)->orderBy('karyawan_id', 'desc')->get();
         $data = array();
         $start = 0;
         foreach ($dt as $key => $value) {

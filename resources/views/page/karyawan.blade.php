@@ -77,7 +77,22 @@
         <!--end: Search Form -->
 
         <!--begin: Datatable -->
-        <div class="m_datatable"></div>
+        <ul class="nav nav-pills nav-fill" role="tablist">
+            <li class="nav-item col-6">
+                <a class="nav-link active" data-toggle="tab" onclick="renew('#m_datatable')" href="#m_tabs_5_1"><b>Anggota Koperasi</b></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable2')" href="#m_tabs_5_2"><b>Umum</b></a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="m_tabs_5_1" role="tabpanel">
+                <div class="m_datatable" id="m_datatable"></div>
+            </div>
+            <div class="tab-pane" id="m_tabs_5_2" role="tabpanel">
+                <div class="m_datatable2" id="m_datatable2"></div>
+            </div>
+        </div>
         <!--end: Datatable -->
     </div>
 </div>
@@ -136,6 +151,21 @@
                             <input type="number" name="no_hp" required class="form-control m-input" placeholder="No Hp"/>
                         </div>
                     </div>
+                    <div class="form-group m-form__group row">
+                        <label class="col-form-label col-md-3" style="text-align:left">
+                            Anggota Koperasi <font class="m--font-danger">*</font>
+                        </label>
+                        <div class="m-radio-list">
+                            <label class="m-radio">
+                                <input type="radio" name="anggota_koperasi" value="Ya" checked="checked"> Ya
+                                <span></span>
+                            </label>
+                            <label class="m-radio">
+                                <input type="radio" name="anggota_koperasi" value="Tidak"> Tidak 
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
                     <div class="form-group m-form__group row spkadd">
                         <label class="col-form-label col-md-3" style="text-align:left">
                             Divisi <font class="m--font-danger">*</font>
@@ -178,7 +208,10 @@
                         headers: {
                             'X-CSRF-TOKEN': csrfToken 
                         },
-                        dataType: 'json' 
+                        dataType: 'json',
+                        params: {
+                            anggota_koperasi: 'Ya' 
+                        }
                     }
                 },
                 pageSize: 10, 
@@ -231,14 +264,84 @@
                 sortable: false,
                 overflow: 'visible'
             }]
-            });
+        });
+        var tableData = $('.m_datatable2').mDatatable({
+            data: {
+                type: 'remote', 
+                source: {
+                    read: {
+                        url: "{{ route('karyawan.data_list') }}", 
+                        method: 'POST', 
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken 
+                        },
+                        dataType: 'json',
+                        params: {
+                            anggota_koperasi: 'Tidak' 
+                        }
+                    }
+                },
+                pageSize: 10, 
+                serverPaging: true 
+            },
 
-            $('#m_form_status').on('change', function () {
-                tableData.search($(this).val(), 'status');
-            });
+            layout: {
+                theme: 'default', 
+                class: '', 
+                scroll: false, 
+                footer: false 
+            },
 
-            $('#m_form_status').selectpicker();
+            sortable: false,
+
+            pagination: true,
+
+            search: {
+                input: $('#generalSearch')
+            },
+            order: [
+                [0, 'desc'] 
+            ],
+
+            columns: [{
+                field: "no",
+                title: "No",
+                width: 50,
+                sortable: false,
+                textAlign: 'center',
+            }, {
+                field: "nama",
+                title: "Nama"
+            }, {
+                field: "alamat",
+                title: "Alamat"
+            }, {
+                field: "no_hp",
+                title: "No Hp",
+                width: 110,
+                textAlign: 'center'
+            }, {
+                field: "divisi",
+                title: "Divisi",
+                textAlign: 'center'
+            }, {
+                field: "actions",
+                width: 110,
+                title: "Actions",
+                sortable: false,
+                overflow: 'visible'
+            }]
+        });
+
+        $('#m_form_status').on('change', function () {
+            tableData.search($(this).val(), 'status');
+        });
+
+        $('#m_form_status').selectpicker();
     });
+    function renew(selector) {
+        $(selector).mDatatable().reload();
+    }
     function resetForm() {
         $('#m_form_1_msg').hide();
         $('#formAdd')[0].reset();
@@ -284,6 +387,7 @@
                         $('#m_modal_6').modal('hide');
                         swal("Berhasil..", "Data Anda berhasil disimpan", "success");
                         $('.m_datatable').mDatatable().reload();
+                        $('.m_datatable2').mDatatable().reload();
                     } else {
                         swal({
                             text: data.message,
@@ -315,7 +419,12 @@
                     $('[name="nama"]').val(data.data.nama);
                     $('[name="alamat"]').val(data.data.alamat);
                     $('[name="no_hp"]').val(data.data.no_hp);
-                    $('[name="divisi"]').val(data.data.divisi); 
+                    $('[name="divisi"]').val(data.data.divisi);
+                    $('[name="anggota_koperasi"]').each(function() {
+                        if ($(this).val() == data.data.is_anggota_koperasi) {
+                            $(this).prop('checked', true);
+                        }
+                    });
                     $('.m-select2').select2({width : '100%'});
                     $('#m_modal_6').modal('show'); 
                 } else {
@@ -360,6 +469,7 @@
                         if (data.status == true) {
                             swal("Berhasil..", "Data Anda berhasil dihapus", "success");
                             $('.m_datatable').mDatatable().reload();
+                            $('.m_datatable2').mDatatable().reload();
                         } else {
                             swal("Oops", "Data gagal dihapus!", "error");
                         }

@@ -45,6 +45,8 @@ class AuthController extends Controller
             $token = $user->createToken('authtoken')->plainTextToken;
             if (Auth::user()->role == 'admin') {
                 return redirect('/dashboard');
+            } else if(Auth::user()->role == 'kasir') {
+                return redirect()->route('penjualan.index');
             } else {
                 return redirect('/portal')->with('error', 'Tidak memiliki akses admin!');
             }
