@@ -188,7 +188,7 @@ class SewaController extends Controller
             $td['tgl_sewa'] = $value->tgl_sewa ?? '-';
             $td['nama'] = $value->nama ?? '-';
             $td['tgl_berakhir'] = $value->tgl_berakhir ?? '-';
-            $td['harga'] = $value->harga ?? '-';
+            $td['harga'] = isset($value->harga) ? 'Rp ' . number_format($value->harga, 0, ',', '.') : '-';
             $td['level'] = $value->level ?? '-';
             $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->sewa_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                                 <i class="la la-edit"></i>

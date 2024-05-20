@@ -32,6 +32,8 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     //Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::post('/dashboard/data_list', [DashboardController::class, 'data_list'])->name('dashboard.data_list');
+
 
     // Sewa
     Route::prefix('sewa')->group(function () {
