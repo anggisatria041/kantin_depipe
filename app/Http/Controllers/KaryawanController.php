@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Karyawan;
+use App\Models\Saldo;
 use Illuminate\Support\Facades\Validator;
 
 class KaryawanController extends Controller
@@ -47,13 +48,27 @@ class KaryawanController extends Controller
             ]);
         }
 
-         $data = Karyawan::create([
+        $data = Karyawan::create([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
             'divisi' => $request->divisi,
             'is_anggota_koperasi' => $request->anggota_koperasi
         ]);
+
+        $karyawan_id = $data->karyawan_id;
+
+        if($request->anggota_koperasi == 'Ya'){
+            $data = Saldo::create([
+                'karyawan_id' => $karyawan_id,
+                'saldo' => 30000
+            ]);
+        } else {
+            $data = Saldo::create([
+                'karyawan_id' => $karyawan_id,
+                'saldo' => 0
+            ]);
+        }
 
         if ($data) {
             return response()->json([
@@ -92,6 +107,8 @@ class KaryawanController extends Controller
     {
         $id = $request->karyawan_id;
         $data = Karyawan::find($id);
+        $saldo = Saldo::where('karyawan_id',$id)->first();
+
 
         $rules = [
             'nama' => 'required',
@@ -123,6 +140,18 @@ class KaryawanController extends Controller
             'divisi' => $request->divisi,
             'is_anggota_koperasi' => $request->anggota_koperasi
         ]);
+
+        if($request->anggota_koperasi == 'Ya'){
+            $saldo->update([
+                'karyawan_id' => $id,
+                'saldo' => 30000
+            ]);
+        } else {
+            $saldo->update([
+                'karyawan_id' => $id,
+                'saldo' => 0
+            ]);
+        }
 
         if ($data) {
             return response()->json([

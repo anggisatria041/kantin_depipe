@@ -56,11 +56,14 @@
 
         <!--begin: Datatable -->
         <ul class="nav nav-pills nav-fill" role="tablist">
-            <li class="nav-item col-6">
+            <li class="nav-item">
                 <a class="nav-link active" data-toggle="tab" onclick="renew('#m_datatable')" href="#m_tabs_5_1"><b>PIUTANG</b></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable2')" href="#m_tabs_5_2"><b>DETAIL</b></a>
+                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable2')" href="#m_tabs_5_2"><b>Transaksi Hutang</b></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable3')" href="#m_tabs_5_3"><b>Transaksi Saldo</b></a>
             </li>
         </ul>
         <div class="tab-content">
@@ -69,6 +72,9 @@
             </div>
             <div class="tab-pane" id="m_tabs_5_2" role="tabpanel">
                 <div class="m_datatable2" id="m_datatable2"></div>
+            </div>
+            <div class="tab-pane" id="m_tabs_5_3" role="tabpanel">
+                <div class="m_datatable3" id="m_datatable3"></div>
             </div>
         </div>
         <!--end: Datatable -->
@@ -177,7 +183,7 @@
                 field: "nama",
                 title: "Nama"
             }, {
-                field: "piutang",
+                field: "total_bayar",
                 title: "Jumlah Hutang"
             }, {
                 field: "actions",
@@ -250,6 +256,62 @@
             }]
         });
 
+        var tableData = $('.m_datatable3').mDatatable({
+            data: {
+                type: 'remote', 
+                source: {
+                    read: {
+                        url: "{{ route('piutang.detail_list_saldo') }}", 
+                        method: 'POST', 
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken 
+                        },
+                        dataType: 'json' 
+                    }
+                },
+                pageSize: 10, 
+                serverPaging: true 
+            },
+
+            layout: {
+                theme: 'default', 
+                class: '', 
+                scroll: false, 
+                footer: false 
+            },
+
+            sortable: false,
+
+            pagination: true,
+
+            search: {
+                input: $('#generalSearch')
+            },
+            order: [
+                [0, 'desc'] 
+            ],
+
+            columns: [{
+                field: "no",
+                title: "No",
+                width: 50,
+                sortable: false,
+                textAlign: 'center',
+            }, {
+                field: "no_transaksi",
+                title: "No Transaksi"
+            }, {
+                field: "nama",
+                title: "Nama"
+            }, {
+                field: "piutang",
+                title: "Piutang"
+            }, {
+                field: "tanggal",
+                title: "Tanggal"
+            }]
+        });
+
         $('#m_form_status').on('change', function () {
             tableData.search($(this).val(), 'status');
         });
@@ -307,7 +369,7 @@
                     swal("Berhasil..", "Data Anda berhasil disimpan", "success");
                     $('.m_datatable').mDatatable().reload();
                     $('.m_datatable2').mDatatable().reload();
-
+                    $('.m_datatable3').mDatatable().reload();
                 } else {
                     swal({
                         text: data.message,
@@ -353,6 +415,7 @@
                             swal("Berhasil..", "Data Anda berhasil dihapus", "success");
                             $('.m_datatable').mDatatable().reload();
                             $('.m_datatable2').mDatatable().reload();
+                            $('.m_datatable3').mDatatable().reload();
                         } else {
                             swal("Oops", "Data gagal dihapus!", "error");
                         }

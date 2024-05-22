@@ -134,6 +134,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/update', [PiutangController::class, 'update'])->name('piutang.update');
         Route::post('/data_list', [PiutangController::class, 'data_list'])->name('piutang.data_list');
         Route::post('/detail_list', [PiutangController::class, 'detail_list'])->name('piutang.detail_list');
+        Route::post('/detail_list_saldo', [PiutangController::class, 'detail_list_saldo'])->name('piutang.detail_list_saldo');
     });
 
     //Auth

@@ -106,16 +106,6 @@ class PenjualanController extends Controller
                     'message' => 'Anda belum memilih karyawan',
                 ]);
             }
-            $piutang = Piutang::where('karyawan_id', $karyawan)->first();
-            if($piutang){
-                $piutang->piutang += $request->total_bayar; 
-                $piutang->save();
-            }else{
-                $piutang = Piutang::create([
-                    'karyawan_id' => $karyawan,
-                    'piutang' => $request->total_bayar
-                ]);
-            }
         }
 
         if($request->pelanggan == 'anggota koperasi'){
@@ -138,16 +128,11 @@ class PenjualanController extends Controller
                 
                 if($request->cash < $hasil){
                     $hutang = $hasil - $request->cash;
-                    $piutang = Piutang::where('karyawan_id', $karyawan)->first();
-                    if($piutang){
-                        $piutang->piutang += $hutang; 
-                        $piutang->save();
-                    }else{
                         $piutang = Piutang::create([
                             'karyawan_id' => $karyawan,
-                            'piutang' => $hutang
+                            'jumlah' => $hutang,
+                            'no_transaksi' =>$request->no_transaksi
                         ]);
-                    }
                 }
             }
         }

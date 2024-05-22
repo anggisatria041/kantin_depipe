@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Piutang;
 use App\Models\Penjualan;
 use App\Models\Stok_barang;
+use Illuminate\Support\Facades\DB;
 
 
 class PiutangController extends Controller
@@ -81,8 +82,8 @@ class PiutangController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = Piutang::where('karyawan_id',$id)->first();
-        $dt = Penjualan::where('karyawan_id',$id)->where('pelanggan','hutang');
+        $data = Piutang::where('karyawan_id',$id);
+        $dt = Penjualan::where('karyawan_id',$id);
 
         if (empty($data)) {
             return response()->json([
@@ -102,10 +103,17 @@ class PiutangController extends Controller
     }
     public function data_list()
     {
-        $dt = Piutang::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'piutang.karyawan_id')
-        ->select('piutang.*', 'k.nama','k.karyawan_id')
-        ->orderBy('piutang.piutang_id', 'desc')
+       $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+        ->leftJoin(DB::raw('(SELECT karyawan_id, SUM(jumlah) as total_piutang FROM piutang GROUP BY karyawan_id) as p'), 'p.karyawan_id', '=', 'k.karyawan_id')
+        ->select('k.karyawan_id', 'k.nama',
+            DB::raw('SUM(CASE WHEN penjualan.pelanggan = "hutang" THEN penjualan.total_bayar ELSE 0 END) as total_penjualan'),
+            DB::raw('COALESCE(p.total_piutang, 0) as total_piutang'),
+            DB::raw('SUM(CASE WHEN penjualan.pelanggan = "hutang" THEN penjualan.total_bayar ELSE 0 END) + COALESCE(p.total_piutang, 0) as total_bayar')
+        )
+        ->whereNotNull('k.karyawan_id')
+        ->groupBy('k.karyawan_id', 'k.nama', 'p.total_piutang')
         ->get();
+
 
         $data = array();
         $start = 0;
@@ -113,11 +121,8 @@ class PiutangController extends Controller
             $td = array();
             $td['no'] = ++$start;
             $td['nama'] = $value->nama ?? '-';
-            $td['piutang'] = isset($value->piutang) ? 'Rp ' . number_format($value->piutang, 0, ',', '.') : '-';
-            $td['actions'] ='<a href="javascript:void(0)" onclick="edit(\''.$value->piutang_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
-                                <i class="la la-edit"></i>
-                            </a>
-                            <a href="javascript:void(0)" onclick="hapus(\''.$value->karyawan_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
+            $td['total_bayar'] = isset($value->total_bayar) ? 'Rp ' . number_format($value->total_bayar, 0, ',', '.') : '-';
+            $td['actions'] ='<a href="javascript:void(0)" onclick="hapus(\''.$value->karyawan_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
                                 <i class="la la-trash-o"></i>
                             </a>';
             $data[] = $td;
@@ -126,36 +131,60 @@ class PiutangController extends Controller
     }
     public function detail_list()
     {
-    $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
-        ->select('penjualan.*', 'k.nama', 'k.karyawan_id')
-        ->where('pelanggan','hutang')
-        ->orderBy('penjualan.penjualan_id', 'desc')
-        ->get();
+        $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+            ->select('penjualan.*', 'k.nama', 'k.karyawan_id')
+            ->where('pelanggan','hutang')
+            ->orderBy('penjualan.penjualan_id', 'desc')
+            ->get();
 
-    $data = array();
-    $start = 0;
-    foreach ($dt as $penjualan) {
-        $produks = json_decode($penjualan->produk, true); 
-        
-        foreach ($produks as $produk) {
-            $barang = Stok_barang::where('stok_barang_id', $produk['barang_id'])->first();
-            if ($barang) {
-                $td = array();
-                $td['no'] = ++$start;
-                $td['nama'] = $penjualan->nama ?? '-';
-                $td['no_transaksi'] = '<span class="m-badge m-badge--rounded text-white bg-info">' . $penjualan->no_transaksi . '</span>';
-                $td['nama_barang'] = $barang->nama ?? '-';
-                $td['jumlah'] = $produk['jumlah'] ?? '-';
-                $td['tanggal'] = $penjualan->tanggal ?? '-';
-                $total_bayar = $produk['jumlah'] * $barang->harga_jual;
-                $td['total_bayar'] = isset($total_bayar) ? 'Rp ' . number_format($total_bayar, 0, ',', '.') : '-';
-                
-                $data[] = $td;
+        $data = array();
+        $start = 0;
+        foreach ($dt as $penjualan) {
+            $produks = json_decode($penjualan->produk, true); 
+            
+            foreach ($produks as $produk) {
+                $barang = Stok_barang::where('stok_barang_id', $produk['barang_id'])->first();
+                if ($barang) {
+                    $td = array();
+                    $td['no'] = ++$start;
+                    $td['nama'] = $penjualan->nama ?? '-';
+                    $td['no_transaksi'] = '<span class="m-badge m-badge--rounded text-white bg-info">' . $penjualan->no_transaksi . '</span>';
+                    $td['nama_barang'] = $barang->nama ?? '-';
+                    $td['jumlah'] = $produk['jumlah'] ?? '-';
+                    $td['tanggal'] = $penjualan->tanggal ?? '-';
+                    $total_bayar = $produk['jumlah'] * $barang->harga_jual;
+                    $td['total_bayar'] = isset($total_bayar) ? 'Rp ' . number_format($total_bayar, 0, ',', '.') : '-';
+                    
+                    $data[] = $td;
+                }
             }
         }
+        
+        return response()->json(['data' => $data]);
     }
-    
-    return response()->json(['data' => $data]);
-}
+
+    public function detail_list_saldo()
+    {
+        $dt = Piutang::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'piutang.karyawan_id')
+            ->select('k.karyawan_id', 'k.nama','piutang.*')
+            ->get();
+
+
+        $data = array();
+        $start = 0;
+        foreach ($dt as $key => $value) {
+            $td = array();
+            $td['no'] = ++$start;
+            $td['nama'] = $value->nama ?? '-';
+            $td['tanggal'] =$value->created_at->format('Y-m-d');
+            $td['no_transaksi'] = '<span class="m-badge m-badge--rounded text-white bg-info">' . $value->no_transaksi . '</span>';
+            $td['piutang'] = isset($value->jumlah) ? 'Rp ' . number_format($value->jumlah, 0, ',', '.') : '-';
+            $td['actions'] ='<a href="javascript:void(0)" onclick="hapus(\''.$value->karyawan_id.'\')" class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Delete">
+                                <i class="la la-trash-o"></i>
+                            </a>';
+            $data[] = $td;
+        }
+        return response()->json(['data' => $data]);
+    }
 
 }
