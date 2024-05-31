@@ -55,7 +55,28 @@
         <!--end: Search Form -->
 
         <!--begin: Datatable -->
-        <div class="m_datatable"></div>
+        <ul class="nav nav-pills nav-fill" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" onclick="renew('#m_datatable')" href="#m_tabs_5_1"><b>Umum</b></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable2')" href="#m_tabs_5_2"><b>Hutang</b></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable3')" href="#m_tabs_5_3"><b>Anggota Koperasi</b></a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="m_tabs_5_1" role="tabpanel">
+                <div class="m_datatable" id="m_datatable"></div>
+            </div>
+            <div class="tab-pane" id="m_tabs_5_2" role="tabpanel">
+                <div class="m_datatable2" id="m_datatable2"></div>
+            </div>
+            <div class="tab-pane" id="m_tabs_5_3" role="tabpanel">
+                <div class="m_datatable3" id="m_datatable3"></div>
+            </div>
+        </div>
         <!--end: Datatable -->
     </div>
 </div>
@@ -74,7 +95,132 @@
                         headers: {
                             'X-CSRF-TOKEN': csrfToken 
                         },
-                        dataType: 'json' 
+                        dataType: 'json',
+                        params: {
+                            pelanggan: 'umum' 
+                        }
+                    }
+                },
+                pageSize: 10, 
+                serverPaging: true 
+            },
+
+            layout: {
+                theme: 'default', 
+                class: '', 
+                scroll: false, 
+                footer: false 
+            },
+
+            sortable: false,
+
+            pagination: true,
+
+            search: {
+                input: $('#generalSearch')
+            },
+            order: [
+                [0, 'desc'] 
+            ],
+
+            columns: [{
+                field: "no",
+                title: "No",
+                width: 50,
+                sortable: false,
+                textAlign: 'center',
+            }, {
+                field: "no_transaksi",
+                title: "No Transaksi"
+            }, {
+                field: "nama_barang",
+                title: "Nama Barang"
+            }, {
+                field: "jumlah",
+                title: "Jumlah"
+            }, {
+                field: "total_bayar",
+                title: "Total Bayar"
+            }, {
+                field: "tanggal",
+                title: "Tanggal"
+            }]
+        });
+        var tableData = $('.m_datatable2').mDatatable({
+            data: {
+                type: 'remote', 
+                source: {
+                    read: {
+                        url: "{{ route('penjualan.detail_list') }}", 
+                        method: 'POST', 
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken 
+                        },
+                        dataType: 'json',
+                        params: {
+                            pelanggan: 'hutang' 
+                        }
+                    }
+                },
+                pageSize: 10, 
+                serverPaging: true 
+            },
+
+            layout: {
+                theme: 'default', 
+                class: '', 
+                scroll: false, 
+                footer: false 
+            },
+
+            sortable: false,
+
+            pagination: true,
+
+            search: {
+                input: $('#generalSearch')
+            },
+            order: [
+                [0, 'desc'] 
+            ],
+
+            columns: [{
+                field: "no",
+                title: "No",
+                width: 50,
+                sortable: false,
+                textAlign: 'center',
+            }, {
+                field: "no_transaksi",
+                title: "No Transaksi"
+            }, {
+                field: "nama_barang",
+                title: "Nama Barang"
+            }, {
+                field: "jumlah",
+                title: "Jumlah"
+            }, {
+                field: "total_bayar",
+                title: "Total Bayar"
+            }, {
+                field: "tanggal",
+                title: "Tanggal"
+            }]
+        });
+        var tableData = $('.m_datatable3').mDatatable({
+            data: {
+                type: 'remote', 
+                source: {
+                    read: {
+                        url: "{{ route('penjualan.detail_list') }}", 
+                        method: 'POST', 
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken 
+                        },
+                        dataType: 'json',
+                        params: {
+                            pelanggan: 'anggota koperasi' 
+                        }
                     }
                 },
                 pageSize: 10, 
@@ -129,5 +275,8 @@
 
         $('#m_form_status').selectpicker();
     });
+    function renew(selector) {
+        $(selector).mDatatable().reload();
+    }
 </script>
 @stop

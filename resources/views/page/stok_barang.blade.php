@@ -128,6 +128,14 @@
                             <input type="number" name="barcode" required class="form-control m-input" placeholder="Barcode"/>
                         </div>
                     </div>
+                    <div class="form-group m-form__group row" id="stok">
+                        <label class="col-form-label col-md-3" style="text-align:left">
+                            Stok <font class="m--font-danger">*</font>
+                        </label>
+                            <div class="col-md-6">
+                            <input type="number" name="stok" required class="form-control m-input" placeholder="Stok"/>
+                        </div>
+                    </div>
                     <div class="form-group m-form__group row">
                         <label class="col-form-label col-md-3" style="text-align:left">
                             Harga Beli <font class="m--font-danger">*</font>
@@ -251,6 +259,7 @@
         $('.help-block').empty();
         $('#m_form_1_msg').hide();
         $('#m_modal_6').modal('show');
+        $('#stok').hide();
         $('#btnSaveAjax').show();
     }
     function save() {
@@ -314,6 +323,7 @@
                     $('[name="harga_beli"]').val(data.data.harga_beli);
                     $('[name="harga_jual"]').val(data.data.harga_jual); 
                     $('#m_modal_6').modal('show'); 
+                    $('#stok').show();
                 } else {
                     swal("Oops", "Gagal mengambil data!", "error");
                 }

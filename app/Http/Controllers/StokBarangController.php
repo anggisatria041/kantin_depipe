@@ -95,7 +95,8 @@ class StokBarangController extends Controller
         $rules = [
             'nama' => 'required',
             'harga_beli' => 'required',
-            'harga_jual' => 'required'
+            'harga_jual' => 'required',
+            'stok' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -116,6 +117,7 @@ class StokBarangController extends Controller
          $data->update([
             'nama' => $request->nama,
             'barcode' => $request->barcode,
+            'stok' => $request->stok,
             'harga_beli' => $request->harga_beli,
             'harga_jual' => $request->harga_jual
         ]);

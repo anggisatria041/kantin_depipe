@@ -173,8 +173,9 @@
                         <div class="col-md-6">
                             <select name="divisi" class="form-control m-input m-select2">
                                 <option value="">Pilih Divisi</option>
-                                <option value="kebersihan">Kebersihan</option>
-                                <option value="sarana">Sarana</option>
+                                <option value="Staff">Staff</option>
+                                <option value="Dosen">Dosen</option>
+                                <option value="House Keeping">House Keeping</option>
                             </select>
                         </div>
                     </div>

@@ -271,12 +271,14 @@ class PenjualanController extends Controller
             ]
         ]);
     }
-    public function detail_list()
+    public function detail_list(Request $request)
     {
-        $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
-            ->select('penjualan.*', 'k.nama', 'k.karyawan_id')
-            ->orderBy('penjualan.penjualan_id', 'desc')
-            ->get();
+        $param = $request->input('pelanggan');
+        $dt = Penjualan::where('pelanggan', $param)
+        ->whereMonth('tanggal', date('m'))
+        ->whereYear('tanggal', date('Y'))
+        ->orderBy('penjualan.penjualan_id', 'desc')
+        ->get();
 
         $data = array();
         $start = 0;

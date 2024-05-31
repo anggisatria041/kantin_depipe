@@ -103,17 +103,18 @@ class PiutangController extends Controller
     }
     public function data_list()
     {
-       $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
-        ->leftJoin(DB::raw('(SELECT karyawan_id, SUM(jumlah) as total_piutang FROM piutang GROUP BY karyawan_id) as p'), 'p.karyawan_id', '=', 'k.karyawan_id')
+        $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+        ->leftJoin(DB::raw('(SELECT karyawan_id, SUM(jumlah) as total_piutang FROM piutang WHERE MONTH(created_at) = ' . date('m') . ' AND YEAR(created_at) = ' . date('Y') . ' GROUP BY karyawan_id) as p'), 'p.karyawan_id', '=', 'k.karyawan_id')
         ->select('k.karyawan_id', 'k.nama',
             DB::raw('SUM(CASE WHEN penjualan.pelanggan = "hutang" THEN penjualan.total_bayar ELSE 0 END) as total_penjualan'),
             DB::raw('COALESCE(p.total_piutang, 0) as total_piutang'),
             DB::raw('SUM(CASE WHEN penjualan.pelanggan = "hutang" THEN penjualan.total_bayar ELSE 0 END) + COALESCE(p.total_piutang, 0) as total_bayar')
         )
+        ->whereMonth('penjualan.tanggal', date('m'))
+        ->whereYear('penjualan.tanggal', date('Y'))
         ->whereNotNull('k.karyawan_id')
         ->groupBy('k.karyawan_id', 'k.nama', 'p.total_piutang')
         ->get();
-
 
         $data = array();
         $start = 0;
@@ -134,6 +135,8 @@ class PiutangController extends Controller
         $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
             ->select('penjualan.*', 'k.nama', 'k.karyawan_id')
             ->where('pelanggan','hutang')
+            ->whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
             ->orderBy('penjualan.penjualan_id', 'desc')
             ->get();
 
@@ -167,6 +170,8 @@ class PiutangController extends Controller
     {
         $dt = Piutang::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'piutang.karyawan_id')
             ->select('k.karyawan_id', 'k.nama','piutang.*')
+            ->whereMonth('piutang.created_at', date('m'))
+            ->whereYear('piutang.created_at', date('Y'))
             ->get();
 
 

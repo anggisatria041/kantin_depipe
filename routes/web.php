@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StokBarangController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PiutangController;
+use App\Http\Controllers\Lp_PenjualanController;
 use App\Http\Controllers\AuthController;
 
 
@@ -136,6 +137,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/data_list', [PiutangController::class, 'data_list'])->name('piutang.data_list');
         Route::post('/detail_list', [PiutangController::class, 'detail_list'])->name('piutang.detail_list');
         Route::post('/detail_list_saldo', [PiutangController::class, 'detail_list_saldo'])->name('piutang.detail_list_saldo');
+    });
+
+    // Laporan Penjualan
+    Route::prefix('lp_penjualan')->group(function () {
+        Route::get('/', [Lp_PenjualanController::class, 'index'])->name('lp_penjualan.index');
+        Route::post('/getlaporan', [Lp_PenjualanController::class, 'getlaporan'])->name('lp_penjualan.getlaporan');
+        Route::post('/exportlaporan', [Lp_PenjualanController::class, 'exportlaporan'])->name('lp_penjualan.exportlaporan');
     });
 
     //Auth

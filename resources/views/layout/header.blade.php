@@ -65,59 +65,14 @@
                                     <ul class="m-menu__content">
                                         <li class="m-menu__item">
                                             <h3 class="m-menu__heading m-menu__toggle">
-                                                <span class="m-menu__link-text">Finance Reports</span>
+                                                <span class="m-menu__link-text">Penjualan Reports</span>
                                                 <i class="m-menu__ver-arrow la la-angle-right"></i>
                                             </h3>
                                             <ul class="m-menu__inner">
                                                 <li class="m-menu__item " m-menu-link-redirect="1" aria-haspopup="true">
-                                                    <a href="header/actions.html" class="m-menu__link ">
+                                                    <a href="{{route('lp_penjualan.index')}}" class="m-menu__link ">
                                                         <i class="m-menu__link-icon flaticon-map"></i>
-                                                        <span class="m-menu__link-text">Annual Reports</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="m-menu__item">
-                                            <h3 class="m-menu__heading m-menu__toggle">
-                                                <span class="m-menu__link-text">Project Reports</span>
-                                                <i class="m-menu__ver-arrow la la-angle-right"></i>
-                                            </h3>
-                                            <ul class="m-menu__inner">
-                                                <li class="m-menu__item " m-menu-link-redirect="1" aria-haspopup="true">
-                                                    <a href="header/actions.html" class="m-menu__link ">
-                                                        <i class="m-menu__link-bullet m-menu__link-bullet--line">
-                                                            <span></span>
-                                                        </i>
-                                                        <span class="m-menu__link-text">Coca Cola CRM</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="m-menu__item">
-                                            <h3 class="m-menu__heading m-menu__toggle">
-                                                <span class="m-menu__link-text">HR Reports</span>
-                                                <i class="m-menu__ver-arrow la la-angle-right"></i>
-                                            </h3>
-                                            <ul class="m-menu__inner">
-                                                <li class="m-menu__item " m-menu-link-redirect="1" aria-haspopup="true">
-                                                    <a href="header/actions.html" class="m-menu__link ">
-                                                        <i class="m-menu__link-bullet m-menu__link-bullet--dot">
-                                                            <span></span>
-                                                        </i>
-                                                        <span class="m-menu__link-text">Staff Directory</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="m-menu__item">
-                                            <h3 class="m-menu__heading m-menu__toggle">
-                                                <span class="m-menu__link-text">Reporting Apps</span>
-                                                <i class="m-menu__ver-arrow la la-angle-right"></i>
-                                            </h3>
-                                            <ul class="m-menu__inner">
-                                                <li class="m-menu__item " m-menu-link-redirect="1" aria-haspopup="true">
-                                                    <a href="header/actions.html" class="m-menu__link ">
-                                                        <span class="m-menu__link-text">Report Adjusments</span>
+                                                        <span class="m-menu__link-text">Transaksi Penjualan</span>
                                                     </a>
                                                 </li>
                                             </ul>
