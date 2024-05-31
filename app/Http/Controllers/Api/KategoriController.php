@@ -6,6 +6,52 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Validator;
+/**
+ * @OA\Post(
+ *     path="/api/kategori",
+ *     summary="Create a new kategori",
+ *     description="Create a new kategori by providing necessary information.",
+ *     tags={"Kategori"},
+ *     @OA\Parameter(
+ *         name="nama_kategori",
+ *         in="query",
+ *         description="Provide In Kategori",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Kategori created successfully",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Kategori created successfully"
+ *             ),
+ *             @OA\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 example={}
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Invalid input",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(
+ *                 property="error",
+ *                 type="string",
+ *                 example="Invalid input"
+ *             )
+ *         )
+ *     )
+ * )
+ */
 
 class KategoriController extends Controller
 {

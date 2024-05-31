@@ -115,9 +115,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Penjualan
+        Route::get('/detail', [PenjualanController::class, 'detail'])->name('penjualan.detail');
+
     Route::prefix('penjualan')->group(function () {
         Route::get('/', [PenjualanController::class, 'index'])->name('penjualan.index');
-        Route::get('/detail', [PenjualanController::class, 'detail'])->name('penjualan.detail');
         Route::delete('/{id}', [PenjualanController::class, 'destroy'])->name('penjualan.destroy');
         Route::post('/store', [PenjualanController::class, 'store'])->name('penjualan.store');
         Route::get('/getBarcode', [PenjualanController::class,'getBarcode'])->name('penjualan.getBarcode');

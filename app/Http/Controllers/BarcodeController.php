@@ -49,7 +49,7 @@ class BarcodeController extends Controller
 
          $data = Barcode::create([
             'no_meja' => $request->no_meja,
-            'barcode' => 'http://localhost:5173/'.$request->no_meja,
+            'barcode' => 'http://192.168.161.179:5173/'.$request->no_meja,
         ]);
 
         if ($data) {
