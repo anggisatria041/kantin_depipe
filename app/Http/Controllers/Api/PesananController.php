@@ -17,36 +17,33 @@ class PesananController extends Controller
      */
     public function index(Request $request)
     {
-        $id = Auth::user()->id;
-        $data = Pesanan::whereJsonContains('pesanan', [['tenant_id' => $id]]);
+        $idInteger = Auth::user()->id;
+        $data = Pesanan::all();
 
-        if ($request->has('status_pemesanan')) {
-            $status = $request->input('status_pemesanan');
-            if ($status != 'Semua') {
-                $data->where('status_pemesanan', $status);
+        $filteredData = $data->filter(function ($item) use ($idInteger) {
+            $pesanan = json_decode($item->pesanan);
+            foreach ($pesanan as $pesananItem) {
+                if ($pesananItem->tenant_id == $idInteger) {
+                    return true;
+                }
             }
-        }
+            return false;
+        });
 
-        // Filter berdasarkan jenis pemesanan
-        if ($request->has('jenis_pemesanan')) {
-            $jenis = $request->input('jenis_pemesanan');
-            if ($jenis != 'Semua') {
-                $data->where('jenis_pemesanan', $jenis);
-            }
-        }
-        $data = $data->get();
-
-        $formattedData = $data->map(function($item) {
+        $formattedData = $filteredData->map(function ($item) use ($idInteger) {
             $pesanan = json_decode($item->pesanan);
             $formattedPesanan = [];
+
             foreach ($pesanan as $pesananItem) {
-                $formattedPesanan[] = [
-                    'menu_id' => $pesananItem->menu_id,
-                    'tenant_id' => $pesananItem->tenant_id,
-                    'qty' => $pesananItem->qty,
-                    'harga' => $pesananItem->harga,
-                    'total' => $pesananItem->total
-                ];
+                if ($pesananItem->tenant_id == $idInteger) {
+                    $formattedPesanan[] = [
+                        'menu_id' => $pesananItem->menu_id,
+                        'tenant_id' => $pesananItem->tenant_id,
+                        'qty' => $pesananItem->qty,
+                        'harga' => $pesananItem->harga,
+                        'total' => $pesananItem->total
+                    ];
+                }
             }
 
             return [
@@ -62,13 +59,14 @@ class PesananController extends Controller
                 'created_at' => $item->created_at,
                 'updated_at' => $item->updated_at
             ];
-        });
+        })->values(); 
 
         return response()->json([
             'status' => true,
             'message' => 'Data Berhasil Ditemukan',
             'data' => $formattedData,
         ], 200);
+
     }
 
     /**
@@ -136,20 +134,36 @@ class PesananController extends Controller
     public function show($id)
     {
         $idInteger = intval($id);
-        if($idInteger){
-            $data = Pesanan::whereJsonContains('pesanan', [['tenant_id' => $idInteger]])->get();
+        if ($idInteger) {
+            // Fetch all data first
+            $data = Pesanan::all();
 
-            $formattedData = $data->map(function($item) {
+            // Filter the data in PHP
+            $filteredData = $data->filter(function ($item) use ($idInteger) {
+                $pesanan = json_decode($item->pesanan);
+                foreach ($pesanan as $pesananItem) {
+                    if ($pesananItem->tenant_id == $idInteger) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            // Format the filtered data
+            $formattedData = $filteredData->map(function ($item) use ($idInteger) {
                 $pesanan = json_decode($item->pesanan);
                 $formattedPesanan = [];
+
                 foreach ($pesanan as $pesananItem) {
-                    $formattedPesanan[] = [
-                        'menu_id' => $pesananItem->menu_id,
-                        'tenant_id' => $pesananItem->tenant_id,
-                        'qty' => $pesananItem->qty,
-                        'harga' => $pesananItem->harga,
-                        'total' => $pesananItem->total
-                    ];
+                    if ($pesananItem->tenant_id == $idInteger) {
+                        $formattedPesanan[] = [
+                            'menu_id' => $pesananItem->menu_id,
+                            'tenant_id' => $pesananItem->tenant_id,
+                            'qty' => $pesananItem->qty,
+                            'harga' => $pesananItem->harga,
+                            'total' => $pesananItem->total
+                        ];
+                    }
                 }
 
                 return [
@@ -165,21 +179,20 @@ class PesananController extends Controller
                     'created_at' => $item->created_at,
                     'updated_at' => $item->updated_at
                 ];
-            });
+            })->values(); // Reset the keys of the collection
 
             return response()->json([
                 'status' => true,
                 'message' => 'Data Berhasil Ditemukan',
                 'data' => $formattedData,
             ], 200);
-         
-        } else{
-             
+        } else {
             return response()->json([
-                'status'=>false,
-                'message'=>'Data Gagal Ditemukan',
+                'status' => false,
+                'message' => 'Data Gagal Ditemukan',
             ], 404);
         }
+
     }
 
     /**
