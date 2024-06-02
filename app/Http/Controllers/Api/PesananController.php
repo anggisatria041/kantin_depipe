@@ -15,7 +15,7 @@ class PesananController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $id = Auth::user()->id;
         $data = Pesanan::whereJsonContains('pesanan', [['tenant_id' => $id]]);
@@ -23,7 +23,7 @@ class PesananController extends Controller
         if ($request->has('status_pemesanan')) {
             $status = $request->input('status_pemesanan');
             if ($status != 'Semua') {
-                $datas->where('status_pemesanan', $status);
+                $data->where('status_pemesanan', $status);
             }
         }
 
@@ -31,10 +31,10 @@ class PesananController extends Controller
         if ($request->has('jenis_pemesanan')) {
             $jenis = $request->input('jenis_pemesanan');
             if ($jenis != 'Semua') {
-                $datas->where('jenis_pemesanan', $jenis);
+                $data->where('jenis_pemesanan', $jenis);
             }
         }
-        $data = $datas->get();
+        $data = $data->get();
 
         $formattedData = $data->map(function($item) {
             $pesanan = json_decode($item->pesanan);
