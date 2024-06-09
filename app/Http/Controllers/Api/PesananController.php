@@ -17,33 +17,20 @@ class PesananController extends Controller
      */
     public function index(Request $request)
     {
-        $idInteger = Auth::user()->id;
         $data = Pesanan::all();
 
-        $filteredData = $data->filter(function ($item) use ($idInteger) {
-            $pesanan = json_decode($item->pesanan);
-            foreach ($pesanan as $pesananItem) {
-                if ($pesananItem->tenant_id == $idInteger) {
-                    return true;
-                }
-            }
-            return false;
-        });
-
-        $formattedData = $filteredData->map(function ($item) use ($idInteger) {
+        $formattedData = $data->map(function ($item) {
             $pesanan = json_decode($item->pesanan);
             $formattedPesanan = [];
 
             foreach ($pesanan as $pesananItem) {
-                if ($pesananItem->tenant_id == $idInteger) {
-                    $formattedPesanan[] = [
-                        'menu_id' => $pesananItem->menu_id,
-                        'tenant_id' => $pesananItem->tenant_id,
-                        'qty' => $pesananItem->qty,
-                        'harga' => $pesananItem->harga,
-                        'total' => $pesananItem->total
-                    ];
-                }
+                $formattedPesanan[] = [
+                    'menu_id' => $pesananItem->menu_id,
+                    'tenant_id' => $pesananItem->tenant_id,
+                    'qty' => $pesananItem->qty,
+                    'harga' => $pesananItem->harga,
+                    'total' => $pesananItem->total
+                ];
             }
 
             return [
@@ -59,7 +46,7 @@ class PesananController extends Controller
                 'created_at' => $item->created_at,
                 'updated_at' => $item->updated_at
             ];
-        })->values(); 
+        })->values();
 
         return response()->json([
             'status' => true,
@@ -125,6 +112,7 @@ class PesananController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'Berhasil Menambahkan Data',
+            'data'=>$data,
         ],200);
     }
 
