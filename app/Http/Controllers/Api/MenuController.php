@@ -16,14 +16,20 @@ class MenuController extends Controller
      */
     public function index(Request $request)
     {
-        $id = Auth::user()->id;
+        $user = Auth::user();
         $kategori = $request->kategori;
-        if($kategori){
-            $data = Menu::where('kategori', $kategori)
-                    ->where('tenant_id', $id)
+        if($user){
+            if($kategori){
+                $data = Menu::where('kategori', $kategori)
+                    ->where('tenant_id', $user->id)
                     ->get();
+            }else{
+                $data = Menu::where('tenant_id', $user->id)
+                    ->get();
+            }
+            
         } else {
-            $data = Menu::where('tenant_id', $id)->get();
+            $data = Menu::all();
         }
 
         return response()->json([

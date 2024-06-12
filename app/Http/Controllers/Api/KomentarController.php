@@ -15,9 +15,9 @@ class KomentarController extends Controller
      */
     public function index()
     {
-        $id = Auth::user()->id;
-        if($id){
-            $data=Komentar::where('tenant_id', $id)->get();
+        $user = Auth::user();
+        if($user){
+            $data=Komentar::where('tenant_id', $user->id)->get();
         }else{
             $data=Komentar::all();
         }

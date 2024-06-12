@@ -17,10 +17,11 @@ class PesananController extends Controller
      */
     public function index(Request $request)
     {
-        $idInteger = Auth::user()->id;
+        $users = Auth::user();
         $data = Pesanan::all();
 
-        if ($idInteger) {
+        if ($users) {
+            $idInteger=$users->id;
             $filteredData = $data->filter(function ($item) use ($idInteger) {
                 $pesanan = json_decode($item->pesanan);
                 foreach ($pesanan as $pesananItem) {
@@ -40,6 +41,7 @@ class PesananController extends Controller
             }
         } else {
             $filteredData = $data;
+            $idInteger = null;
         }
 
         $formattedData = $filteredData->map(function ($item) use ($idInteger) {
@@ -148,10 +150,8 @@ class PesananController extends Controller
     {
         $idInteger = intval($id);
         if ($idInteger) {
-            // Fetch all data first
             $data = Pesanan::all();
 
-            // Filter the data in PHP
             $filteredData = $data->filter(function ($item) use ($idInteger) {
                 $pesanan = json_decode($item->pesanan);
                 foreach ($pesanan as $pesananItem) {
@@ -161,8 +161,14 @@ class PesananController extends Controller
                 }
                 return false;
             });
+            if ($filteredData->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data Gagal Ditemukan',
+                    'data' => []
+                ], 404);
+            }
 
-            // Format the filtered data
             $formattedData = $filteredData->map(function ($item) use ($idInteger) {
                 $pesanan = json_decode($item->pesanan);
                 $formattedPesanan = [];
@@ -192,7 +198,7 @@ class PesananController extends Controller
                     'created_at' => $item->created_at,
                     'updated_at' => $item->updated_at
                 ];
-            })->values(); // Reset the keys of the collection
+            })->values(); 
 
             return response()->json([
                 'status' => true,
