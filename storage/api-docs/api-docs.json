@@ -1,24 +1,50 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "APIs For Thrift Store",
+        "title": "Dokumentasi Pengujian Api",
         "version": "1.0.0"
     },
     "paths": {
         "/api/kategori": {
+            "get": {
+                "tags": [
+                    "Kategori"
+                ],
+                "summary": "Kategori",
+                "description": "Mengambil Data Kategori ",
+                "operationId": "kategori",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "success": true,
+                                    "message": "Berhasil mengambil Kategori ",
+                                    "data": [
+                                        {
+                                            "kategori_id": "111",
+                                            "nama_kategori": "Makanan"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Kategori"
                 ],
-                "summary": "Create a new kategori",
-                "description": "Create a new kategori by providing necessary information.",
+                "summary": "Tambah data kategori",
+                "description": "Melakukan Tambah Data Kategori",
                 "operationId": "f34ae71b8e7acaf52961220f210e7b9d",
                 "parameters": [
                     {
                         "name": "nama_kategori",
                         "in": "query",
-                        "description": "Provide In Kategori",
-                        "required": true,
                         "schema": {
                             "type": "string"
                         }
@@ -26,14 +52,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Kategori created successfully",
+                        "description": "Kategori Berhasil Ditambah",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Kategori created successfully"
+                                            "example": "Kategori Berhasil Ditambah"
                                         },
                                         "data": {
                                             "type": "object",
@@ -44,19 +70,133 @@
                                 }
                             }
                         }
-                    },
-                    "400": {
-                        "description": "Invalid input",
+                    }
+                }
+            }
+        },
+        "/api/kategori/{id}": {
+            "get": {
+                "tags": [
+                    "Kategori"
+                ],
+                "summary": "Kategori By Id",
+                "description": "Mengambil Data Kategori berdasarkan kategori_id",
+                "operationId": "getKategoriById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID dari kategori yang ingin diambil",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
                         "content": {
                             "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Invalid input"
-                                        }
-                                    },
-                                    "type": "object"
+                                "schema": {},
+                                "example": {
+                                    "success": true,
+                                    "message": "Data Berhasil Ditemukan",
+                                    "data": {
+                                        "kategori_id": "111",
+                                        "nama_kategori": "Makanan"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Kategori"
+                ],
+                "summary": "Update Kategori By Id",
+                "description": "Memperbarui Data Kategori berdasarkan kategori_id",
+                "operationId": "updateKategoriById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID dari kategori yang ingin diperbarui",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nama_kategori",
+                        "in": "query",
+                        "description": "Nama kategori yang ingin diperbarui",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kategori Berhasil Diperbarui",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "success": true,
+                                    "message": "Kategori Berhasil Diperbarui",
+                                    "data": {
+                                        "kategori_id": "111",
+                                        "nama_kategori": "Minuman"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Kategori"
+                ],
+                "summary": "Delete Kategori By Id",
+                "description": "Menghapus Data Kategori berdasarkan kategori_id",
+                "operationId": "deleteKategoriById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID dari kategori yang ingin dihapus",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kategori Berhasil Dihapus",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "success": true,
+                                    "message": "Kategori Berhasil Dihapus"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "success": false,
+                                    "message": "Kategori tidak ditemukan"
                                 }
                             }
                         }

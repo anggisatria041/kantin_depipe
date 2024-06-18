@@ -6,30 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Validator;
+
 /**
  * @OA\Post(
  *     path="/api/kategori",
- *     summary="Create a new kategori",
- *     description="Create a new kategori by providing necessary information.",
+ *     summary="Tambah data kategori",
+ *     description="Melakukan Tambah Data Kategori",
  *     tags={"Kategori"},
  *     @OA\Parameter(
  *         name="nama_kategori",
  *         in="query",
- *         description="Provide In Kategori",
- *         required=true,
  *         @OA\Schema(
  *             type="string"
  *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Kategori created successfully",
+ *         description="Kategori Berhasil Ditambah",
  *         @OA\JsonContent(
  *             type="object",
  *             @OA\Property(
  *                 property="message",
  *                 type="string",
- *                 example="Kategori created successfully"
+ *                 example="Kategori Berhasil Ditambah"
  *             ),
  *             @OA\Property(
  *                 property="data",
@@ -37,21 +36,138 @@ use Illuminate\Support\Facades\Validator;
  *                 example={}
  *             )
  *         )
- *     ),
- *     @OA\Response(
- *         response=400,
- *         description="Invalid input",
- *         @OA\JsonContent(
- *             type="object",
- *             @OA\Property(
- *                 property="error",
- *                 type="string",
- *                 example="Invalid input"
- *             )
- *         )
  *     )
  * )
+ * @OA\Get(
+ *      path="/api/kategori",
+ *      tags={"Kategori"},
+ *      operationId="kategori",
+ *      summary="Kategori",
+ *      description="Mengambil Data Kategori ",
+ *      @OA\Response(
+ *           response="200",
+ *           description="Ok",
+ *           @OA\JsonContent(
+ *               example={
+ *                   "success": true,
+ *                   "message": "Berhasil mengambil Kategori ",
+ *                   "data": {
+ *                       {
+ *                       "kategori_id": "111",
+ *                       "nama_kategori": "Makanan"
+ *                       }
+ *                   }
+ *               }
+ *           )
+ *      )
+ * )
+ * @OA\Get(
+ *      path="/api/kategori/{id}",
+ *      tags={"Kategori"},
+ *      operationId="getKategoriById",
+ *      summary="Kategori By Id",
+ *      description="Mengambil Data Kategori berdasarkan kategori_id",
+ *      @OA\Parameter(
+ *          name="id",
+ *          in="path",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string"
+ *          ),
+ *          description="ID dari kategori yang ingin diambil"
+ *      ),
+ *      @OA\Response(
+ *           response="200",
+ *           description="Ok",
+ *           @OA\JsonContent(
+ *               example={
+ *                   "success": true,
+ *                   "message": "Data Berhasil Ditemukan",
+ *                   "data": {
+ *                       "kategori_id": "111",
+ *                       "nama_kategori": "Makanan"
+ *                   }
+ *               }
+ *           )
+ *      )
+ * )
+ * @OA\Put(
+ *      path="/api/kategori/{id}",
+ *      tags={"Kategori"},
+ *      operationId="updateKategoriById",
+ *      summary="Update Kategori By Id",
+ *      description="Memperbarui Data Kategori berdasarkan kategori_id",
+ *      @OA\Parameter(
+ *          name="id",
+ *          in="path",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string"
+ *          ),
+ *          description="ID dari kategori yang ingin diperbarui"
+ *      ),
+ *      @OA\Parameter(
+ *          name="nama_kategori",
+ *          in="query",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string"
+ *          ),
+ *          description="Nama kategori yang ingin diperbarui"
+ *      ),
+ *      @OA\Response(
+ *           response="200",
+ *           description="Kategori Berhasil Diperbarui",
+ *           @OA\JsonContent(
+ *               example={
+ *                   "success": true,
+ *                   "message": "Kategori Berhasil Diperbarui",
+ *                   "data": {
+ *                       "kategori_id": "111",
+ *                       "nama_kategori": "Minuman"
+ *                   }
+ *               }
+ *           )
+ *      )
+ * )
+ * @OA\Delete(
+ *      path="/api/kategori/{id}",
+ *      tags={"Kategori"},
+ *      operationId="deleteKategoriById",
+ *      summary="Delete Kategori By Id",
+ *      description="Menghapus Data Kategori berdasarkan kategori_id",
+ *      @OA\Parameter(
+ *          name="id",
+ *          in="path",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string"
+ *          ),
+ *          description="ID dari kategori yang ingin dihapus"
+ *      ),
+ *      @OA\Response(
+ *           response="200",
+ *           description="Kategori Berhasil Dihapus",
+ *           @OA\JsonContent(
+ *               example={
+ *                   "success": true,
+ *                   "message": "Kategori Berhasil Dihapus"
+ *               }
+ *           )
+ *      ),
+ *      @OA\Response(
+ *           response="404",
+ *           description="Not Found",
+ *           @OA\JsonContent(
+ *               example={
+ *                   "success": false,
+ *                   "message": "Kategori tidak ditemukan"
+ *               }
+ *           )
+ *      )
+ * )
  */
+
 
 class KategoriController extends Controller
 {

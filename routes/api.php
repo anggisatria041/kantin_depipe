@@ -26,9 +26,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-// Public Routes Resource
-    Route::apiResource('kategori', KategoriController::class);
-// End Resource
+// Public Routes Kategori
+Route::get('kategori/{id}', [KategoriController::class, 'show']);
+Route::post('kategori', [KategoriController::class, 'store']);
+Route::put('kategori/{id}', [KategoriController::class, 'update']);
+Route::delete('kategori/{id}', [KategoriController::class, 'destroy']);
+Route::get('kategori', [KategoriController::class, 'index']);
+// End Kategori
 
 // Public Routes Menu
 Route::get('menu/{id}', [MenuController::class, 'show']);
@@ -55,6 +59,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('logout', [UserController::class, 'logout']);
     Route::get('users', [UserController::class, 'show']);
 
+
     // Private Routes Menu
     Route::get('menu', [MenuController::class, 'index']);
     Route::post('menu', [MenuController::class, 'store']);
@@ -66,5 +71,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Private Routes Komentar
     Route::get('komentar', [KomentarController::class, 'index']);
+
+    // Private Routes Kategori
 });
 
