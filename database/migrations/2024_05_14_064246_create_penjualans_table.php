@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('detail');
             $table->integer('total_bayar');
             $table->string('pelanggan');
+            $table->integer('cash');
+            $table->string('keterangan');
             $table->timestamps();
         });
     }

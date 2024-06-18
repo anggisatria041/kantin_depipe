@@ -68,6 +68,7 @@
                             <option value="umum">Umum</option>
                             <option value="hutang">Hutang</option>
                             <option value="anggota koperasi">Anggota Koperasi</option>
+                            <option value="pengambilan barang">Pengambilan Barang</option>
                         </select>
                     </div>
                 </div>

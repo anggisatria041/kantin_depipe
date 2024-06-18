@@ -16,7 +16,8 @@ class Penjualan extends Model
         "produk",
         "total_bayar",
         "pelanggan",
-        "cash"
+        "cash",
+        "keterangan"
     ];
     protected $primaryKey = 'penjualan_id';
 }

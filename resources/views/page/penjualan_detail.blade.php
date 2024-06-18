@@ -65,6 +65,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable3')" href="#m_tabs_5_3"><b>Anggota Koperasi</b></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" onclick="renew('#m_datatable4')" href="#m_tabs_5_4"><b>Pengambilan Barang</b></a>
+            </li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="m_tabs_5_1" role="tabpanel">
@@ -75,6 +78,9 @@
             </div>
             <div class="tab-pane" id="m_tabs_5_3" role="tabpanel">
                 <div class="m_datatable3" id="m_datatable3"></div>
+            </div>
+             <div class="tab-pane" id="m_tabs_5_4" role="tabpanel">
+                <div class="m_datatable4" id="m_datatable4"></div>
             </div>
         </div>
         <!--end: Datatable -->
@@ -269,6 +275,72 @@
             }]
         });
 
+        var tableData = $('.m_datatable4').mDatatable({
+            data: {
+                type: 'remote', 
+                source: {
+                    read: {
+                        url: "{{ route('penjualan.detail_list') }}", 
+                        method: 'POST', 
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken 
+                        },
+                        dataType: 'json',
+                        params: {
+                            pelanggan: 'pengambilan barang' 
+                        }
+                    }
+                },
+                pageSize: 10, 
+                serverPaging: true 
+            },
+
+            layout: {
+                theme: 'default', 
+                class: '', 
+                scroll: false, 
+                footer: false 
+            },
+
+            sortable: false,
+
+            pagination: true,
+
+            search: {
+                input: $('#generalSearch')
+            },
+            order: [
+                [0, 'desc'] 
+            ],
+
+            columns: [{
+                field: "no",
+                title: "No",
+                width: 50,
+                sortable: false,
+                textAlign: 'center',
+            }, {
+                field: "no_transaksi",
+                title: "No Transaksi"
+            }, {
+                field: "pic",
+                title: "PIC"
+            }, {
+                field: "nama_barang",
+                title: "Nama Barang"
+            }, {
+                field: "jumlah",
+                title: "Jumlah"
+            }, {
+                field: "keterangan",
+                title: "Keterangan"
+            }, {
+                field: "tanggal",
+                title: "Tanggal"
+            }]
+        });
+        var exportButton = $('<a>').text('Excel').attr('href', '{{ route('penjualan.exportlaporan') }}').addClass('btn btn-success mb-2');
+        $('.m_datatable4').before(exportButton);
         $('#m_form_status').on('change', function () {
             tableData.search($(this).val(), 'status');
         });

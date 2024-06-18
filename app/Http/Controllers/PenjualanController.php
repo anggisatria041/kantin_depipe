@@ -9,7 +9,12 @@ use App\Models\Karyawan;
 use App\Models\Piutang;
 use App\Models\Saldo;
 use Carbon\Carbon;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Response;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Worksheet\ColumnDimension;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -93,6 +98,7 @@ class PenjualanController extends Controller
             'produk' => $request->produk,
             'total_bayar' => $request->total_bayar,
             'cash' => $request->cash,
+            'keterangan' => $request->keterangan,
             'karyawan_id' => isset($request->karyawan_id)? $request->karyawan_id:null,
             'tanggal' => Carbon::now()->format('Y-m-d')
 
@@ -274,7 +280,9 @@ class PenjualanController extends Controller
     public function detail_list(Request $request)
     {
         $param = $request->input('pelanggan');
-        $dt = Penjualan::where('pelanggan', $param)
+        $dt = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+        ->select('penjualan.*', 'k.nama')
+        ->where('pelanggan', $param)
         ->whereMonth('tanggal', date('m'))
         ->whereYear('tanggal', date('Y'))
         ->orderBy('penjualan.penjualan_id', 'desc')
@@ -294,6 +302,8 @@ class PenjualanController extends Controller
                         $td['nama_barang'] = $barang->nama ?? '-';
                         $td['jumlah'] = $produk['jumlah'] ?? '-';
                         $td['tanggal'] = $penjualan->tanggal ?? '-';
+                        $td['keterangan'] = $penjualan->keterangan ?? '-';
+                        $td['pic'] = $penjualan->nama ?? '-';
                         $total_bayar = $produk['jumlah'] * $barang->harga_jual;
                         $td['total_bayar'] = isset($total_bayar) ? 'Rp ' . number_format($total_bayar, 0, ',', '.') : '-';
                         
@@ -302,5 +312,200 @@ class PenjualanController extends Controller
                 }
             }
             return response()->json(['data' => $data]);
+    }
+    public function exportlaporan(Request $request)
+    {
+       
+        $data = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+            ->select('penjualan.*', 'k.nama')
+            ->where('pelanggan', 'pengambilan barang')
+            ->whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
+            ->get();
+       
+
+        $penjualan_details = [];
+
+        foreach ($data as $penjualan) {
+            $pesanan = json_decode($penjualan->produk, true);
+            foreach ($pesanan as $produk) {
+                $barang = Stok_barang::where('stok_barang_id', $produk['barang_id'])->first();
+                $penjualan_details[] = [
+                    'no_transaksi' => $penjualan->no_transaksi,
+                    'pelanggan' => $penjualan->pelanggan,
+                    'nama_barang' => $barang->nama,
+                    'jumlah' => $produk['jumlah'],
+                    'harga_jual' => $barang->harga_jual,
+                    'tanggal' => $penjualan->tanggal,
+                    'keterangan' => $penjualan->keterangan,
+                    'pic' => $penjualan->nama,
+                    'total_bayar' => $produk['jumlah'] * $barang->harga_jual,
+                ];
+            }
+        }
+        // =================Rekapitulasi======================
+       $data_group = Penjualan::leftJoin('karyawan as k', 'k.karyawan_id', '=', 'penjualan.karyawan_id')
+            ->select('penjualan.*', 'k.nama')
+            ->where('pelanggan', 'pengambilan barang')
+            ->whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
+            ->get();
+
+        $penjualan_details_group = [];
+
+        foreach ($data_group as $penjualan_group) {
+            $pesanan = json_decode($penjualan_group->produk, true);
+            foreach ($pesanan as $produk) {
+                $barang_group = Stok_barang::where('stok_barang_id', $produk['barang_id'])->first();
+                $key = $produk['barang_id'];
+
+               if (!isset($penjualan_details_group[$key])) {
+                $penjualan_details_group[$key] = [
+                    'nama_barang_group' => $barang_group->nama,
+                    'harga_jual_group' => $barang_group->harga_jual,
+                    'jumlah_group' => 0, 
+                    'total_bayar_group' => 0, 
+                ];
+            }
+            $penjualan_details_group[$key]['jumlah_group'] += $produk['jumlah'];
+            $penjualan_details_group[$key]['total_bayar_group'] += $produk['jumlah'] * $barang_group->harga_jual;
+            }
+        }
+
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+
+        $month = $months[(int)date('m')];
+        $year = date('Y');
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'INVOICE PANTRY & RUMAH TANGGA POLITEKNIK CALTEX RIAU');
+        $sheet->mergeCells('A1:I1');
+
+        $sheet->setCellValue('A3', 'Bulan ' . $month . ' ' . $year);
+        $sheet->mergeCells('A3:C3');
+
+        $sheet->setCellValue('J3', 'Rekapitulasi Invoice RT PCR Bulan ' . $month . ' ' . $year);
+        $sheet->mergeCells('J3:M3');
+
+        $sheet->setCellValue('A5', 'No');
+        $sheet->setCellValue('B5', 'Tanggal');
+        $sheet->setCellValue('C5', 'Keterangan');
+        $sheet->setCellValue('D5', 'PIC');
+        $sheet->setCellValue('E5', 'Nama Barang');
+        $sheet->setCellValue('F5', 'Jumlah');
+        $sheet->setCellValue('G5', 'Harga Satuan');
+        $sheet->setCellValue('H5', 'Total');
+
+        $sheet->setCellValue('J5', 'No');
+        $sheet->setCellValue('K5', 'Nama Barang');
+        $sheet->setCellValue('L5', 'Jumlah');
+        $sheet->setCellValue('M5', 'Harga Satuan');
+        $sheet->setCellValue('N5', 'Total');
+
+        $row = 6; 
+        foreach ($penjualan_details as $index => $detail) {
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $detail['tanggal']);
+            $sheet->setCellValue('C' . $row, $detail['keterangan']);
+            $sheet->setCellValue('D' . $row, $detail['pic']);
+            $sheet->setCellValue('E' . $row, $detail['nama_barang']);
+            $sheet->setCellValue('F' . $row, $detail['jumlah']);
+            $sheet->setCellValue('G' . $row, $detail['harga_jual']);
+            $sheet->setCellValue('H' . $row, $detail['jumlah'] * $detail['harga_jual']);
+            $row++;
+        }
+
+        $row = 6; 
+        foreach ($penjualan_details_group as $index => $detail) {
+            $sheet->setCellValue('J' . $row, $index + 1);
+            $sheet->setCellValue('K' . $row, $detail['nama_barang_group']);
+            $sheet->setCellValue('L' . $row, $detail['jumlah_group']);
+            $sheet->setCellValue('M' . $row, $detail['harga_jual_group']);
+            $sheet->setCellValue('N' . $row, $detail['total_bayar_group']);
+            $row++;
+        }
+
+        $sheet->getColumnDimension('A')->setWidth(5); 
+        $sheet->getColumnDimension('B')->setWidth(15); 
+        $sheet->getColumnDimension('C')->setWidth(20); 
+        $sheet->getColumnDimension('D')->setWidth(20); 
+        $sheet->getColumnDimension('E')->setWidth(25); 
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('H')->setWidth(10);
+
+        $sheet->getColumnDimension('J')->setWidth(5); 
+        $sheet->getColumnDimension('K')->setWidth(25); 
+        $sheet->getColumnDimension('L')->setWidth(10); 
+        $sheet->getColumnDimension('M')->setWidth(15); 
+        $sheet->getColumnDimension('N')->setWidth(10); 
+
+        $sheet->getStyle('A1:I1')->applyFromArray([
+            'font' => [
+                'color' => [
+                    'rgb' => '000000',
+                ],
+                'bold' => true,
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+
+        $sheet->getStyle('A5:H5')->applyFromArray([
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => [
+                    'rgb' => 'ADD8E6',
+                ],
+            ],
+            'font' => [
+                'color' => [
+                    'rgb' => '000000',
+                ],
+                'bold' => true,
+            ],
+        ]);
+
+        $sheet->getStyle('J5:N5')->applyFromArray([
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'color' => [
+                    'rgb' => 'ADD8E6',
+                ],
+            ],
+            'font' => [
+                'color' => [
+                    'rgb' => '000000',
+                ],
+                'bold' => true,
+            ],
+        ]);
+
+
+        $filename = 'Invoice_penjualan_'. date('d-m-y') . '.xlsx';
+        $writer = new Xlsx($spreadsheet);
+        $filePath = storage_path('app/public/' . $filename);
+        $writer->save($filePath);
+        
+        return Response::download($filePath, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend(true);
     }
 }

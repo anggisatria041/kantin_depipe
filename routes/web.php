@@ -126,6 +126,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/getSaldo', [PenjualanController::class,'getSaldo'])->name('penjualan.getSaldo');
         Route::post('/data_list', [PenjualanController::class, 'data_list'])->name('penjualan.data_list');
         Route::post('/detail_list', [PenjualanController::class, 'detail_list'])->name('penjualan.detail_list');
+        Route::get('/exportlaporan', [PenjualanController::class, 'exportlaporan'])->name('penjualan.exportlaporan');
     });
 
     // Piutang

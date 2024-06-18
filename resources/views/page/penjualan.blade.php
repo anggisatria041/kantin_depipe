@@ -28,6 +28,7 @@
                                     <option value="umum">Umum</option>
                                     <option value="hutang">Hutang</option>
                                     <option value="anggota koperasi">Anggota Koperasi</option>
+                                    <option value="pengambilan barang">Pengambilan Barang</option>
                                 </select>
                             </div>
                         </div>
@@ -79,6 +80,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="m-widget1__item" id="pengambilan_barang">
+                        <div class="row m-row--no-padding align-items-center">
+                            <div class="col">
+                                <h3 class="m-widget1__title">Keterangan</h3><br>
+                            </div>
+                            <div class="col">
+                                <input type="text" name="keterangan" required class="form-control m-input"/><br>
+                            </div>
+                        </div>
+                    </div>
                     <div class="m-widget1__item" id="transaksi_umum">
                         <div class="row m-row--no-padding align-items-center">
                             <div class="col">
@@ -120,6 +131,7 @@
 <script type="text/javascript">
     var method;
     $('#transaksi_anggota').hide();
+    $('#pengambilan_barang').hide();
     let stok_barang_id = [];
     document.addEventListener("DOMContentLoaded", () => {
         const kode = document.querySelector("#kode"); 
@@ -404,16 +416,25 @@
         if (jenis == 'umum') {
             $('#transaksi_anggota').hide();
             $('#transaksi_umum').show();
+            $('#pengambilan_barang').hide();
         } else if(jenis == 'anggota koperasi') {
             $('#transaksi_anggota').show();
             $('#transaksi_umum').show();
             $('#saldo_title').show();
             $('#saldo_number').show();
+            $('#pengambilan_barang').hide();
+        }else if(jenis == 'pengambilan barang') {
+            $('#transaksi_anggota').show();
+            $('#transaksi_umum').hide();
+            $('#saldo_title').hide();
+            $('#saldo_number').hide();
+            $('#pengambilan_barang').show();
         } else {
             $('#transaksi_anggota').show();
             $('#transaksi_umum').hide();
             $('#saldo_title').hide();
             $('#saldo_number').hide();
+            $('#pengambilan_barang').hide();
         }
     }
     function formatNumber(num) {
