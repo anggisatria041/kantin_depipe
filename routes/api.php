@@ -31,12 +31,11 @@ Route::get('kategori/{id}', [KategoriController::class, 'show']);
 Route::post('kategori', [KategoriController::class, 'store']);
 Route::put('kategori/{id}', [KategoriController::class, 'update']);
 Route::delete('kategori/{id}', [KategoriController::class, 'destroy']);
-Route::get('kategori', [KategoriController::class, 'index']);
 // End Kategori
 
 // Public Routes Menu
 Route::get('menu/{id}', [MenuController::class, 'show']);
-
+Route::delete('menu/{id}', [MenuController::class, 'destroy']);
 // Public Routes Pesanan
 Route::get('pesanan/{id}', [PesananController::class, 'show']);
 Route::post('pesanan', [PesananController::class, 'store']);
@@ -58,13 +57,12 @@ Route::get('auth', [UserController::class, 'auth'])->name('auth');
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('logout', [UserController::class, 'logout']);
     Route::get('users', [UserController::class, 'show']);
-
+    Route::get('kategori', [KategoriController::class, 'index']);
 
     // Private Routes Menu
     Route::get('menu', [MenuController::class, 'index']);
     Route::post('menu', [MenuController::class, 'store']);
     Route::put('menu/{id}', [MenuController::class, 'update']);
-    Route::delete('menu/{id}', [MenuController::class, 'destroy']);
 
     // Private Routes Pesanan
     Route::get('pesanan', [PesananController::class, 'index']);

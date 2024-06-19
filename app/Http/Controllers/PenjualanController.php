@@ -81,15 +81,14 @@ class PenjualanController extends Controller
         $pesan = json_decode($request->produk, true);
         foreach ($pesan as $produk) {
             $barang = Stok_barang::find($produk['barang_id']); 
-            $barang->stok -= $produk['jumlah'];
-            $barang->save();
-
             if ($barang->stok < $produk['jumlah']) { 
                 return response()->json([
                     'status' => false,
                     'message' => 'Stok tidak mencukupi'
                 ]);
             }
+            $barang->stok -= $produk['jumlah'];
+            $barang->save();
         }
 
         $data = Penjualan::create([

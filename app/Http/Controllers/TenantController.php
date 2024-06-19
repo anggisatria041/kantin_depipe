@@ -199,6 +199,7 @@ class TenantController extends Controller
             $td['id'] = $value->id ?? '-';
             $td['nama'] = $value->nama ?? '-';
             $td['alamat'] = $value->alamat ?? '-';
+            $td['username'] = $value->username ?? '-';
             $td['email'] = $value->email ?? '-';
             $td['no_hp'] = $value->no_hp ?? '-';
             $td['nik'] = $value->nik ?? '-';

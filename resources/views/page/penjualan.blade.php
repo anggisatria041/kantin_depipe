@@ -1,4 +1,5 @@
 @extends('layout.main')
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 @section('content')
 <div class="m-portlet">
     <div class="m-portlet__body  m-portlet__body--no-padding">
@@ -45,7 +46,8 @@
                             <div class="col">
                                 <select class="form-control" name="stok_barang_id" id="kode">
                                     <option value=""></option>
-                                </select><br>
+                                </select><br><br>
+                                <input type="number" name="cek"  class="form-control m-input"  id="cek" placeholder="Kode"/><br>
                             </div>
                         </div>
                     </div>
@@ -156,7 +158,100 @@
             $('.m_datatable').mDatatable().destroy();
             initializeDatatable();
         }
+        function create_storage(barangId){
+            var Id = parseInt(barangId); 
+            stok_barang_id.push({barang_id: Id, jumlah: 1});
+            localStorage.setItem('data', JSON.stringify(stok_barang_id));
+            $('#cek').val('');
+            $('.m_datatable').mDatatable().destroy();
+            initializeDatatable();
+        }
+        $("#kode").select2({
+            width: "100%",
+            closeOnSelect: true,
+            placeholder: "Cari kode atau nama barang",
+            ajax: {
+                url: "{{ route('penjualan.getBarcode') }}",
+                dataType: "json",
+                type: "GET",
+                delay: 250,
+                data: function(e) {
+                    return {
+                        searchtext: e.term,
+                        page: e.page
+                    }
+                },
+                processResults: function(e, t) {
+                    $(e.items).each(function() {
+                        this.id = this.stok_barang_id;
+                        this.text = `${this.nama}`;
+                    });
 
+                    return t.page = t.page || 1, {
+                        results: e.items,
+                    }
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            },
+            minimumInputLength: 1,
+            templateResult: function (data) {
+                if (data.loading) return data.text;
+
+                var markup =
+                    `<div class='select2-result-repository clearfix'>
+                        <div class='select2-result-repository_meta'>
+                            <div class='select2-result-repository_title'>
+                                ${data.barcode} - ${data.nama}
+                            </div>
+                        </div>
+                    </div>`;
+
+                return markup;
+            },
+            templateSelection: function (data) {
+                return data.text;
+            }
+        });
+        $("#cek").on('change input', function (e) {
+            if (e.type === 'change' || (e.type === 'input' && e.originalEvent.inputType === 'insertFromPaste')) {
+                var searchQuery = $(this).val();
+                var cek = parseFloat(document.getElementById('cek').value);
+                let stok_barang_id = JSON.parse(localStorage.getItem('data')) || [];
+
+                if (searchQuery.length >= 1) {
+                    $.ajax({
+                        url: "{{ route('penjualan.getBarcode') }}",
+                        dataType: "json",
+                        type: "GET",
+                        data: {
+                            searchtext: searchQuery
+                        },
+                        success: function (data) {
+                            if (data.items.length) {
+                                for (var x = 0; x < data.items.length; x++) {
+                                    var barangId = data.items[x].stok_barang_id;
+                                    if (cek == data.items[x].barcode) {
+                                        create_storage(barangId);
+                                    }
+                                }
+                            } else {
+                                $('#cek').val('No results found');
+                            }
+                        },
+                        error: function () {
+                            $('#cek').val('Error retrieving data');
+                        }
+                    });
+                } else {
+                    $('#cek').val('');
+                }
+            }
+        });
+
+    
         function initializeDatatable() {
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             $('.m_datatable').mDatatable({
@@ -338,57 +433,7 @@
             }
         });
     }
-    $(document).ready(function () {
-        $("#kode").select2({
-            width: "100%",
-            closeOnSelect: true,
-            placeholder: "Cari kode atau nama barang",
-            ajax: {
-                url: "{{ route('penjualan.getBarcode') }}",
-                dataType: "json",
-                type: "GET",
-                delay: 250,
-                data: function(e) {
-                    return {
-                        searchtext: e.term,
-                        page: e.page
-                    }
-                },
-                processResults: function(e, t) {
-                    $(e.items).each(function() {
-                        this.id = this.stok_barang_id;
-                        this.text = `${this.nama}`;
-                    });
-
-                    return t.page = t.page || 1, {
-                        results: e.items,
-                    }
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) {
-                return markup;
-            },
-            minimumInputLength: 1,
-            templateResult: function (data) {
-                if (data.loading) return data.text;
-
-                var markup =
-                    `<div class='select2-result-repository clearfix'>
-                        <div class='select2-result-repository_meta'>
-                            <div class='select2-result-repository_title'>
-                                ${data.barcode} - ${data.nama}
-                            </div>
-                        </div>
-                    </div>`;
-
-                return markup;
-            },
-            templateSelection: function (data) {
-                return data.text;
-            }
-        });
-    });
+    
     function hitungKembalian() {
         var jenis = document.getElementById('jenis').value;
         
@@ -460,5 +505,6 @@
             }
         });
     }
+  
 </script>
 @stop

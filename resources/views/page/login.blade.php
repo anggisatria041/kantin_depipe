@@ -45,7 +45,7 @@ License: You must have a valid license purchased only from themeforest(the above
 		<!--RTL version:<link href="../../../assets/demo/default/base/style.bundle.rtl.css" rel="stylesheet" type="text/css" />-->
 
 		<!--end::Base Styles -->
-		<link rel="shortcut icon" href="../../../assets/demo/default/media/img/logo/favicon.ico" />
+		<link rel="shortcut icon" href="../../../assets/demo/default/media/img/logo/logo-5.png" />
 	</head>
 
 	<!-- end::Head -->
@@ -60,7 +60,7 @@ License: You must have a valid license purchased only from themeforest(the above
 					<div class="m-grid__item">
 						<div class="m-login__logo">
 							<a href="#">
-								<img src="../../../assets/app/media/img//logos/logo-4.png">
+								<img src="../../../assets/app/media/img/logos/logo-6.png">
 							</a>
 						</div>
 					</div>

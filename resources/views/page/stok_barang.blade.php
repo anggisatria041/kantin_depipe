@@ -275,7 +275,7 @@
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
         const formDataWithToken = formData + '&_token=' + encodeURIComponent(csrfToken);
 
-        if ($('[name="nama"]').val() == "" || $('[name="stok"]').val() == "" || $('[name="harga_beli"]').val() == "" || $('[name="harga_jual"]').val() == "") {
+        if ($('[name="nama"]').val() == "" || $('[name="barcode"]').val() == "" || $('[name="harga_beli"]').val() == "" || $('[name="harga_jual"]').val() == "") {
             $('#m_form_1_msg').show();
             mApp.unblock(".modal-content");
         } else {

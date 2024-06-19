@@ -294,6 +294,9 @@
                 field: "nama",
                 title: "Nama"
             }, {
+                field: "username",
+                title: "Username"
+            }, {
                 field: "email",
                 title: "Email"
             }, {
