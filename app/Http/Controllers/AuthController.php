@@ -13,47 +13,43 @@ class AuthController extends Controller
     public function postlogin(Request $request)
     {
         try {
-            $rules=[
+            $rules = [
                 'email' => 'required|email',
                 'password' => 'required'
             ];
-            $validator=Validator::make($request->all(),$rules);
+
+            $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
-                $errors = $validator->errors();
-
-                if ($errors->has('email')) {
-                    return redirect('/portal')->with('error', 'Email harus diisi');
-                }
-
-                if ($errors->has('password')) {
-                    return redirect('/portal')->with('error', 'Password harus diisi');
-                }
+                return redirect('/portal')->withErrors($validator)->withInput();
             }
 
-        $credentials= request(['email','password']);
-        if (!Auth::attempt($credentials)) {
-            return redirect('/portal')->with('error','Email atau Password Anda Salah');
-        }
+            $credentials = $request->only('email', 'password');
+            if (!Auth::attempt($credentials)) {
+                return redirect('/portal')->with('error', 'Email atau Password Anda Salah');
+            }
+
             // cek email
-            $user = User::where('email', $request->email)->first();
+            $user = Auth::user();
             // cek password
-            if (!Hash::check($request->password, $user->password,[])) {
-               return redirect('/portal')->with('error','Bad Credential');
+            if (!Hash::check($request->password, $user->password)) {
+                return redirect('/portal')->with('error', 'Bad Credential');
             }
-            
+
             $token = $user->createToken('authtoken')->plainTextToken;
-            if (Auth::user()->role == 'admin') {
+
+            if ($user->role == 'admin') {
                 return redirect('/dashboard');
-            } else if(Auth::user()->role == 'kasir') {
+            } elseif ($user->role == 'kasir') {
                 return redirect()->route('penjualan.index');
             } else {
                 return redirect('/portal')->with('error', 'Tidak memiliki akses admin!');
             }
         } catch (Exception $error) {
-            return redirect('/portal')->with('error', 'Loggin Failed!');
+            return redirect('/portal')->with('error', 'Login Failed!');
         }
     }
+
     public function logout()
     {
         Auth::guard('web')->logout(); 
