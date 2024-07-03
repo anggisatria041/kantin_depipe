@@ -69,7 +69,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Private Routes Komentar
     Route::get('komentar', [KomentarController::class, 'index']);
-
-    // Private Routes Kategori
 });
 
