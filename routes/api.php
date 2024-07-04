@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\PesananController;
 use App\Http\Controllers\Api\KomentarController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\PembayaranController;
 
 
 /*
@@ -25,6 +26,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Public Routes Pembayaran
+Route::get('pembayaran', [PembayaranController::class, 'index']);
+Route::get('pembayaran/{id}', [PembayaranController::class, 'show']);
+Route::post('pembayaran', [PembayaranController::class, 'store']);
+Route::put('pembayaran/{id}', [PembayaranController::class, 'update']);
+Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy']);
 
 // Public Routes Kategori
 Route::get('kategori/{id}', [KategoriController::class, 'show']);
