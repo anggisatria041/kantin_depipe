@@ -27,54 +27,54 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Public Routes Pembayaran
-Route::get('pembayaran', [PembayaranController::class, 'index']);
-Route::get('pembayaran/{id}', [PembayaranController::class, 'show']);
-Route::post('pembayaran', [PembayaranController::class, 'store']);
-Route::put('pembayaran/{id}', [PembayaranController::class, 'update']);
-Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy']);
+// Route::get('pembayaran', [PembayaranController::class, 'index']);
+// Route::get('pembayaran/{id}', [PembayaranController::class, 'show']);
+// Route::post('pembayaran', [PembayaranController::class, 'store']);
+// Route::put('pembayaran/{id}', [PembayaranController::class, 'update']);
+// Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy']);
 
 // Public Routes Kategori
-Route::get('kategori/{id}', [KategoriController::class, 'show']);
-Route::post('kategori', [KategoriController::class, 'store']);
-Route::put('kategori/{id}', [KategoriController::class, 'update']);
-Route::delete('kategori/{id}', [KategoriController::class, 'destroy']);
+// Route::get('kategori/{id}', [KategoriController::class, 'show']);
+// Route::post('kategori', [KategoriController::class, 'store']);
+// Route::put('kategori/{id}', [KategoriController::class, 'update']);
+// Route::delete('kategori/{id}', [KategoriController::class, 'destroy']);
 // End Kategori
 
 // Public Routes Menu
-Route::get('menu/{id}', [MenuController::class, 'show']);
-Route::delete('menu/{id}', [MenuController::class, 'destroy']);
+// Route::get('menu/{id}', [MenuController::class, 'show']);
+// Route::delete('menu/{id}', [MenuController::class, 'destroy']);
 // Public Routes Pesanan
-Route::get('pesanan/{id}', [PesananController::class, 'show']);
-Route::post('pesanan', [PesananController::class, 'store']);
-Route::put('pesanan/{id}', [PesananController::class, 'update']);
-Route::delete('pesanan/{id}', [PesananController::class, 'destroy']);
+// Route::get('pesanan/{id}', [PesananController::class, 'show']);
+// Route::post('pesanan', [PesananController::class, 'store']);
+// Route::put('pesanan/{id}', [PesananController::class, 'update']);
+// Route::delete('pesanan/{id}', [PesananController::class, 'destroy']);
 
 // Public Routes Komentar
-Route::get('komentar/{id}', [KomentarController::class, 'show']);
-Route::post('komentar', [KomentarController::class, 'store']);
-Route::put('komentar/{id}', [KomentarController::class, 'update']);
-Route::delete('komentar/{id}', [KomentarController::class, 'destroy']);
+// Route::get('komentar/{id}', [KomentarController::class, 'show']);
+// Route::post('komentar', [KomentarController::class, 'store']);
+// Route::put('komentar/{id}', [KomentarController::class, 'update']);
+// Route::delete('komentar/{id}', [KomentarController::class, 'destroy']);
 
 // Public Routes User
-Route::post('register', [UserController::class, 'register']);
-Route::post('login', [UserController::class, 'login']);
-Route::get('auth', [UserController::class, 'auth'])->name('auth');
+// Route::post('register', [UserController::class, 'register']);
+// Route::post('login', [UserController::class, 'login']);
+// Route::get('auth', [UserController::class, 'auth'])->name('auth');
 
 // Protected routes
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('logout', [UserController::class, 'logout']);
-    Route::get('users', [UserController::class, 'show']);
-    Route::get('kategori', [KategoriController::class, 'index']);
+// Route::group(['middleware' => ['auth:sanctum']], function () {
+//     Route::get('logout', [UserController::class, 'logout']);
+//     Route::get('users', [UserController::class, 'show']);
+//     Route::get('kategori', [KategoriController::class, 'index']);
 
-    // Private Routes Menu
-    Route::get('menu', [MenuController::class, 'index']);
-    Route::post('menu', [MenuController::class, 'store']);
-    Route::put('menu/{id}', [MenuController::class, 'update']);
+//     // Private Routes Menu
+//     Route::get('menu', [MenuController::class, 'index']);
+//     Route::post('menu', [MenuController::class, 'store']);
+//     Route::put('menu/{id}', [MenuController::class, 'update']);
 
-    // Private Routes Pesanan
-    Route::get('pesanan', [PesananController::class, 'index']);
+//     // Private Routes Pesanan
+//     Route::get('pesanan', [PesananController::class, 'index']);
 
-    // Private Routes Komentar
-    Route::get('komentar', [KomentarController::class, 'index']);
-});
+//     // Private Routes Komentar
+//     Route::get('komentar', [KomentarController::class, 'index']);
+// });
 
